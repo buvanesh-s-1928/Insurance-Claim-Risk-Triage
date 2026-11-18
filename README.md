@@ -392,7 +392,7 @@ Expected output: **5 passed** (with sklearn version warnings — these are cosme
 
 ## Authors
 
-- **Buvanesh S** — ML Pipeline, Backend, Frontend  
+- **Buvanesh S** — ML Pipeline, Backend
 - Infosys Springboard Internship 7.0, Milestone 1
 
 ---
