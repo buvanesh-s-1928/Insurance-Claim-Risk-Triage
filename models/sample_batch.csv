@@ -1,0 +1,401 @@
+ClaimID,Month,WeekOfMonth,DayOfWeek,Make,AccidentArea,DayOfWeekClaimed,MonthClaimed,WeekOfMonthClaimed,PolicyType,VehicleCategory,VehiclePrice,Deductible,Days:Policy-Accident,Days:Policy-Claim,PastNumberOfClaims,AgeOfVehicle,PoliceReportFiled,WitnessPresent,AgentType,AddressChange-Claim,NumberOfCars,BasePolicy,FraudFound
+C-00005,Jan,5,Monday,Honda,Urban,Tuesday,Feb,2,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-00022,Jan,2,Saturday,Chevrolet,Urban,Monday,Jan,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-00101,Nov,3,Tuesday,Chevrolet,Urban,Wednesday,Jan,2,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-00126,Feb,2,Saturday,Pontiac,Urban,Monday,Feb,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-00214,Aug,2,Thursday,Pontiac,Urban,Wednesday,Aug,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-00282,Dec,4,Tuesday,Pontiac,Urban,Friday,Jan,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-00371,Jan,5,Monday,Mazda,Urban,Wednesday,Feb,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-00543,Jan,2,Tuesday,Honda,Urban,Friday,Jan,4,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,new,No,No,External,no change,1 vehicle,All Perils,Yes
+C-00553,Feb,2,Wednesday,VW,Urban,Thursday,Feb,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-00601,Sep,5,Friday,Mazda,Rural,Friday,Sep,5,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-00613,Jul,2,Wednesday,Pontiac,Urban,Wednesday,Jul,2,Sedan - Liability,Sport,"20,000 to 29,000",500,more than 30,more than 30,more than 4,6 years,No,No,External,2 to 3 years,1 vehicle,Liability,No
+C-00617,Mar,4,Friday,Honda,Urban,Tuesday,Apr,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,4 years,No,No,External,no change,1 vehicle,Liability,No
+C-00636,Apr,3,Friday,Pontiac,Urban,Monday,Apr,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-00748,Mar,1,Monday,Mazda,Urban,Monday,Mar,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-00884,May,5,Sunday,Honda,Urban,Wednesday,May,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-00917,May,3,Sunday,Mazda,Urban,Tuesday,May,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-00919,May,4,Friday,Pontiac,Rural,Tuesday,Jun,2,Sedan - Collision,Sedan,"20,000 to 29,000",500,more than 30,more than 30,2 to 4,more than 7,No,No,External,2 to 3 years,1 vehicle,Collision,No
+C-00937,Jan,5,Saturday,Chevrolet,Urban,Thursday,Feb,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-00993,May,5,Monday,Pontiac,Urban,Thursday,Jun,1,Sedan - All Perils,Sedan,"20,000 to 29,000",700,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-01011,Dec,1,Sunday,Honda,Urban,Tuesday,Dec,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-01027,Sep,5,Thursday,Mazda,Urban,Wednesday,Oct,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,1 to 7,more than 30,2 to 4,2 years,No,No,External,no change,1 vehicle,Collision,No
+C-01030,Feb,1,Sunday,Pontiac,Urban,Wednesday,Feb,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,4 to 8 years,2 vehicles,Liability,No
+C-01040,Mar,4,Thursday,Chevrolet,Urban,Friday,Apr,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-01043,Apr,2,Thursday,Pontiac,Rural,Tuesday,Apr,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-01045,Mar,2,Wednesday,Accura,Urban,Wednesday,Mar,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-01055,Feb,1,Friday,Pontiac,Urban,Friday,Feb,2,Sedan - All Perils,Sedan,"20,000 to 29,000",700,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-01090,Nov,4,Friday,VW,Urban,Thursday,Dec,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-01129,Dec,2,Monday,Pontiac,Urban,Monday,Dec,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-01132,Nov,5,Wednesday,Pontiac,Urban,Thursday,Dec,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-01134,Nov,3,Wednesday,Toyota,Urban,Friday,Nov,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-01157,Dec,2,Tuesday,Mazda,Urban,Tuesday,Dec,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,Internal,no change,1 vehicle,Collision,No
+C-01187,Apr,3,Thursday,Ford,Urban,Tuesday,Apr,4,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-01239,Mar,5,Monday,Pontiac,Rural,Tuesday,Apr,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-01368,Nov,4,Tuesday,Honda,Urban,Tuesday,Nov,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-01382,Sep,2,Sunday,Toyota,Urban,Wednesday,Sep,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,3 years,No,No,External,no change,1 vehicle,All Perils,No
+C-01418,Mar,3,Thursday,Pontiac,Urban,Friday,Mar,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-01440,Jul,1,Friday,Pontiac,Urban,Friday,Sep,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-01441,Jun,5,Tuesday,Accura,Urban,Friday,Nov,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-01483,Feb,4,Tuesday,Dodge,Urban,Thursday,Mar,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-01491,Jul,3,Tuesday,Mazda,Urban,Thursday,Jul,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-01543,May,5,Tuesday,Mazda,Urban,Tuesday,May,5,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-01757,Jan,1,Thursday,VW,Urban,Monday,Jan,2,Sedan - Collision,Sedan,"40,000 to 59,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-01758,Dec,5,Thursday,Toyota,Urban,Monday,Jan,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-01781,Mar,1,Sunday,Mazda,Rural,Monday,Mar,2,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-01789,Nov,4,Saturday,Honda,Urban,Thursday,Feb,1,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,2 years,No,No,External,no change,1 vehicle,Collision,No
+C-01807,May,4,Wednesday,Pontiac,Urban,Thursday,May,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-01868,Jul,1,Monday,Pontiac,Urban,Monday,Jul,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-01955,Dec,3,Friday,Honda,Urban,Tuesday,Jan,1,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,none,new,No,No,External,no change,1 vehicle,Collision,No
+C-02008,Dec,4,Monday,Toyota,Urban,Thursday,Dec,5,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-02029,Mar,1,Saturday,Chevrolet,Urban,Tuesday,Mar,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-02033,Feb,2,Tuesday,Honda,Urban,Tuesday,Feb,2,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-02076,Jun,4,Monday,Mazda,Urban,Tuesday,Jun,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-02176,Nov,1,Wednesday,Toyota,Urban,Monday,Nov,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02207,Feb,1,Thursday,Pontiac,Urban,Monday,Feb,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-02218,Feb,1,Thursday,Ford,Urban,Friday,Feb,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-02257,Mar,4,Saturday,Pontiac,Urban,Friday,Apr,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02309,Dec,1,Thursday,Toyota,Urban,Monday,Dec,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-02361,May,3,Tuesday,Honda,Urban,Thursday,May,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,4 years,No,No,External,no change,1 vehicle,Collision,No
+C-02409,Jul,4,Thursday,Toyota,Rural,Wednesday,Aug,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-02490,Sep,1,Monday,Honda,Urban,Monday,Sep,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-02501,Apr,1,Friday,Pontiac,Urban,Friday,Apr,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,Yes
+C-02638,Jul,5,Sunday,Honda,Urban,Tuesday,Aug,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-02686,Jun,4,Sunday,Pontiac,Rural,Thursday,Jul,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02776,Aug,5,Wednesday,Toyota,Rural,Wednesday,Sep,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-02828,Oct,2,Sunday,VW,Urban,Thursday,Oct,3,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-02850,Dec,4,Sunday,Pontiac,Urban,Wednesday,Mar,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02879,Jun,3,Thursday,Pontiac,Urban,Thursday,Jun,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02898,Apr,3,Thursday,Mazda,Urban,Wednesday,May,1,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,more than 4,3 years,No,No,External,no change,1 vehicle,All Perils,No
+C-02959,Nov,5,Wednesday,VW,Urban,Thursday,Dec,1,Sedan - Liability,Sport,"more than 69,000",500,more than 30,more than 30,more than 4,7 years,No,No,External,2 to 3 years,1 vehicle,Liability,No
+C-02972,Dec,2,Tuesday,Mazda,Urban,Tuesday,Dec,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-03000,Apr,3,Wednesday,Pontiac,Urban,Thursday,May,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-03001,Jun,1,Thursday,Mazda,Urban,Friday,Jun,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-03013,Oct,4,Saturday,Honda,Rural,Thursday,Oct,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-03041,Sep,2,Friday,Mazda,Urban,Friday,Sep,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-03155,Dec,1,Saturday,Pontiac,Urban,Wednesday,Jan,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-03159,Sep,2,Saturday,Chevrolet,Urban,Friday,Sep,3,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,6 years,Yes,No,External,no change,1 vehicle,All Perils,No
+C-03174,Sep,4,Sunday,Mazda,Urban,Monday,Sep,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-03306,Sep,5,Friday,Ford,Urban,Thursday,Oct,1,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,1,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-03324,Dec,3,Monday,Ford,Urban,Wednesday,Dec,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-03338,Jan,2,Friday,Chevrolet,Rural,Tuesday,Jan,3,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-03359,May,2,Sunday,Chevrolet,Urban,Monday,May,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-03395,Jan,3,Friday,Mazda,Urban,Tuesday,Jan,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,4 years,No,No,External,no change,1 vehicle,All Perils,No
+C-03613,Jan,3,Tuesday,Chevrolet,Urban,Friday,Jan,4,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-03630,Jan,5,Friday,Pontiac,Urban,Friday,Jan,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-03669,Jan,2,Wednesday,Honda,Urban,Thursday,Jan,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,1,new,No,No,External,no change,1 vehicle,Liability,No
+C-03679,Jan,2,Tuesday,Honda,Urban,Tuesday,Jan,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-03758,Feb,4,Sunday,Toyota,Urban,Monday,Feb,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-03800,Jul,1,Tuesday,Pontiac,Urban,Tuesday,Jul,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-03813,Feb,1,Tuesday,Toyota,Urban,Wednesday,Feb,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-03945,Feb,4,Saturday,Honda,Urban,Tuesday,Mar,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-03978,May,1,Friday,Mazda,Urban,Wednesday,May,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,3 to 4,Liability,No
+C-03996,Oct,4,Wednesday,Pontiac,Urban,Wednesday,Oct,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-04076,Jul,4,Thursday,Toyota,Urban,Tuesday,Aug,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-04116,Jun,3,Wednesday,Mazda,Urban,Thursday,Jun,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-04196,Nov,2,Wednesday,Chevrolet,Urban,Friday,Nov,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-04261,Sep,4,Saturday,Mazda,Urban,Thursday,Oct,3,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-04396,Jun,2,Friday,Pontiac,Urban,Tuesday,Jun,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-04468,Jun,2,Monday,Pontiac,Urban,Thursday,Jun,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-04490,Dec,1,Tuesday,Chevrolet,Urban,Thursday,Dec,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-04585,Oct,3,Saturday,Honda,Urban,Monday,Oct,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,4 years,No,No,External,no change,1 vehicle,Liability,No
+C-04653,Dec,2,Tuesday,Toyota,Urban,Thursday,Dec,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-04743,Aug,1,Tuesday,Mazda,Urban,Wednesday,Aug,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-04803,Apr,5,Saturday,Ford,Urban,Tuesday,May,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-04864,Sep,3,Tuesday,Accura,Urban,Wednesday,Sep,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-04903,Sep,2,Tuesday,Mercury,Urban,Friday,Sep,3,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,2 to 4,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-04968,Jun,5,Thursday,Toyota,Urban,Monday,Jul,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-05113,Jul,3,Saturday,Toyota,Urban,Monday,Jul,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-05117,Feb,2,Tuesday,Honda,Urban,Wednesday,Feb,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-05119,Jul,3,Saturday,Mazda,Rural,Wednesday,Jul,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-05124,Aug,3,Wednesday,Mazda,Urban,Friday,Aug,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-05140,Dec,1,Tuesday,Toyota,Urban,Monday,Dec,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-05144,Jan,2,Saturday,Honda,Urban,Thursday,Feb,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-05228,Dec,5,Friday,Toyota,Urban,Monday,Jan,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-05252,Jan,1,Sunday,Mazda,Urban,Tuesday,Jan,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-05274,Jul,4,Saturday,Accura,Urban,Tuesday,Aug,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,Yes
+C-05309,Jan,2,Friday,Toyota,Urban,Tuesday,Jan,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-05376,Feb,1,Monday,Toyota,Urban,Monday,Feb,1,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-05392,Jan,3,Thursday,Toyota,Urban,Friday,Jan,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-05529,May,2,Monday,Pontiac,Rural,Wednesday,May,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-05604,Mar,1,Wednesday,Mazda,Urban,Thursday,Mar,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-05607,Apr,2,Sunday,Mazda,Urban,Wednesday,Apr,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-05664,Feb,2,Tuesday,Toyota,Urban,Wednesday,Feb,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-05714,May,3,Tuesday,Pontiac,Urban,Tuesday,May,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-05768,May,3,Wednesday,Pontiac,Urban,Tuesday,May,4,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-05830,Nov,2,Friday,Honda,Urban,Monday,Nov,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-05967,Mar,3,Wednesday,Pontiac,Urban,Thursday,Mar,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-05993,Nov,4,Wednesday,Honda,Urban,Thursday,Nov,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-06023,May,3,Thursday,Toyota,Urban,Monday,May,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-06119,Sep,1,Saturday,Toyota,Urban,Tuesday,Sep,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-06136,Jul,3,Thursday,Mazda,Rural,Tuesday,Jul,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-06166,Sep,2,Saturday,Honda,Urban,Wednesday,Sep,2,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-06175,Mar,5,Thursday,Toyota,Urban,Monday,Apr,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,4 to 8 years,2 vehicles,Liability,No
+C-06181,Mar,2,Thursday,Pontiac,Urban,Thursday,Mar,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-06184,Sep,1,Tuesday,Toyota,Urban,Wednesday,Sep,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-06210,Aug,3,Tuesday,Pontiac,Urban,Monday,Aug,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-06215,Dec,3,Wednesday,Toyota,Urban,Thursday,Dec,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06230,Jan,4,Saturday,Pontiac,Urban,Monday,Jan,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-06315,Aug,2,Monday,Accura,Urban,Thursday,Oct,2,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,3 to 4,All Perils,No
+C-06373,Feb,5,Monday,Toyota,Urban,Wednesday,Mar,3,Sedan - Collision,Sedan,"less than 20,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-06375,Jun,4,Friday,Pontiac,Urban,Monday,Jun,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-06389,Apr,1,Wednesday,Toyota,Urban,Thursday,Apr,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-06417,Oct,3,Friday,Honda,Urban,Friday,Oct,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-06449,Apr,4,Wednesday,Toyota,Urban,Wednesday,Apr,4,Sedan - Liability,Sport,"30,000 to 39,000",700,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-06472,Apr,2,Thursday,Honda,Urban,Friday,Apr,4,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,new,No,No,External,no change,1 vehicle,All Perils,No
+C-06477,Jun,1,Monday,Honda,Urban,Wednesday,Dec,3,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,new,No,No,External,no change,1 vehicle,Collision,No
+C-06521,May,4,Friday,Toyota,Urban,Friday,May,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-06529,Sep,3,Thursday,Toyota,Urban,Monday,Oct,2,Sedan - Liability,Sport,"20,000 to 29,000",500,more than 30,more than 30,more than 4,6 years,No,No,External,2 to 3 years,1 vehicle,Liability,No
+C-06534,Nov,3,Sunday,Pontiac,Urban,Tuesday,Nov,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06565,Apr,5,Friday,Pontiac,Urban,Thursday,May,3,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06569,May,1,Monday,Pontiac,Urban,Friday,May,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06637,Apr,5,Thursday,Pontiac,Urban,Monday,May,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,4 to 8 years,2 vehicles,Liability,No
+C-06670,Jul,1,Wednesday,Mazda,Urban,Monday,Jul,2,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-06671,Nov,2,Friday,Toyota,Rural,Thursday,Nov,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-06677,Oct,1,Monday,Toyota,Urban,Tuesday,Oct,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-06684,Aug,1,Saturday,Pontiac,Urban,Tuesday,Aug,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,3 to 4,All Perils,No
+C-06729,Sep,1,Tuesday,Honda,Urban,Tuesday,Sep,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06775,Jul,5,Saturday,Toyota,Rural,Thursday,Aug,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-06780,Jun,5,Wednesday,Honda,Urban,Monday,Jul,1,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-06806,Jan,5,Friday,Mazda,Urban,Wednesday,Feb,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-06855,Oct,1,Sunday,Chevrolet,Urban,Wednesday,Oct,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-06949,Jun,3,Friday,Ford,Rural,Friday,Jun,3,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-06965,Jun,2,Sunday,Pontiac,Urban,Wednesday,Jun,4,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-06986,Feb,4,Wednesday,Pontiac,Urban,Tuesday,Mar,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-07006,Feb,1,Tuesday,Honda,Urban,Wednesday,Feb,1,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,1,new,No,No,External,no change,1 vehicle,Liability,No
+C-07011,Dec,1,Friday,Toyota,Urban,Wednesday,Jan,1,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-07028,Jan,1,Sunday,Nisson,Urban,Friday,Jan,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-07044,Oct,2,Sunday,Mecedes,Urban,Monday,Oct,2,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-07114,Jan,4,Wednesday,Mazda,Urban,Wednesday,Feb,1,Sedan - All Perils,Sedan,"40,000 to 59,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-07122,Jan,1,Wednesday,Ford,Urban,Thursday,Jan,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-07139,Jun,5,Wednesday,Pontiac,Urban,Wednesday,Jun,5,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-07210,Sep,3,Saturday,Honda,Urban,Wednesday,Sep,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-07223,May,1,Thursday,Pontiac,Urban,Thursday,May,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-07242,May,3,Sunday,Toyota,Urban,Thursday,Jul,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-07259,May,2,Monday,Pontiac,Rural,Monday,May,2,Sedan - Collision,Sedan,"40,000 to 59,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-07420,Sep,1,Sunday,Chevrolet,Urban,Monday,Sep,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-07507,May,1,Monday,Mazda,Urban,Monday,Jul,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-07578,Oct,5,Friday,Chevrolet,Urban,Thursday,Nov,2,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-07588,Aug,3,Monday,Toyota,Urban,Thursday,Oct,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-07628,Aug,5,Tuesday,Mazda,Urban,Monday,Sep,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-07649,Sep,4,Saturday,Pontiac,Urban,Tuesday,Sep,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-07654,Mar,3,Wednesday,Honda,Urban,Thursday,Mar,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-07669,Oct,2,Thursday,Pontiac,Urban,Wednesday,Oct,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,4 years,No,No,External,no change,1 vehicle,Collision,No
+C-07795,Jan,5,Monday,Accura,Urban,Thursday,Mar,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,Internal,no change,1 vehicle,Collision,No
+C-07821,Nov,5,Thursday,Mazda,Rural,Friday,Dec,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-07854,Jul,2,Friday,Honda,Urban,Wednesday,Jul,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,new,No,No,External,no change,1 vehicle,Liability,No
+C-07908,Jun,2,Wednesday,Honda,Urban,Friday,Jul,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-07914,Jan,4,Saturday,Chevrolet,Rural,Monday,Jan,4,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,3 to 4,All Perils,No
+C-07923,Oct,5,Sunday,Toyota,Urban,Thursday,Nov,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08004,Apr,3,Sunday,Pontiac,Urban,Tuesday,Apr,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-08071,Apr,3,Friday,Toyota,Urban,Friday,May,2,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-08108,Dec,4,Tuesday,Honda,Urban,Thursday,Dec,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-08117,Dec,3,Thursday,Accura,Urban,Tuesday,Dec,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08139,Sep,1,Saturday,Mazda,Rural,Saturday,Sep,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,Yes,Yes,External,no change,1 vehicle,Collision,No
+C-08217,Dec,4,Tuesday,Pontiac,Urban,Tuesday,Dec,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,Yes,No,External,no change,1 vehicle,Liability,No
+C-08244,Sep,4,Wednesday,Honda,Urban,Thursday,Sep,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,8 to 15,8 to 15,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08255,Apr,1,Saturday,Saturn,Urban,Monday,Apr,1,Sedan - Liability,Sport,"40,000 to 59,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08259,Nov,3,Tuesday,Toyota,Rural,Wednesday,Nov,3,Sedan - Collision,Sedan,"less than 20,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08303,Nov,4,Friday,VW,Urban,Tuesday,Nov,5,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-08309,Apr,3,Thursday,Honda,Urban,Friday,May,4,Sedan - Collision,Sedan,"30,000 to 39,000",700,more than 30,more than 30,none,more than 7,Yes,No,External,no change,1 vehicle,Collision,No
+C-08360,Apr,4,Friday,Toyota,Urban,Wednesday,Apr,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-08364,Aug,5,Tuesday,Pontiac,Urban,Wednesday,Aug,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-08392,Oct,1,Thursday,Pontiac,Urban,Monday,Oct,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-08438,Jun,3,Wednesday,Pontiac,Urban,Wednesday,Jun,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08440,Apr,4,Friday,Honda,Urban,Tuesday,May,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08478,Oct,2,Wednesday,Toyota,Urban,Monday,Oct,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,Yes,No,External,no change,1 vehicle,All Perils,No
+C-08548,Jun,1,Friday,Ford,Urban,Monday,Jun,1,Sedan - All Perils,Sedan,"40,000 to 59,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,4 to 8 years,2 vehicles,All Perils,No
+C-08582,Jul,1,Friday,Chevrolet,Urban,Friday,Jul,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08688,Jan,3,Saturday,Chevrolet,Urban,Wednesday,Jan,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08747,Jan,2,Wednesday,Honda,Urban,Wednesday,Jan,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08753,Jan,4,Monday,Honda,Urban,Tuesday,Jan,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-08819,Apr,1,Thursday,Mazda,Urban,Wednesday,Apr,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08886,May,4,Tuesday,Honda,Urban,Wednesday,May,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-08902,Mar,4,Sunday,Pontiac,Urban,Monday,Apr,1,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-08923,Jul,1,Thursday,Chevrolet,Urban,Friday,Jul,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-08996,Jun,5,Thursday,Chevrolet,Urban,Tuesday,Jul,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-08997,Jul,1,Saturday,Honda,Urban,Monday,Jul,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,Internal,no change,1 vehicle,Liability,No
+C-09023,Mar,4,Wednesday,Toyota,Urban,Thursday,Mar,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-09086,Jul,2,Friday,Toyota,Urban,Monday,Jul,4,Sedan - Collision,Sedan,"less than 20,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-09102,Jun,4,Monday,Pontiac,Urban,Monday,Jun,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-09126,Oct,3,Sunday,Honda,Urban,Friday,Nov,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-09132,Feb,2,Tuesday,Honda,Urban,Wednesday,Mar,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-09133,Nov,2,Wednesday,Mercury,Urban,Tuesday,Dec,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-09225,May,5,Wednesday,Ford,Urban,Thursday,Jun,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-09237,Mar,4,Thursday,Pontiac,Urban,Friday,Mar,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-09259,Jun,1,Friday,Chevrolet,Urban,Monday,Jun,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-09288,Jan,3,Saturday,Chevrolet,Urban,Tuesday,Jan,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-09315,Oct,4,Tuesday,Chevrolet,Urban,Wednesday,Oct,4,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-09335,Jun,3,Saturday,Toyota,Urban,Tuesday,Jun,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-09354,Apr,2,Tuesday,Pontiac,Urban,Wednesday,Apr,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-09415,Jul,4,Tuesday,Mazda,Urban,Monday,Aug,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-09420,Mar,3,Sunday,Pontiac,Urban,Tuesday,Apr,1,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-09500,Mar,4,Saturday,Mazda,Urban,Tuesday,Apr,1,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-09511,Sep,5,Saturday,Toyota,Urban,Monday,Oct,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-09649,Oct,2,Friday,Toyota,Urban,Monday,Oct,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-09686,Jan,5,Saturday,Chevrolet,Rural,Tuesday,Feb,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-09703,Mar,3,Tuesday,Pontiac,Urban,Wednesday,Mar,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,4 to 8 years,2 vehicles,Liability,No
+C-09740,Jun,5,Friday,Toyota,Urban,Wednesday,Jul,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-09745,Nov,4,Thursday,Pontiac,Urban,Friday,Nov,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,4 to 8 years,2 vehicles,All Perils,No
+C-09785,Jul,3,Tuesday,Pontiac,Urban,Thursday,Jul,4,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-09809,Feb,1,Thursday,Toyota,Urban,Monday,Feb,1,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-09819,Jan,2,Sunday,Pontiac,Urban,Friday,Apr,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-09820,Feb,4,Friday,Honda,Rural,Friday,Feb,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-09835,May,1,Thursday,Pontiac,Urban,Tuesday,May,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-09892,Oct,5,Sunday,Dodge,Rural,Wednesday,Nov,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,1,7 years,No,No,External,4 to 8 years,2 vehicles,Liability,No
+C-09970,Sep,3,Saturday,Toyota,Urban,Monday,Sep,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-10090,May,4,Friday,Pontiac,Urban,Thursday,Jun,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-10131,Apr,3,Tuesday,Pontiac,Urban,Wednesday,Apr,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-10175,Feb,1,Friday,Pontiac,Urban,Friday,Feb,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-10184,Feb,3,Saturday,Accura,Urban,Thursday,Feb,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,All Perils,Yes
+C-10239,Dec,3,Friday,Chevrolet,Urban,Monday,Jan,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-10280,Apr,1,Tuesday,Ford,Urban,Wednesday,Apr,1,Sedan - All Perils,Sedan,"60,000 to 69,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-10289,Feb,4,Thursday,Honda,Urban,Monday,Mar,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,Yes
+C-10315,Apr,4,Friday,Honda,Urban,Friday,Apr,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-10340,Feb,4,Friday,Honda,Urban,Friday,Mar,1,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,2 to 4,6 years,Yes,No,External,no change,1 vehicle,All Perils,Yes
+C-10364,Jan,2,Saturday,Chevrolet,Urban,Tuesday,Jan,2,Sedan - Liability,Sport,"40,000 to 59,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-10368,Nov,4,Thursday,Pontiac,Urban,Wednesday,Jan,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-10404,Jan,4,Saturday,Pontiac,Urban,Tuesday,Jan,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-10412,Feb,3,Wednesday,Toyota,Urban,Wednesday,Feb,4,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-10416,Mar,2,Monday,Pontiac,Urban,Monday,Mar,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-10420,Dec,4,Tuesday,Toyota,Urban,Tuesday,Jan,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-10445,Feb,2,Monday,Toyota,Rural,Tuesday,Apr,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-10475,Feb,1,Saturday,Honda,Urban,Tuesday,Feb,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-10540,May,4,Sunday,Honda,Urban,Tuesday,May,4,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,new,No,No,External,no change,1 vehicle,Liability,No
+C-10543,Sep,4,Friday,Pontiac,Urban,Wednesday,Sep,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-10545,Nov,1,Friday,Toyota,Urban,Monday,Nov,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-10562,Dec,2,Sunday,Pontiac,Urban,Thursday,Dec,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-10570,Mar,1,Sunday,Mazda,Urban,Wednesday,Mar,2,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-10726,Mar,1,Thursday,Pontiac,Urban,Monday,Mar,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-10849,Oct,4,Thursday,Toyota,Urban,Friday,Nov,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-10911,Jun,1,Monday,Honda,Urban,Thursday,Jun,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-10923,Nov,2,Tuesday,Pontiac,Urban,Thursday,Nov,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-10964,Dec,3,Wednesday,Pontiac,Urban,Tuesday,Dec,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,4 years,No,No,External,no change,1 vehicle,All Perils,No
+C-11016,Jul,1,Saturday,Saab,Urban,Monday,Jul,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-11036,Jun,2,Sunday,Pontiac,Urban,Wednesday,Jun,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-11090,Aug,2,Wednesday,Honda,Urban,Thursday,Aug,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11091,Mar,3,Sunday,Honda,Urban,Monday,Apr,1,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-11158,Jun,4,Friday,Pontiac,Rural,Monday,Jun,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11249,Nov,2,Monday,Toyota,Urban,Thursday,Nov,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-11259,Jan,2,Thursday,Mazda,Urban,Monday,Feb,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-11289,Dec,1,Friday,Chevrolet,Urban,Monday,Dec,1,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-11298,Oct,3,Sunday,Pontiac,Urban,Monday,Oct,3,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-11326,Nov,2,Thursday,Chevrolet,Urban,Thursday,Nov,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11338,Dec,3,Wednesday,VW,Urban,Monday,Dec,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-11408,Oct,3,Sunday,Mazda,Rural,Tuesday,Oct,3,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11418,Dec,4,Friday,Honda,Urban,Monday,Dec,4,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-11424,Sep,4,Sunday,Pontiac,Rural,Wednesday,Sep,5,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-11453,Sep,1,Sunday,Honda,Urban,Friday,Sep,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-11537,May,2,Sunday,Mazda,Urban,Thursday,May,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11549,Sep,4,Wednesday,Toyota,Urban,Wednesday,Sep,4,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-11624,Jul,1,Wednesday,Pontiac,Urban,Tuesday,Jul,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-11694,Jun,4,Monday,Chevrolet,Urban,Wednesday,Jun,5,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-11699,Sep,4,Wednesday,Pontiac,Urban,Monday,Oct,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-11736,Sep,4,Monday,Chevrolet,Urban,Monday,Sep,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-11824,Oct,3,Wednesday,Pontiac,Rural,Tuesday,Oct,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-11837,Jan,3,Monday,Toyota,Urban,Thursday,Jan,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-11853,Mar,4,Wednesday,Pontiac,Urban,Thursday,Apr,2,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-11929,Apr,3,Monday,VW,Rural,Tuesday,Apr,3,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,1,more than 7,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-11940,May,1,Tuesday,Pontiac,Urban,Thursday,May,2,Sedan - Collision,Sedan,"less than 20,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-11953,Jan,4,Saturday,Pontiac,Urban,Monday,Jan,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-11978,Jun,1,Sunday,Pontiac,Urban,Tuesday,Jun,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-12003,Feb,2,Tuesday,Mazda,Urban,Wednesday,Feb,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12042,Jan,3,Saturday,Toyota,Urban,Monday,Jan,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12055,Feb,2,Tuesday,Chevrolet,Urban,Wednesday,Feb,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,4 to 8 years,3 to 4,Collision,No
+C-12122,Mar,1,Thursday,Toyota,Urban,Monday,Mar,1,Sedan - Liability,Sport,"20,000 to 29,000",700,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12145,Oct,3,Wednesday,Pontiac,Urban,Thursday,Oct,3,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12156,Mar,2,Tuesday,Mazda,Urban,Tuesday,Mar,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-12181,Nov,4,Tuesday,VW,Urban,Tuesday,Nov,5,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,4 to 8 years,2 vehicles,All Perils,No
+C-12185,Mar,3,Saturday,Toyota,Urban,Monday,Mar,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-12201,May,2,Saturday,Chevrolet,Urban,Tuesday,May,3,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-12231,Oct,2,Sunday,Pontiac,Urban,Tuesday,Oct,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-12235,Feb,3,Monday,Toyota,Urban,Thursday,Feb,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12333,Jul,1,Thursday,Mazda,Urban,Friday,Jul,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-12344,Nov,3,Thursday,Mercury,Urban,Friday,Nov,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-12374,Apr,2,Friday,Pontiac,Urban,Monday,Apr,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12400,Jul,2,Friday,Honda,Urban,Friday,Jul,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12464,Jun,3,Wednesday,Pontiac,Urban,Thursday,Jun,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-12472,Jun,3,Friday,Honda,Urban,Tuesday,Jul,3,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,new,No,No,External,no change,1 vehicle,All Perils,No
+C-12518,Nov,4,Monday,Pontiac,Urban,Tuesday,Nov,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-12565,Aug,3,Wednesday,BMW,Urban,Tuesday,Aug,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-12606,May,3,Friday,Pontiac,Urban,Friday,May,4,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12612,Mar,2,Thursday,Toyota,Urban,Friday,Mar,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-12684,Mar,5,Friday,Honda,Rural,Tuesday,May,1,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-12715,Oct,3,Saturday,Honda,Urban,Tuesday,Oct,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-12767,Nov,3,Saturday,Mazda,Urban,Tuesday,Nov,4,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12825,Feb,1,Saturday,Pontiac,Urban,Monday,Feb,2,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-12966,Jul,2,Sunday,Pontiac,Urban,Thursday,Sep,2,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-12977,Jun,3,Wednesday,Pontiac,Urban,Thursday,Jun,4,Sedan - Liability,Sport,"less than 20,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12986,Jun,5,Tuesday,Pontiac,Urban,Monday,Jul,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-12991,Dec,3,Tuesday,Toyota,Urban,Tuesday,Dec,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-13038,Mar,1,Friday,Accura,Urban,Monday,Mar,1,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-13079,Dec,3,Saturday,Pontiac,Urban,Tuesday,Dec,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-13106,Dec,4,Saturday,Mazda,Urban,Tuesday,Dec,4,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-13109,Dec,4,Thursday,Honda,Urban,Thursday,Dec,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-13121,Sep,4,Friday,Mazda,Urban,Monday,Sep,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,6 years,No,No,External,no change,3 to 4,Liability,No
+C-13133,Apr,5,Thursday,Pontiac,Urban,Friday,Apr,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-13137,Oct,2,Monday,Mazda,Urban,Monday,Nov,2,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,5 years,No,No,External,no change,1 vehicle,Collision,No
+C-13227,Sep,3,Monday,Mazda,Rural,Thursday,Oct,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-13344,Jan,1,Wednesday,Pontiac,Urban,Thursday,Jan,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-13495,Jan,1,Sunday,Pontiac,Urban,Friday,Jan,3,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-13543,Jan,4,Saturday,Mazda,Rural,Monday,Jan,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-13555,Mar,1,Thursday,Honda,Urban,Thursday,Mar,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-13564,Feb,3,Tuesday,Pontiac,Urban,Thursday,Feb,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-13584,Apr,1,Thursday,Accura,Urban,Thursday,Apr,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-13593,Sep,1,Thursday,Chevrolet,Urban,Monday,Sep,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-13606,Oct,2,Monday,Chevrolet,Urban,Tuesday,Oct,2,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-13612,Jul,4,Friday,Accura,Urban,Friday,Jul,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-13707,Apr,1,Wednesday,Accura,Urban,Thursday,Apr,4,Utility - All Perils,Utility,"more than 69,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-13786,Feb,2,Tuesday,Accura,Urban,Thursday,Feb,2,Sedan - All Perils,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,Yes,Yes,External,no change,1 vehicle,All Perils,No
+C-13851,Jul,5,Saturday,Honda,Urban,Tuesday,Aug,1,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,5 years,No,No,External,no change,1 vehicle,Collision,Yes
+C-13855,Oct,5,Friday,Toyota,Urban,Friday,Nov,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-13923,Jun,2,Monday,Pontiac,Urban,Thursday,Jun,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-13931,Aug,2,Monday,Chevrolet,Urban,Tuesday,Aug,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-13983,Feb,2,Saturday,Pontiac,Urban,Thursday,Mar,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-14003,Jan,3,Monday,Honda,Urban,Monday,Jan,3,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,more than 4,new,No,No,External,no change,1 vehicle,Liability,No
+C-14010,Mar,3,Friday,Pontiac,Urban,Wednesday,Mar,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-14015,Apr,2,Saturday,Pontiac,Urban,Wednesday,Apr,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,3 years,No,No,External,1 year,1 vehicle,All Perils,No
+C-14066,Jun,2,Saturday,VW,Urban,Thursday,Jun,3,Sedan - Collision,Sedan,"40,000 to 59,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-14075,Apr,1,Wednesday,Mazda,Urban,Wednesday,Apr,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-14129,Feb,3,Monday,Pontiac,Urban,Tuesday,Feb,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-14177,May,3,Thursday,Pontiac,Urban,Thursday,May,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-14194,Jun,1,Saturday,Toyota,Urban,Friday,Jun,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14198,Mar,4,Thursday,Mazda,Urban,Tuesday,Mar,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,15 to 30,more than 30,1,3 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14202,Feb,2,Wednesday,Mazda,Urban,Wednesday,Feb,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-14236,Mar,1,Wednesday,Toyota,Urban,Thursday,Mar,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-14246,Jul,4,Wednesday,Chevrolet,Rural,Thursday,Jul,5,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-14278,Mar,4,Thursday,Honda,Urban,Tuesday,May,3,Sport - Collision,Sport,"more than 69,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-14302,Jan,3,Monday,Toyota,Urban,Tuesday,Jan,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,4 to 8 years,2 vehicles,Collision,No
+C-14313,Jan,3,Thursday,Toyota,Urban,Friday,Mar,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-14319,Aug,5,Tuesday,Honda,Urban,Tuesday,Aug,5,Sedan - All Perils,Sedan,"less than 20,000",400,more than 30,more than 30,1,2 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14333,Aug,4,Sunday,Toyota,Rural,Wednesday,Aug,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-14368,Sep,2,Friday,Nisson,Urban,Monday,Sep,2,Sedan - Collision,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-14373,Oct,2,Wednesday,Toyota,Urban,Thursday,Oct,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14424,Nov,2,Friday,Toyota,Urban,Monday,Nov,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,Internal,no change,1 vehicle,Liability,No
+C-14555,Mar,2,Monday,Mazda,Urban,Tuesday,Mar,2,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-14644,Jul,3,Tuesday,Saturn,Urban,Tuesday,Jul,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14731,Nov,4,Sunday,Honda,Urban,Friday,Dec,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-14740,Jan,3,Thursday,Pontiac,Urban,Tuesday,Mar,1,Sedan - Liability,Sport,"20,000 to 29,000",500,more than 30,more than 30,2 to 4,7 years,No,No,External,2 to 3 years,1 vehicle,Liability,No
+C-14801,Mar,4,Wednesday,Pontiac,Urban,Thursday,Mar,4,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Liability,No
+C-14810,Mar,2,Sunday,Toyota,Urban,Monday,Mar,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,5 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14816,Dec,1,Sunday,Pontiac,Urban,Tuesday,Dec,4,Sedan - All Perils,Sedan,"less than 20,000",400,none,more than 30,none,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-14868,Jun,5,Friday,Accura,Rural,Friday,Jul,2,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-14877,Oct,1,Tuesday,VW,Urban,Friday,Oct,1,Sedan - Collision,Sedan,"60,000 to 69,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,Internal,no change,1 vehicle,Collision,Yes
+C-14999,Oct,3,Saturday,Honda,Urban,Wednesday,Oct,3,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-15049,Apr,1,Saturday,Chevrolet,Rural,Thursday,May,4,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,1 vehicle,All Perils,No
+C-15055,Jul,3,Friday,Honda,Urban,Wednesday,Aug,1,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,more than 4,5 years,No,No,External,no change,1 vehicle,Liability,No
+C-15063,Nov,3,Wednesday,Pontiac,Urban,Monday,Nov,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-15075,Mar,4,Wednesday,Mercury,Urban,Tuesday,Apr,2,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,All Perils,No
+C-15080,Oct,3,Wednesday,Honda,Urban,Monday,Oct,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-15105,Oct,3,Thursday,Ford,Urban,Wednesday,Nov,1,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,more than 4,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-15117,Oct,1,Friday,Pontiac,Urban,Monday,Oct,2,Sedan - Collision,Sedan,"less than 20,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-15157,Oct,4,Thursday,Toyota,Urban,Friday,Oct,5,Sedan - Liability,Sport,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Liability,No
+C-15167,Jan,4,Tuesday,Mazda,Urban,Friday,Jan,4,Sedan - Collision,Sedan,"30,000 to 39,000",400,more than 30,more than 30,2 to 4,more than 7,No,No,External,no change,1 vehicle,Collision,No
+C-15200,Oct,3,Monday,Pontiac,Urban,Monday,Oct,5,Sedan - All Perils,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,1 vehicle,All Perils,No
+C-15221,Oct,4,Thursday,Toyota,Urban,Friday,Oct,4,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,1,6 years,No,No,External,no change,1 vehicle,Collision,No
+C-15253,Nov,5,Monday,Pontiac,Urban,Thursday,Dec,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,6 years,No,No,External,no change,3 to 4,Collision,No
+C-15282,Jun,2,Friday,Mazda,Urban,Monday,Jun,3,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,2 to 4,7 years,No,No,External,no change,1 vehicle,Collision,No
+C-15335,Jan,4,Thursday,Toyota,Urban,Wednesday,Mar,1,Sedan - Collision,Sedan,"20,000 to 29,000",400,more than 30,more than 30,none,more than 7,No,No,External,no change,3 to 4,Collision,No
+C-15348,Apr,1,Thursday,Ford,Urban,Thursday,Apr,1,Sedan - All Perils,Sedan,"40,000 to 59,000",400,more than 30,more than 30,1,more than 7,Yes,No,External,no change,1 vehicle,All Perils,No
+C-15385,Dec,4,Monday,Chevrolet,Urban,Tuesday,Jan,1,Sedan - Liability,Sport,"more than 69,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability,No
+C-15393,Jan,1,Thursday,Honda,Urban,Thursday,Jan,2,Sedan - All Perils,Sedan,"more than 69,000",400,more than 30,more than 30,none,new,No,No,External,no change,1 vehicle,All Perils,No
