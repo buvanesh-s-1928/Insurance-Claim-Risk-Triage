@@ -1,0 +1,784 @@
+{
+ "features": [
+  "Month",
+  "WeekOfMonth",
+  "DayOfWeek",
+  "Make",
+  "AccidentArea",
+  "DayOfWeekClaimed",
+  "MonthClaimed",
+  "WeekOfMonthClaimed",
+  "PolicyType",
+  "VehicleCategory",
+  "VehiclePrice",
+  "Deductible",
+  "Days:Policy-Accident",
+  "Days:Policy-Claim",
+  "PastNumberOfClaims",
+  "AgeOfVehicle",
+  "PoliceReportFiled",
+  "WitnessPresent",
+  "AgentType",
+  "AddressChange-Claim",
+  "NumberOfCars",
+  "BasePolicy"
+ ],
+ "labels": {
+  "Month": "Month of accident",
+  "WeekOfMonth": "Week of accident",
+  "DayOfWeek": "Day of accident",
+  "Make": "Vehicle make",
+  "AccidentArea": "Accident area",
+  "DayOfWeekClaimed": "Day claim reported",
+  "MonthClaimed": "Month claim reported",
+  "WeekOfMonthClaimed": "Week claim reported",
+  "PolicyType": "Policy type",
+  "VehicleCategory": "Vehicle category",
+  "VehiclePrice": "Vehicle price",
+  "Deductible": "Deductible",
+  "Days:Policy-Accident": "Days from policy start to accident",
+  "Days:Policy-Claim": "Days from policy start to claim",
+  "PastNumberOfClaims": "Previous claims",
+  "AgeOfVehicle": "Vehicle age",
+  "PoliceReportFiled": "Police report filed",
+  "WitnessPresent": "Witness present",
+  "AgentType": "Agent type",
+  "AddressChange-Claim": "Address change before claim",
+  "NumberOfCars": "Cars on policy",
+  "BasePolicy": "Base cover"
+ },
+ "schema": [
+  {
+   "name": "Month",
+   "label": "Month of accident",
+   "type": "cat",
+   "options": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+   ]
+  },
+  {
+   "name": "WeekOfMonth",
+   "label": "Week of accident",
+   "type": "num",
+   "options": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "name": "DayOfWeek",
+   "label": "Day of accident",
+   "type": "cat",
+   "options": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+   ]
+  },
+  {
+   "name": "Make",
+   "label": "Vehicle make",
+   "type": "cat",
+   "options": [
+    "Pontiac",
+    "Toyota",
+    "Honda",
+    "Mazda",
+    "Chevrolet",
+    "Accura",
+    "Ford",
+    "VW",
+    "Dodge",
+    "Saab",
+    "Mercury",
+    "Saturn",
+    "Nisson",
+    "BMW",
+    "Jaguar",
+    "Porche",
+    "Mecedes",
+    "Ferrari",
+    "Lexus"
+   ]
+  },
+  {
+   "name": "AccidentArea",
+   "label": "Accident area",
+   "type": "cat",
+   "options": [
+    "Urban",
+    "Rural"
+   ]
+  },
+  {
+   "name": "DayOfWeekClaimed",
+   "label": "Day claim reported",
+   "type": "cat",
+   "options": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+    "0"
+   ]
+  },
+  {
+   "name": "MonthClaimed",
+   "label": "Month claim reported",
+   "type": "cat",
+   "options": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+    "0"
+   ]
+  },
+  {
+   "name": "WeekOfMonthClaimed",
+   "label": "Week claim reported",
+   "type": "num",
+   "options": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "name": "PolicyType",
+   "label": "Policy type",
+   "type": "cat",
+   "options": [
+    "Sedan - Collision",
+    "Sedan - Liability",
+    "Sedan - All Perils",
+    "Sport - Collision",
+    "Utility - All Perils",
+    "Utility - Collision",
+    "Sport - All Perils",
+    "Utility - Liability",
+    "Sport - Liability"
+   ]
+  },
+  {
+   "name": "VehicleCategory",
+   "label": "Vehicle category",
+   "type": "cat",
+   "options": [
+    "Sedan",
+    "Sport",
+    "Utility"
+   ]
+  },
+  {
+   "name": "VehiclePrice",
+   "label": "Vehicle price",
+   "type": "cat",
+   "options": [
+    "less than 20,000",
+    "20,000 to 29,000",
+    "30,000 to 39,000",
+    "40,000 to 59,000",
+    "60,000 to 69,000",
+    "more than 69,000"
+   ]
+  },
+  {
+   "name": "Deductible",
+   "label": "Deductible",
+   "type": "num",
+   "options": [
+    300,
+    400,
+    500,
+    700
+   ]
+  },
+  {
+   "name": "Days:Policy-Accident",
+   "label": "Days from policy start to accident",
+   "type": "cat",
+   "options": [
+    "none",
+    "1 to 7",
+    "8 to 15",
+    "15 to 30",
+    "more than 30"
+   ]
+  },
+  {
+   "name": "Days:Policy-Claim",
+   "label": "Days from policy start to claim",
+   "type": "cat",
+   "options": [
+    "none",
+    "8 to 15",
+    "15 to 30",
+    "more than 30"
+   ]
+  },
+  {
+   "name": "PastNumberOfClaims",
+   "label": "Previous claims",
+   "type": "cat",
+   "options": [
+    "none",
+    "1",
+    "2 to 4",
+    "more than 4"
+   ]
+  },
+  {
+   "name": "AgeOfVehicle",
+   "label": "Vehicle age",
+   "type": "cat",
+   "options": [
+    "new",
+    "2 years",
+    "3 years",
+    "4 years",
+    "5 years",
+    "6 years",
+    "7 years",
+    "more than 7"
+   ]
+  },
+  {
+   "name": "PoliceReportFiled",
+   "label": "Police report filed",
+   "type": "cat",
+   "options": [
+    "No",
+    "Yes"
+   ]
+  },
+  {
+   "name": "WitnessPresent",
+   "label": "Witness present",
+   "type": "cat",
+   "options": [
+    "No",
+    "Yes"
+   ]
+  },
+  {
+   "name": "AgentType",
+   "label": "Agent type",
+   "type": "cat",
+   "options": [
+    "External",
+    "Internal"
+   ]
+  },
+  {
+   "name": "AddressChange-Claim",
+   "label": "Address change before claim",
+   "type": "cat",
+   "options": [
+    "under 6 months",
+    "1 year",
+    "2 to 3 years",
+    "4 to 8 years",
+    "no change"
+   ]
+  },
+  {
+   "name": "NumberOfCars",
+   "label": "Cars on policy",
+   "type": "cat",
+   "options": [
+    "1 vehicle",
+    "2 vehicles",
+    "3 to 4",
+    "5 to 8",
+    "more than 8"
+   ]
+  },
+  {
+   "name": "BasePolicy",
+   "label": "Base cover",
+   "type": "cat",
+   "options": [
+    "Collision",
+    "Liability",
+    "All Perils"
+   ]
+  }
+ ],
+ "excluded": [
+  {
+   "column": "PolicyNumber",
+   "reason": "Row counter, identifies the claim but says nothing about it."
+  },
+  {
+   "column": "RepNumber",
+   "reason": "The adjuster who handled the claim, not a property of the claim."
+  },
+  {
+   "column": "Fault",
+   "reason": "May be decided during claim handling, so it may not exist at intake. Without it, scores are lower but defensible."
+  },
+  {
+   "column": "NumberOfSuppliments",
+   "reason": "Counts extra payments made after the claim, so it is known only later."
+  },
+  {
+   "column": "DriverRating",
+   "reason": "Fraud rate is the same at every level; it behaves like noise."
+  },
+  {
+   "column": "Sex",
+   "reason": "Protected attribute. Used only to check whether groups are flagged unevenly."
+  },
+  {
+   "column": "Age",
+   "reason": "Protected attribute, and 320 values are missing (stored as 0)."
+  },
+  {
+   "column": "AgeOfPolicyHolder",
+   "reason": "Age group of the policyholder; same concern as Age."
+  },
+  {
+   "column": "MaritalStatus",
+   "reason": "Possible stand-in for protected attributes."
+  },
+  {
+   "column": "Year",
+   "reason": "Claim year. Fraud rate drifts over the three years, so the model should not learn it."
+  }
+ ],
+ "base_rate": 0.05985732814526589,
+ "dataset": {
+  "claims": 15420,
+  "frauds": 923,
+  "train": 12336,
+  "holdout": 3084
+ },
+ "quantiles": [
+  0.0031749187459283817,
+  0.006046310513960137,
+  0.006545271793828346,
+  0.006894808727440624,
+  0.007163004349344601,
+  0.007435272416470981,
+  0.007605415713613638,
+  0.007797689999055991,
+  0.00800256660336657,
+  0.0081686700275774,
+  0.008327400297489391,
+  0.008479538449078346,
+  0.008626516787606196,
+  0.008776575852844476,
+  0.008942368830447616,
+  0.009103385699331362,
+  0.00928301484372513,
+  0.009491070456469944,
+  0.009704659122772472,
+  0.009923610860940015,
+  0.010141346708542673,
+  0.010431210085661132,
+  0.010750780899406271,
+  0.011151382956113677,
+  0.011513968347683123,
+  0.01198406429045303,
+  0.012479726951862483,
+  0.013062361505042678,
+  0.013828223495057055,
+  0.0147047513889393,
+  0.016092812049477517,
+  0.018444196601203368,
+  0.022935357489715133,
+  0.03215168029003241,
+  0.036573131305234305,
+  0.03916083165267039,
+  0.0413663047884336,
+  0.04337106399111541,
+  0.04496710152870852,
+  0.046346786282558526,
+  0.047656377905339456,
+  0.04904586360846666,
+  0.050117200675383305,
+  0.05116815288059528,
+  0.05223138837512743,
+  0.05335912673772539,
+  0.05471566272763958,
+  0.0558586314058404,
+  0.05689572774820556,
+  0.05770727874679886,
+  0.05865593517635419,
+  0.059452960947497,
+  0.06024708587834741,
+  0.06114994334490781,
+  0.06204258909801563,
+  0.06289621236271849,
+  0.063819446099548,
+  0.06448946609392282,
+  0.06545826192337319,
+  0.06639994411024999,
+  0.06725858302950068,
+  0.0680548958754884,
+  0.06895589775929416,
+  0.06978755435576947,
+  0.07071145519246452,
+  0.07157779821924881,
+  0.07257972637250157,
+  0.07375357021676787,
+  0.0747004290078893,
+  0.07564947577509624,
+  0.07675053646011809,
+  0.07781449457186217,
+  0.07896973649107271,
+  0.08016967058030251,
+  0.08153036351249866,
+  0.08277023046454939,
+  0.08437008585644866,
+  0.08586955000320638,
+  0.08754046811154521,
+  0.08923932971898296,
+  0.09094785001359272,
+  0.09265597278861358,
+  0.09461908955825296,
+  0.09618595499822226,
+  0.09825216971613396,
+  0.1000750132132407,
+  0.10257353665171458,
+  0.10464729317432812,
+  0.1072592677033924,
+  0.10942961836485585,
+  0.11291574510482646,
+  0.11665764734077659,
+  0.12059954661873727,
+  0.12514433513764808,
+  0.13030735495267054,
+  0.13761698094341132,
+  0.14733420628119173,
+  0.1614418123509935,
+  0.18508925929795178,
+  0.24538161874745743,
+  0.6055009536377778
+ ],
+ "capacity_curve": [
+  {
+   "share": 0.05,
+   "recall": 0.15311653116531165,
+   "lo": 0.1320614137332608,
+   "hi": 0.17834115727944175
+  },
+  {
+   "share": 0.1,
+   "recall": 0.24390243902439024,
+   "lo": 0.21230649239484845,
+   "hi": 0.270065497400266
+  },
+  {
+   "share": 0.15,
+   "recall": 0.3170731707317073,
+   "lo": 0.28530978137979457,
+   "hi": 0.3497521219554552
+  },
+  {
+   "share": 0.2,
+   "recall": 0.4010840108401084,
+   "lo": 0.3639985380116959,
+   "hi": 0.4332456054046963
+  },
+  {
+   "share": 0.25,
+   "recall": 0.4823848238482385,
+   "lo": 0.45112470027206075,
+   "hi": 0.5208488716906107
+  },
+  {
+   "share": 0.3,
+   "recall": 0.551490514905149,
+   "lo": 0.5163530410620562,
+   "hi": 0.582612711012912
+  },
+  {
+   "share": 0.35,
+   "recall": 0.6097560975609756,
+   "lo": 0.5780843143836766,
+   "hi": 0.6411250458827847
+  },
+  {
+   "share": 0.4,
+   "recall": 0.6788617886178862,
+   "lo": 0.6470677740164524,
+   "hi": 0.7083753027529721
+  },
+  {
+   "share": 0.45,
+   "recall": 0.7479674796747967,
+   "lo": 0.7133439923151481,
+   "hi": 0.7786820817173973
+  },
+  {
+   "share": 0.5,
+   "recall": 0.8008130081300813,
+   "lo": 0.7669916041680493,
+   "hi": 0.826058797405324
+  }
+ ],
+ "calibration": [
+  {
+   "predicted": 0.0072318434582383274,
+   "observed": 0.004862236628849271,
+   "n": 1234
+  },
+  {
+   "predicted": 0.00915467700043331,
+   "observed": 0.011345218800648298,
+   "n": 1234
+  },
+  {
+   "predicted": 0.012295698640902812,
+   "observed": 0.008914100486223663,
+   "n": 1234
+  },
+  {
+   "predicted": 0.03569346043746455,
+   "observed": 0.029983792544570502,
+   "n": 1234
+  },
+  {
+   "predicted": 0.05343119259289694,
+   "observed": 0.0640194489465154,
+   "n": 1234
+  },
+  {
+   "predicted": 0.06290675900535987,
+   "observed": 0.07293354943273905,
+   "n": 1234
+  },
+  {
+   "predicted": 0.07180702892844676,
+   "observed": 0.07623682076236821,
+   "n": 1233
+  },
+  {
+   "predicted": 0.08322979182901183,
+   "observed": 0.09002433090024331,
+   "n": 1233
+  },
+  {
+   "predicted": 0.1007775605548166,
+   "observed": 0.09407948094079481,
+   "n": 1233
+  },
+  {
+   "predicted": 0.1636392284735401,
+   "observed": 0.145985401459854,
+   "n": 1233
+  }
+ ],
+ "cv": {
+  "model": {
+   "pr_auc": {
+    "mean": 0.14019435904276012,
+    "sd": 0.014201047855435248
+   },
+   "roc_auc": {
+    "mean": 0.7185642045378866,
+    "sd": 0.014464534029985623
+   },
+   "recall10": {
+    "mean": 0.24726052583195438,
+    "sd": 0.025770747694356652
+   }
+  },
+  "dummy": {
+   "pr_auc": {
+    "mean": 0.059824891156458115,
+    "sd": 0.0001948132849107338
+   },
+   "roc_auc": {
+    "mean": 0.5,
+    "sd": 0.0
+   },
+   "recall10": {
+    "mean": 0.12193877551020409,
+    "sd": 0.018359323858484013
+   }
+  },
+  "shuffled": {
+   "pr_auc": {
+    "mean": 0.06559978908754556,
+    "sd": 0.005757864584333055
+   },
+   "roc_auc": {
+    "mean": 0.5063164265776691,
+    "sd": 0.019312595232537214
+   },
+   "recall10": {
+    "mean": 0.110438499724214,
+    "sd": 0.01635207892931859
+   }
+  }
+ },
+ "holdout": {
+  "claims": 3084,
+  "frauds": 185,
+  "pr_auc": 0.1550606392635385,
+  "pr_auc_ci": [
+   0.12080171492714566,
+   0.20010211758141896
+  ],
+  "roc_auc": 0.7339324837082686,
+  "roc_auc_ci": [
+   0.7023488758949797,
+   0.7636565374971835
+  ],
+  "recall10": 0.2756756756756757,
+  "recall10_ci": [
+   0.20771374667695738,
+   0.3296479358630196
+  ],
+  "recall20": 0.42702702702702705,
+  "recall20_ci": [
+   0.359771551346137,
+   0.49747409326424863
+  ],
+  "base_rate": 0.05998702983138781
+ },
+ "fairness": [
+  {
+   "attribute": "Sex",
+   "group": "Female",
+   "claims": 1919,
+   "flag_rate": 0.08025013027618551,
+   "fraud_rate": 0.04377279833246483,
+   "false_flag_rate": 0.07574931880108991
+  },
+  {
+   "attribute": "Sex",
+   "group": "Male",
+   "claims": 10417,
+   "flag_rate": 0.10367668234616492,
+   "fraud_rate": 0.06278199097628875,
+   "false_flag_rate": 0.09372119225647854
+  },
+  {
+   "attribute": "Marital status",
+   "group": "Married",
+   "claims": 8462,
+   "flag_rate": 0.09052233514535571,
+   "fraud_rate": 0.05920586149846372,
+   "false_flag_rate": 0.08252732068835573
+  },
+  {
+   "attribute": "Marital status",
+   "group": "Single",
+   "claims": 3782,
+   "flag_rate": 0.12189317821258594,
+   "fraud_rate": 0.061343204653622425,
+   "false_flag_rate": 0.11014084507042253
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "16 to 17",
+   "claims": 251,
+   "flag_rate": 0.350597609561753,
+   "fraud_rate": 0.10358565737051793,
+   "false_flag_rate": 0.3022222222222222
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "26 to 30",
+   "claims": 501,
+   "flag_rate": 0.1536926147704591,
+   "fraud_rate": 0.05588822355289421,
+   "false_flag_rate": 0.14587737843551796
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "31 to 35",
+   "claims": 4468,
+   "flag_rate": 0.09937332139659803,
+   "fraud_rate": 0.06289167412712623,
+   "false_flag_rate": 0.08932409839980893
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "36 to 40",
+   "claims": 3252,
+   "flag_rate": 0.09809348093480935,
+   "fraud_rate": 0.06027060270602706,
+   "false_flag_rate": 0.08704188481675393
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "41 to 50",
+   "claims": 2247,
+   "flag_rate": 0.07476635514018691,
+   "fraud_rate": 0.04895416110369381,
+   "false_flag_rate": 0.07440336920917173
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "51 to 65",
+   "claims": 1112,
+   "flag_rate": 0.0710431654676259,
+   "fraud_rate": 0.052158273381294966,
+   "false_flag_rate": 0.06451612903225806
+  },
+  {
+   "attribute": "Policyholder age group",
+   "group": "over 65",
+   "claims": 414,
+   "flag_rate": 0.08695652173913043,
+   "fraud_rate": 0.06763285024154589,
+   "false_flag_rate": 0.08031088082901554
+  }
+ ],
+ "rules": [
+  {
+   "id": "early_accident",
+   "title": "Accident within 15 days of the policy starting",
+   "claims": 124,
+   "fraud_rate": 0.12096774193548387,
+   "base_rate": 0.05985732814526589
+  },
+  {
+   "id": "recent_move",
+   "title": "Address changed within 3 years before the claim",
+   "claims": 465,
+   "fraud_rate": 0.13978494623655913,
+   "base_rate": 0.05985732814526589
+  }
+ ],
+ "bands": {
+  "high_share": 0.1,
+  "medium_share": 0.3
+ }
+}
