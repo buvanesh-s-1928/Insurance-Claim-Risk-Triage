@@ -1,103 +1,139 @@
 /* ==========================================================================
    Claim Triage Design System
-   Skeuomorphism + Strict Swiss Minimalism + Refined Metalmorphism
+   Obsidian Clay & Glass Triage Architecture
+   Fusing tactile 3D claymorphism with frosted translucent glassmorphism
    ========================================================================== */
 
 :root {
   /* --- Minimalist Swiss Palette --- */
-  --bg-app: #f2f4f8;
-  --bg-surface: #ffffff;
-  --bg-surface-raised: #fbfcfd;
-  --bg-subtle: #ebf0f6;
-  --bg-inset: #e4e9f2;
+  --bg-app: #f1f5f9;
+  --bg-surface: rgba(255, 255, 255, 0.78);
+  --bg-surface-raised: rgba(255, 255, 255, 0.88);
+  --bg-subtle: rgba(241, 245, 249, 0.8);
+  --bg-inset: rgba(226, 232, 240, 0.7);
 
-  --ink-primary: #0b1326;
-  --ink-secondary: #3b4863;
+  --ink-primary: #0f172a;
+  --ink-secondary: #334155;
   --ink-muted: #64748b;
   --ink-faint: #94a3b8;
 
-  /* Sovereign Blue Architecture */
-  --sov-900: #0a142e;
-  --sov-800: #101e42;
-  --sov-700: #182c5d;
-  --sov-600: #233e7e;
-  --sov-500: #2d4ea0;
+  /* Sovereign Indigo Architecture */
+  --sov-900: #0b0f19;
+  --sov-800: #111827;
+  --sov-700: #1e293b;
+  --sov-600: #3730a3;
+  --sov-500: #4f46e5;
 
-  /* --- Metalmorphism & Specular Finishes --- */
-  /* Dark Anodized Titanium (Spine / Sidebar) */
-  --metal-titanium: linear-gradient(180deg, #171f30 0%, #111724 45%, #0b101a 100%);
-  --metal-titanium-sheen: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.3) 100%);
+  /* --- Obsidian & Frosted Glass Finishes --- */
+  --metal-titanium: rgba(11, 15, 25, 0.94);
+  --metal-titanium-sheen: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.3) 100%);
   --metal-titanium-rim: rgba(255, 255, 255, 0.08);
 
-  /* Brushed Aircraft Aluminum / Platinum */
-  --metal-silver-raised: linear-gradient(180deg, #ffffff 0%, #f6f8fb 50%, #e6ecf5 100%);
-  --metal-silver-flat: linear-gradient(180deg, #fbfcfd 0%, #edf1f7 100%);
-  --metal-silver-inset: linear-gradient(180deg, #e1e7f0 0%, #ebf0f7 50%, #f4f7fb 100%);
+  /* Brushed Frost / Glass Substrates */
+  --metal-silver-raised: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(246,248,251,0.85) 50%, rgba(230,236,245,0.75) 100%);
+  --metal-silver-flat: rgba(255, 255, 255, 0.78);
+  --metal-silver-inset: rgba(241, 245, 249, 0.75);
 
-  /* Machined Sovereign Blue Metallic Button */
-  --metal-btn-primary: linear-gradient(180deg, #25407d 0%, #172c5a 50%, #112248 100%);
-  --metal-btn-primary-hover: linear-gradient(180deg, #2d4d94 0%, #1d366d 50%, #152955 100%);
-  --metal-btn-primary-active: linear-gradient(180deg, #0d1a36 0%, #132449 50%, #1c356b 100%);
+  /* 3D Volumetric Claymorphic Indigo Button */
+  --metal-btn-primary: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+  --metal-btn-primary-hover: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  --metal-btn-primary-active: linear-gradient(135deg, #3730a3 0%, #312e81 100%);
 
-  /* Champagne Gold Instrument Accents */
-  --gold: #b38b3f;
-  --gold-text: #87621f;
-  --gold-on-dark: #e8c97e;
-  --metal-gold-leaf: linear-gradient(135deg, #f7e4b2 0%, #d6b264 45%, #b38b3f 75%, #8c6722 100%);
-  --metal-gold-ring: linear-gradient(180deg, #f5e1ad 0%, #a88132 100%);
+  /* Champagne Gold Accents */
+  --gold: #d97706;
+  --gold-text: #92400e;
+  --gold-on-dark: #fcd34d;
+  --metal-gold-leaf: linear-gradient(135deg, #fef3c7 0%, #fde68a 45%, #f59e0b 75%, #d97706 100%);
+  --metal-gold-ring: linear-gradient(180deg, #fde68a 0%, #d97706 100%);
 
-  /* Risk Semantics - Enamel Jewel Tones */
-  --high: #b91c1c;
-  --high-text: #991b1b;
-  --high-bg: #fef2f2;
-  --high-border: #f87171;
+  /* Risk Semantics - 3D Tactile Clay Tones */
+  --high: #dc2626;
+  --high-text: #ffffff;
+  --high-bg: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --high-border: transparent;
   --high-sheen: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
 
-  --med: #b45309;
-  --med-text: #92400e;
-  --med-bg: #fffbeb;
-  --med-border: #fbbf24;
+  --med: #d97706;
+  --med-text: #ffffff;
+  --med-bg: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --med-border: transparent;
   --med-sheen: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
 
-  --low: #047857;
-  --low-text: #065f46;
-  --low-bg: #f0fdf4;
-  --low-border: #34d399;
+  --low: #059669;
+  --low-text: #ffffff;
+  --low-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --low-border: transparent;
   --low-sheen: linear-gradient(180deg, #10b981 0%, #047857 100%);
 
   --muted-tick: #94a3b8;
 
-  /* --- Skeuomorphic Structural Elevations --- */
+  /* --- Glassmorphic & Claymorphic Structural Elevations --- */
   --skeuo-card:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 4px 14px rgba(15, 23, 42, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 0 0 1px rgba(15, 23, 42, 0.08);
+    0 12px 30px -8px rgba(15, 23, 42, 0.06),
+    0 4px 12px -2px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(15, 23, 42, 0.02);
 
   --skeuo-card-hover:
-    0 3px 8px rgba(15, 23, 42, 0.08),
-    0 8px 24px rgba(15, 23, 42, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    0 0 0 1px rgba(15, 23, 42, 0.12);
+    0 20px 36px -8px rgba(15, 23, 42, 0.1),
+    0 6px 16px -2px rgba(15, 23, 42, 0.05),
+    inset 0 2px 4px #ffffff,
+    inset 0 -2px 4px rgba(15, 23, 42, 0.03);
 
   --skeuo-inset-deep:
-    inset 0 2px 4px rgba(15, 23, 42, 0.14),
-    inset 0 1px 2px rgba(15, 23, 42, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.85);
+    inset 2px 2px 4px rgba(15, 23, 42, 0.06),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.9);
 
   --skeuo-inset-subtle:
-    inset 0 1px 2px rgba(15, 23, 42, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.9);
+    inset 1px 1px 3px rgba(15, 23, 42, 0.05),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.9);
 
   --skeuo-btn-primary:
-    0 2px 5px rgba(10, 20, 46, 0.28),
-    0 1px 2px rgba(10, 20, 46, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+    0 8px 18px -4px rgba(79, 70, 229, 0.38),
+    0 3px 6px -1px rgba(79, 70, 229, 0.2),
+    inset 0 2px 3px rgba(255, 255, 255, 0.45),
+    inset 0 -3px 4px rgba(15, 23, 42, 0.25);
 
   --skeuo-btn-quiet:
-    0 1px 3px rgba(15, 23, 42, 0.07),
-    0 1px 1px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 3px rgba(15, 23, 42, 0.04);
+
+  /* Typography Stacks */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
+  --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+
+  --spine-width: 82px;
+}
+
+/* ==========================================================================
+   Base Reset & Clean Layout
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.06) 0%, transparent 40%),
+              radial-gradient(circle at 88% 22%, rgba(245, 158, 11, 0.05) 0%, transparent 35%),
+              radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+              linear-gradient(135deg, #f8faff 0%, #eff4fb 45%, #e5eef9 100%);
+  background-attachment: fixed;
+  color: var(--ink-primary);
+  font: 14.5px/1.55 var(--sans);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.006em;
+}
     inset 0 1px 0 #ffffff,
     inset 0 -1px 0 rgba(15, 23, 42, 0.06),
     0 0 0 1px rgba(15, 23, 42, 0.14);
@@ -1047,60 +1083,51 @@ table.q {
   color: var(--ink-secondary);
 }
 
-/* Enamel Jewel Risk Badges */
+/* Tactile 3D Claymorphic Risk Badges */
 .band {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-weight: 600;
-  font-size: 12.5px;
+  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 11.5px;
   white-space: nowrap;
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    0 4px 12px rgba(15, 23, 42, 0.15),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.25);
 }
 
 .band i {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   display: inline-block;
   border-radius: 50%;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 
 .band.High {
-  color: var(--high-text);
+  color: #ffffff;
   background: var(--high-bg);
-  border-color: var(--high-border);
-}
-
-.band.High i {
-  background: var(--high-sheen);
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35), inset 0 1.5px 2px rgba(255, 255, 255, 0.6), inset 0 -2.5px 3px rgba(0, 0, 0, 0.3);
 }
 
 .band.Medium {
-  color: var(--med-text);
+  color: #ffffff;
   background: var(--med-bg);
-  border-color: var(--med-border);
-}
-
-.band.Medium i {
-  background: var(--med-sheen);
+  box-shadow: 0 6px 14px rgba(217, 119, 6, 0.3), inset 0 1.5px 2px rgba(255, 255, 255, 0.6), inset 0 -2.5px 3px rgba(0, 0, 0, 0.22);
 }
 
 .band.Low {
-  color: var(--low-text);
+  color: #ffffff;
   background: var(--low-bg);
-  border-color: var(--low-border);
-}
-
-.band.Low i {
-  background: var(--low-sheen);
+  box-shadow: 0 6px 14px rgba(5, 150, 105, 0.28), inset 0 1.5px 2px rgba(255, 255, 255, 0.6), inset 0 -2.5px 3px rgba(0, 0, 0, 0.2);
 }
 
 .out-yes {

@@ -38,86 +38,463 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# Custom Styling (Skeuomorphic depth + Swiss minimalism + Metallic touches)
+# Custom Styling (Obsidian Clay & Glass Triage Design System)
+# Fusing tactile 3D claymorphism with frosted translucent glassmorphism
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
     /* Global Typography & Palette */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    
+
     code, pre {
         font-family: 'JetBrains Mono', monospace !important;
     }
 
-    /* Tactile Cards */
+    /* Ambient Atmospheric Canvas with directional refraction glows */
+    [data-testid="stAppViewContainer"] {
+        background: radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.06) 0%, transparent 40%),
+                    radial-gradient(circle at 88% 22%, rgba(245, 158, 11, 0.05) 0%, transparent 35%),
+                    radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+                    linear-gradient(135deg, #f8faff 0%, #eff4fb 45%, #e5eef9 100%) !important;
+        background-attachment: fixed !important;
+        color: #0f172a !important;
+    }
+
+    /* Header bar subtle glass translucency */
+    [data-testid="stHeader"] {
+        background: rgba(248, 250, 255, 0.7) !important;
+        backdrop-filter: blur(16px) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Persistent Obsidian Dark Frosted Sidebar */
+    [data-testid="stSidebar"] {
+        background: rgba(11, 15, 25, 0.92) !important;
+        backdrop-filter: blur(24px) saturate(190%) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 8px 0 32px rgba(11, 15, 25, 0.35) !important;
+    }
+
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] p, 
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] .stMarkdown {
+        color: #e2e8f0 !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio label {
+        color: #cbd5e1 !important;
+        font-weight: 500 !important;
+        transition: color 0.15s ease !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover {
+        color: #ffffff !important;
+    }
+
+    /* Frosted Glass Cards (Substrate Level 1) */
     .triage-card {
-        background: #ffffff;
-        border: 1px solid #d4dce8;
-        border-radius: 10px;
-        padding: 20px 24px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), inset 0 1px 0 #ffffff;
-        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.75) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.85) !important;
+        border-radius: 20px !important;
+        padding: 24px 28px !important;
+        box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.06),
+                    0 4px 12px -2px rgba(15, 23, 42, 0.03),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.95),
+                    inset 0 -2px 4px rgba(15, 23, 42, 0.02) !important;
+        margin-bottom: 22px !important;
     }
 
     .triage-metric {
-        background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        padding: 16px 20px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), inset 0 1px 0 #ffffff;
+        background: rgba(255, 255, 255, 0.72) !important;
+        backdrop-filter: blur(18px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.85) !important;
+        border-radius: 18px !important;
+        padding: 18px 22px !important;
+        box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.05),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
     }
 
-    /* Risk Badges */
+    /* Tactile 3D Claymorphic Risk Badges */
     .badge-high {
-        background-color: #fef2f2;
-        color: #991b1b;
-        border: 1px solid #f87171;
-        padding: 3px 10px;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 12.5px;
-        display: inline-block;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-    }
-    .badge-med {
-        background-color: #fffbeb;
-        color: #92400e;
-        border: 1px solid #fbbf24;
-        padding: 3px 10px;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 12.5px;
-        display: inline-block;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-    }
-    .badge-low {
-        background-color: #f0fdf4;
-        color: #065f46;
-        border: 1px solid #34d399;
-        padding: 3px 10px;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 12.5px;
-        display: inline-block;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        padding: 4px 14px !important;
+        border-radius: 9999px !important;
+        font-weight: 700 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 11.5px !important;
+        letter-spacing: 0.04em !important;
+        box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35),
+                    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+                    inset 0 -2.5px 3px rgba(0, 0, 0, 0.3) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        text-transform: uppercase !important;
     }
 
-    /* Notice callout */
+    .badge-med {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        padding: 4px 14px !important;
+        border-radius: 9999px !important;
+        font-weight: 700 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 11.5px !important;
+        letter-spacing: 0.04em !important;
+        box-shadow: 0 6px 14px rgba(217, 119, 6, 0.3),
+                    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+                    inset 0 -2.5px 3px rgba(0, 0, 0, 0.22) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        text-transform: uppercase !important;
+    }
+
+    .badge-low {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        padding: 4px 14px !important;
+        border-radius: 9999px !important;
+        font-weight: 700 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 11.5px !important;
+        letter-spacing: 0.04em !important;
+        box-shadow: 0 6px 14px rgba(5, 150, 105, 0.28),
+                    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+                    inset 0 -2.5px 3px rgba(0, 0, 0, 0.2) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        text-transform: uppercase !important;
+    }
+
+    /* Notice callout - Glassmorphic Amber Notice */
     .v1-notice {
-        background-color: #fcf9ee;
-        border-left: 4px solid #b38b3f;
-        padding: 14px 18px;
-        border-radius: 0 8px 8px 0;
-        color: #715116;
-        font-size: 13.5px;
-        line-height: 1.55;
-        margin-bottom: 22px;
-        box-shadow: 0 1px 3px rgba(179, 139, 63, 0.08), inset 0 1px 0 #fff;
+        background: rgba(254, 243, 199, 0.65) !important;
+        backdrop-filter: blur(14px) !important;
+        border-left: 4px solid #d97706 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
+        border-right: 1px solid rgba(217, 119, 6, 0.25) !important;
+        border-bottom: 1px solid rgba(217, 119, 6, 0.25) !important;
+        padding: 16px 20px !important;
+        border-radius: 0 14px 14px 0 !important;
+        color: #78350f !important;
+        font-size: 13px !important;
+        line-height: 1.55 !important;
+        margin-bottom: 22px !important;
+        box-shadow: 0 8px 20px -4px rgba(217, 119, 6, 0.12),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Enhanced Tactile Clay Metric Cards */
+    .metric-card {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        border-radius: 20px !important;
+        padding: 20px 22px !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.06),
+                    0 4px 10px -2px rgba(15, 23, 42, 0.03),
+                    inset 0 2px 4px rgba(255, 255, 255, 0.95),
+                    inset 0 -3px 6px rgba(148, 163, 184, 0.12) !important;
+        min-height: 118px !important;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 20px 36px -8px rgba(15, 23, 42, 0.1),
+                    inset 0 2px 4px rgba(255, 255, 255, 1) !important;
+    }
+
+    .metric-card-total {
+        border-top: 4px solid #4f46e5 !important;
+    }
+
+    .metric-card-high {
+        border-top: 4px solid #dc2626 !important;
+        background: linear-gradient(180deg, rgba(254, 242, 242, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+    }
+
+    .metric-card-med {
+        border-top: 4px solid #d97706 !important;
+        background: linear-gradient(180deg, rgba(255, 251, 235, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+    }
+
+    .metric-card-low {
+        border-top: 4px solid #059669 !important;
+        background: linear-gradient(180deg, rgba(240, 253, 244, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+    }
+
+    .metric-label {
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        color: #64748b !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .metric-value {
+        font-size: 32px !important;
+        font-weight: 800 !important;
+        line-height: 1.15 !important;
+        color: #0f172a !important;
+        margin-bottom: 8px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        letter-spacing: -0.02em !important;
+    }
+
+    .metric-subtext {
+        font-size: 12px !important;
+        color: #64748b !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .metric-pill-total {
+        background: #eef2ff !important;
+        color: #3730a3 !important;
+        padding: 2px 8px !important;
+        border-radius: 9999px !important;
+        font-weight: 600 !important;
+        font-size: 11px !important;
+        box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(79, 70, 229, 0.1) !important;
+    }
+
+    .metric-pill-high {
+        background: #fee2e2 !important;
+        color: #991b1b !important;
+        padding: 2px 8px !important;
+        border-radius: 9999px !important;
+        font-weight: 600 !important;
+        font-size: 11px !important;
+        box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(220, 38, 38, 0.15) !important;
+    }
+
+    .metric-pill-med {
+        background: #fef3c7 !important;
+        color: #92400e !important;
+        padding: 2px 8px !important;
+        border-radius: 9999px !important;
+        font-weight: 600 !important;
+        font-size: 11px !important;
+        box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(217, 119, 6, 0.15) !important;
+    }
+
+    .metric-pill-low {
+        background: #d1fae5 !important;
+        color: #065f46 !important;
+        padding: 2px 8px !important;
+        border-radius: 9999px !important;
+        font-weight: 600 !important;
+        font-size: 11px !important;
+        box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(5, 150, 105, 0.12) !important;
+    }
+
+    /* Efficiency Banner - Frosted Glass Callout */
+    .efficiency-banner {
+        background: rgba(248, 250, 252, 0.75) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        border-left: 4px solid #4f46e5 !important;
+        border-radius: 14px !important;
+        padding: 14px 20px !important;
+        margin: 16px 0 24px 0 !important;
+        font-size: 13.5px !important;
+        color: #1e293b !important;
+        line-height: 1.55 !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Empty State Container */
+    .empty-state-card {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        border-radius: 24px !important;
+        padding: 42px 36px !important;
+        text-align: center !important;
+        margin-top: 20px !important;
+        box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.06),
+                    inset 0 1px 3px rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .empty-state-icon {
+        width: 68px !important;
+        height: 68px !important;
+        margin: 0 auto 18px !important;
+        background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 30px !important;
+        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.15),
+                    inset 0 2px 3px rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .empty-step-box {
+        background: rgba(248, 250, 252, 0.75) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        border-radius: 14px !important;
+        padding: 18px 22px !important;
+        text-align: left !important;
+        box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Volumetric Claymorphic Buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        border-radius: 14px !important;
+        border: none !important;
+        padding: 0.55rem 1.4rem !important;
+        box-shadow: 0 8px 18px -4px rgba(79, 70, 229, 0.38),
+                    0 3px 6px -1px rgba(79, 70, 229, 0.2),
+                    inset 0 2px 3px rgba(255, 255, 255, 0.45),
+                    inset 0 -3px 4px rgba(15, 23, 42, 0.25) !important;
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 24px -4px rgba(79, 70, 229, 0.45),
+                    0 4px 8px -1px rgba(79, 70, 229, 0.25),
+                    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+                    inset 0 -3px 4px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .stButton > button:active {
+        transform: translateY(1px) !important;
+        box-shadow: 0 4px 8px -2px rgba(79, 70, 229, 0.3),
+                    inset 0 2px 3px rgba(0, 0, 0, 0.25),
+                    inset 0 -1px 2px rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* Frosted Glass Secondary / Download Buttons */
+    .stDownloadButton > button {
+        background: rgba(255, 255, 255, 0.8) !important;
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06),
+                    inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+                    inset 0 -2px 3px rgba(15, 23, 42, 0.05) !important;
+        backdrop-filter: blur(14px) !important;
+        padding: 0.55rem 1.4rem !important;
+        transition: all 0.18s ease !important;
+    }
+
+    .stDownloadButton > button:hover {
+        background: #ffffff !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1),
+                    inset 0 1px 3px #ffffff !important;
+    }
+
+    /* Recessed Clay Form Inputs */
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="input"] > div,
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stTextArea > div > div > textarea {
+        background: rgba(241, 245, 249, 0.75) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(203, 213, 225, 0.7) !important;
+        box-shadow: inset 2px 2px 4px rgba(15, 23, 42, 0.05),
+                    inset -2px -2px 4px rgba(255, 255, 255, 0.9) !important;
+        color: #0f172a !important;
+        transition: all 0.2s ease !important;
+    }
+
+    div[data-baseweb="select"] > div:focus-within,
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #4f46e5 !important;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18),
+                    inset 1px 1px 2px rgba(15, 23, 42, 0.05) !important;
+    }
+
+    /* Frosted Dropzone for File Upload */
+    [data-testid="stFileUploader"] section {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 2px dashed rgba(79, 70, 229, 0.35) !important;
+        border-radius: 18px !important;
+        box-shadow: inset 1px 1px 3px rgba(15, 23, 42, 0.04),
+                    inset -1px -1px 3px rgba(255, 255, 255, 0.9) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    [data-testid="stFileUploader"] section:hover {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: #4f46e5 !important;
+    }
+
+    /* Floating Pill Tabs */
+    button[data-baseweb="tab"] {
+        border-radius: 12px !important;
+        padding: 8px 18px !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: #4f46e5 !important;
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.07),
+                    inset 0 1px 2px #ffffff !important;
+    }
+
+    /* DataFrame Glass Wrapper */
+    div[data-testid="stDataFrame"] {
+        background: rgba(255, 255, 255, 0.75) !important;
+        backdrop-filter: blur(16px) !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(255, 255, 255, 0.85) !important;
+        padding: 6px !important;
+        box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.05) !important;
+    }
+
+    /* Expander Glass Container */
+    div[data-testid="stExpander"] {
+        background: rgba(255, 255, 255, 0.75) !important;
+        backdrop-filter: blur(18px) !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(255, 255, 255, 0.85) !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
     }
     </style>
     """,
@@ -368,13 +745,13 @@ def expected_catch(c_share, capacity_curve):
 with st.sidebar:
     st.markdown(
         """
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-            <div style="background:#0e1726;padding:10px;border-radius:50%;border:1px solid #d4b25a;box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:6px 0;">
+            <div style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:11px;border-radius:16px;border:1px solid rgba(255,255,255,0.18);box-shadow:0 6px 16px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.25);font-size:20px;">
                 🛡️
             </div>
             <div>
-                <h2 style="margin:0;font-size:18px;font-weight:700;color:#0e1726;">Claim Triage</h2>
-                <span style="font-size:12px;color:#64748b;">Decision Support Platform</span>
+                <h2 style="margin:0;font-size:18px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">Claim Triage</h2>
+                <span style="font-size:11px;color:#818cf8;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Decision Support</span>
             </div>
         </div>
         """,
@@ -402,9 +779,9 @@ with st.sidebar:
     st.markdown("---")
     st.markdown(
         """
-        <div class="v1-notice">
-            <strong>v1 Prototype (Public Data)</strong><br>
-            Trained on public historical auto claims (1994–1996). Because publicly available datasets have known quality limitations, this model is a demonstration decision-support tool. It will be upgraded with proprietary data in future iterations.
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-left:4px solid #f59e0b;padding:14px 16px;border-radius:0 12px 12px 0;color:#cbd5e1;font-size:12px;line-height:1.55;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+            <strong style="color:#fcd34d;">⚠️ v1 Prototype (Public Data)</strong><br>
+            Trained on public historical auto claims (1994–1996). Decision-support prioritization demonstration only. Will be upgraded with proprietary data in future iterations.
         </div>
         """,
         unsafe_allow_html=True,
@@ -503,66 +880,239 @@ if page == "Claims Queue":
 
         recall_est = expected_catch(capacity_val, ENGINE["meta"]["capacity_curve"])
 
-        # Metric Cards
+        # Summary Metric Cards
         st.markdown("---")
+        pct_high = (n_high / n_total) if n_total > 0 else 0
+        pct_med = (n_med / n_total) if n_total > 0 else 0
+        pct_low = (n_low / n_total) if n_total > 0 else 0
+
         m1, m2, m3, m4 = st.columns(4)
         with m1:
-            st.metric("Total Claims in Batch", f"{n_total:,}")
+            st.markdown(
+                f"""
+                <div class="metric-card metric-card-total">
+                    <div class="metric-label">
+                        <span>Total Claims</span>
+                        <span>📋</span>
+                    </div>
+                    <div class="metric-value">{n_total:,}</div>
+                    <div class="metric-subtext">
+                        <span class="metric-pill-total">100% of batch</span>
+                        <span>Active Queue</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         with m2:
-            st.metric("High-Risk Queue", f"{n_high:,}", f"{n_high/n_total:.1%}")
+            st.markdown(
+                f"""
+                <div class="metric-card metric-card-high">
+                    <div class="metric-label">
+                        <span style="color:#991b1b;">High-Risk Claims</span>
+                        <span>🚨</span>
+                    </div>
+                    <div class="metric-value" style="color:#991b1b;">{n_high:,}</div>
+                    <div class="metric-subtext">
+                        <span class="metric-pill-high">{pct_high:.1%} of batch</span>
+                        <span>Top {capacity_pct}% Review Target</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         with m3:
-            st.metric(
-                "Estimated Fraud Catch",
-                f"{recall_est['recall']:.0%}",
-                f"Range: {recall_est['lo']:.0%}–{recall_est['hi']:.0%}",
+            st.markdown(
+                f"""
+                <div class="metric-card metric-card-med">
+                    <div class="metric-label">
+                        <span style="color:#92400e;">Medium-Risk Claims</span>
+                        <span>⚠️</span>
+                    </div>
+                    <div class="metric-value" style="color:#92400e;">{n_med:,}</div>
+                    <div class="metric-subtext">
+                        <span class="metric-pill-med">{pct_med:.1%} of batch</span>
+                        <span>Secondary Verification</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
         with m4:
-            st.metric("Random Review Baseline", f"{capacity_pct}%")
+            st.markdown(
+                f"""
+                <div class="metric-card metric-card-low">
+                    <div class="metric-label">
+                        <span style="color:#065f46;">Low-Risk Claims</span>
+                        <span>✅</span>
+                    </div>
+                    <div class="metric-value" style="color:#065f46;">{n_low:,}</div>
+                    <div class="metric-subtext">
+                        <span class="metric-pill-low">{pct_low:.1%} of batch</span>
+                        <span>Standard / Fast-Track</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-        # Spectrum Distribution Chart
-        st.markdown("#### Batch Risk Spectrum (Highest Score First)")
-        scores_list = [r["score"] for r in records]
-        bands_list = [r["band"] for r in records]
-        ranks_list = [r["rank"] for r in records]
-        color_map = {"High": "#b91c1c", "Medium": "#d97706", "Low": "#94a3b8"}
+        # Operational Efficiency Banner
+        st.markdown(
+            f"""
+            <div class="efficiency-banner">
+                <div>
+                    <strong>🎯 Triage Efficiency Benchmark:</strong> Reviewing the top <strong>{capacity_pct}%</strong> designated claims captures an estimated <strong>{recall_est['recall']:.0%}</strong> of total frauds (Expected range: {recall_est['lo']:.0%}–{recall_est['hi']:.0%}), outperforming unprioritized random review ({capacity_pct}%) by <strong>{recall_est['recall']/max(capacity_val, 0.01):.1f}x</strong>.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Risk Spectrum Distribution Chart
+        st.markdown("#### Batch Risk Spectrum & Triage Cutoffs")
+        st.caption(
+            "Individual claims ranked from highest predicted fraud risk to lowest. "
+            "Hover over any bar to view the claim ID, exact risk score, and primary driver."
+        )
 
         fig_spectrum = go.Figure()
-        fig_spectrum.add_trace(
-            go.Bar(
-                x=ranks_list,
-                y=scores_list,
-                marker_color=[color_map[b] for b in bands_list],
-                hovertemplate="<b>Rank %{x}</b><br>Score: %{y:.1%}<extra></extra>",
-            )
-        )
+
+        # Group records by band to generate dedicated traces with legend
+        bands_config = [
+            ("High", "#dc2626", f"High Risk ({n_high})"),
+            ("Medium", "#d97706", f"Medium Risk ({n_med})"),
+            ("Low", "#059669", f"Low Risk ({n_low})"),
+        ]
+
+        for band_name, color, trace_label in bands_config:
+            band_records = [r for r in records if r["band"] == band_name]
+            if band_records:
+                ranks_b = [r["rank"] for r in band_records]
+                scores_b = [r["score"] for r in band_records]
+                custom_b = [
+                    (
+                        r["id"],
+                        r["band"],
+                        f"{r['reasons'][0]['label']}: {r['reasons'][0]['value']}" if r["reasons"] else "None",
+                        f"{len(r['flags'])} rule(s)" if r["flags"] else "None",
+                    )
+                    for r in band_records
+                ]
+
+                fig_spectrum.add_trace(
+                    go.Bar(
+                        x=ranks_b,
+                        y=scores_b,
+                        name=trace_label,
+                        marker_color=color,
+                        customdata=custom_b,
+                        hovertemplate=(
+                            "<b>Claim %{customdata[0]}</b> (Rank #%{x})<br>"
+                            "Risk Score: <b>%{y:.1%}</b><br>"
+                            "Triage Tier: %{customdata[1]} Risk<br>"
+                            "Primary Driver: %{customdata[2]}<br>"
+                            "Rule Flags: %{customdata[3]}<extra></extra>"
+                        ),
+                    )
+                )
+
+        # Threshold vertical cutoffs
         fig_spectrum.add_vline(
-            x=n_high,
+            x=n_high + 0.5,
             line_dash="dash",
-            line_color="#b91c1c",
-            annotation_text=f"High Threshold (Top {capacity_pct}%)",
+            line_color="#dc2626",
+            line_width=1.5,
+            annotation_text=f"High Cutoff (Top {capacity_pct}%)",
             annotation_position="top right",
+            annotation_font=dict(size=11, color="#991b1b"),
         )
+
+        if n_med > 0 and n_low > 0:
+            fig_spectrum.add_vline(
+                x=n_high + n_med + 0.5,
+                line_dash="dash",
+                line_color="#d97706",
+                line_width=1.5,
+                annotation_text=f"Medium Cutoff (Top {min(100, 3 * capacity_pct)}%)",
+                annotation_position="top right",
+                annotation_font=dict(size=11, color="#92400e"),
+            )
+
+        # Population baseline
+        fig_spectrum.add_hline(
+            y=ENGINE["base_rate"],
+            line_dash="dot",
+            line_color="#64748b",
+            line_width=1.5,
+            annotation_text=f"Historical Baseline ({ENGINE['base_rate']:.1%})",
+            annotation_position="bottom left",
+            annotation_font=dict(size=10, color="#64748b"),
+        )
+
         fig_spectrum.update_layout(
-            height=200,
-            margin=dict(l=20, r=20, t=20, b=20),
-            xaxis=dict(title="Claims (Ranked)", showgrid=False),
-            yaxis=dict(title="Score", tickformat=".0%", showgrid=True, gridcolor="#f1f5f9"),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            height=260,
+            margin=dict(l=20, r=20, t=30, b=20),
+            xaxis=dict(
+                title="Claims (Ranked by Fraud Score)",
+                showgrid=False,
+                zeroline=False,
+                title_font=dict(family="Plus Jakarta Sans", size=12, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=11, color="#64748b"),
+            ),
+            yaxis=dict(
+                title="Predicted Risk Score",
+                tickformat=".0%",
+                showgrid=True,
+                gridcolor="rgba(148, 163, 184, 0.15)",
+                zeroline=False,
+                title_font=dict(family="Plus Jakarta Sans", size=12, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=11, color="#64748b"),
+            ),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1,
+                font=dict(family="Plus Jakarta Sans", size=12, color="#1e293b"),
+            ),
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            bargap=0.15,
+            hoverlabel=dict(
+                bgcolor="#0f172a",
+                font_size=12,
+                font_family="JetBrains Mono",
+                font_color="#ffffff",
+            ),
         )
         st.plotly_chart(fig_spectrum, use_container_width=True)
 
         # Filters & Search
         st.markdown("---")
-        f_col1, f_col2, f_col3 = st.columns([2, 2, 2])
+        f_col1, f_col2, f_col3 = st.columns([1.5, 2, 2.5])
         with f_col1:
-            band_filter = st.selectbox("Filter by Risk Band", ["All", "High", "Medium", "Low"])
+            band_filter = st.selectbox(
+                "Filter by Risk Band",
+                ["All", "High", "Medium", "Low"],
+                index=0,
+                help="Show only claims belonging to a specific risk tier",
+            )
         with f_col2:
-            query_id = st.text_input("Find Claim ID", placeholder="Search by ID (e.g. C-0123)")
+            query_id = st.text_input(
+                "Find Claim ID",
+                placeholder="Search by ID (e.g. C-0042)",
+                help="Type any part of a Claim ID to filter",
+            )
         with f_col3:
+            st.write("")
+            st.write("")
             show_outcomes = False
             if batch["has_outcomes"]:
-                show_outcomes = st.checkbox("Show Known Historical Outcomes (Demo)")
+                show_outcomes = st.checkbox(
+                    "Show Known Historical Outcomes (Demo)",
+                    help="Display ground truth fraud label for verification",
+                )
 
         # Filter records
         filtered = [
@@ -571,26 +1121,103 @@ if page == "Claims Queue":
             and (not query_id or query_id.lower() in r["id"].lower())
         ]
 
-        st.caption(f"Showing {len(filtered):,} of {n_total:,} claims")
+        filter_status = f"Filtered by {band_filter} Risk" if band_filter != "All" else "All Tiers"
+        if query_id:
+            filter_status += f" • Matching '{query_id}'"
+        st.caption(f"Showing **{len(filtered):,}** of **{n_total:,}** claims ({filter_status})")
 
-        # Table Display
-        display_data = []
-        for r in filtered:
-            row_dict = {
-                "Rank": r["rank"],
-                "Claim ID": r["id"],
-                "Risk Score": f"{r['score']:.1%}",
-                "Band": r["band"],
-                "Top Driver": f"{r['reasons'][0]['label']}: {r['reasons'][0]['value']}" if r["reasons"] else "None",
-                "Rule Flags": ", ".join([f["title"] for f in r["flags"]]) or "None",
-                "Decision": r["decision"] or "Pending",
+        if not filtered:
+            st.info("No claims match your filter criteria. Try selecting 'All' or clearing the search box.")
+        else:
+            # Table Display
+            display_data = []
+            for r in filtered:
+                top_reason = f"{r['reasons'][0]['label']}: {r['reasons'][0]['value']}" if r["reasons"] else "—"
+                flags_summary = ", ".join([f["title"] for f in r["flags"]]) if r["flags"] else "—"
+
+                band_str = "🔴 High" if r["band"] == "High" else ("🟡 Medium" if r["band"] == "Medium" else "🟢 Low")
+
+                dec = r["decision"]
+                if not dec or dec == "Pending":
+                    dec_display = "⏳ Pending"
+                elif dec == "Under review":
+                    dec_display = "🔍 Under review"
+                elif dec == "Cleared":
+                    dec_display = "✅ Cleared"
+                elif dec == "Escalated":
+                    dec_display = "🚨 Escalated"
+                else:
+                    dec_display = dec
+
+                row_dict = {
+                    "Rank": r["rank"],
+                    "Claim ID": r["id"],
+                    "Risk Score": r["score"],
+                    "Tier": band_str,
+                    "Top Driver": top_reason,
+                    "Rule Flags": flags_summary,
+                    "Decision": dec_display,
+                }
+                if show_outcomes and "outcome" in r:
+                    row_dict["Known Fraud"] = "Yes" if r["outcome"] == "Yes" else "No"
+                display_data.append(row_dict)
+
+            df_display = pd.DataFrame(display_data)
+
+            col_cfg = {
+                "Rank": st.column_config.NumberColumn(
+                    "Rank",
+                    help="Priority rank in current queue (#1 = highest predicted fraud probability)",
+                    format="#%d",
+                    width="small",
+                ),
+                "Claim ID": st.column_config.TextColumn(
+                    "Claim ID",
+                    help="Unique identifier of the claim",
+                    width="small",
+                ),
+                "Risk Score": st.column_config.ProgressColumn(
+                    "Risk Score",
+                    help="Model predicted probability of fraud (0% to 100%)",
+                    format="%.1f%%",
+                    min_value=0.0,
+                    max_value=1.0,
+                    width="medium",
+                ),
+                "Tier": st.column_config.TextColumn(
+                    "Risk Tier",
+                    help="Triage tier determined by review capacity threshold",
+                    width="small",
+                ),
+                "Top Driver": st.column_config.TextColumn(
+                    "Primary Risk Driver (SHAP)",
+                    help="Top feature influencing the model's risk score for this claim",
+                    width="large",
+                ),
+                "Rule Flags": st.column_config.TextColumn(
+                    "Rule Flags",
+                    help="Deterministic heuristic rules triggered",
+                    width="medium",
+                ),
+                "Decision": st.column_config.TextColumn(
+                    "Investigator Status",
+                    help="Current decision recorded by investigator",
+                    width="medium",
+                ),
             }
-            if show_outcomes and "outcome" in r:
-                row_dict["Known Fraud"] = "Yes" if r["outcome"] == "Yes" else "No"
-            display_data.append(row_dict)
+            if show_outcomes:
+                col_cfg["Known Fraud"] = st.column_config.TextColumn(
+                    "Known Fraud (Demo)",
+                    help="Actual historical fraud outcome in test dataset",
+                    width="small",
+                )
 
-        df_display = pd.DataFrame(display_data)
-        st.dataframe(df_display, use_container_width=True, hide_index=True)
+            st.dataframe(
+                df_display,
+                column_config=col_cfg,
+                use_container_width=True,
+                hide_index=True,
+            )
 
         # Claim Detail Dossier
         st.markdown("### Inspect Claim Dossier")
@@ -648,10 +1275,20 @@ if page == "Claims Queue":
                     fig_shap.update_layout(
                         height=240,
                         margin=dict(l=10, r=10, t=10, b=10),
-                        xaxis=dict(title="Contribution to Score (SHAP)", zeroline=True, zerolinecolor="#64748b"),
-                        yaxis=dict(autorange="reversed"),
-                        plot_bgcolor="#ffffff",
-                        paper_bgcolor="#ffffff",
+                        xaxis=dict(
+                            title="Contribution to Score (SHAP)",
+                            zeroline=True,
+                            zerolinecolor="rgba(100, 116, 139, 0.4)",
+                            gridcolor="rgba(148, 163, 184, 0.15)",
+                            title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                            tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+                        ),
+                        yaxis=dict(
+                            autorange="reversed",
+                            tickfont=dict(family="Plus Jakarta Sans", size=11, color="#1e293b"),
+                        ),
+                        plot_bgcolor="rgba(0,0,0,0)",
+                        paper_bgcolor="rgba(0,0,0,0)",
                     )
                     st.plotly_chart(fig_shap, use_container_width=True)
                 else:
@@ -719,7 +1356,46 @@ if page == "Claims Queue":
             mime="text/csv",
         )
     else:
-        st.info("👆 Please upload a claims CSV or click 'Load 400 Sample Claims' above to inspect the triage queue.")
+        st.markdown(
+            """
+            <div class="empty-state-card">
+                <div class="empty-state-icon">🛡️</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-weight: 700; font-size: 20px;">
+                    No Claims Loaded in Queue
+                </h3>
+                <p style="color: #64748b; font-size: 14px; max-width: 600px; margin: 0 auto 24px auto; line-height: 1.55;">
+                    The triage queue is currently awaiting data. Explore the decision support platform immediately using historical demonstration claims, or upload your intake batch for triage.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 760px; margin: 0 auto; text-align: left;">
+                    <div class="empty-step-box">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="background: #1e3a8a; color: #ffffff; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">1</span>
+                            <strong style="color: #0f172a; font-size: 14px;">Instant Demonstration</strong>
+                        </div>
+                        <p style="color: #475569; font-size: 13px; margin: 0; line-height: 1.55;">
+                            Click <strong>"📁 Load 400 Sample Claims"</strong> above to inspect historical auto claims with pre-calculated fraud probabilities, SHAP explainability drivers, and heuristic rule flags.
+                        </p>
+                    </div>
+                    <div class="empty-step-box">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="background: #1e3a8a; color: #ffffff; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">2</span>
+                            <strong style="color: #0f172a; font-size: 14px;">Upload Intake Batch</strong>
+                        </div>
+                        <p style="color: #475569; font-size: 13px; margin: 0; line-height: 1.55;">
+                            Use <strong>"Upload Claims CSV"</strong> to triage new claims. If you need the required 22-field column format, download the <strong>"📥 CSV Template"</strong> above.
+                        </p>
+                    </div>
+                </div>
+                <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #f1f5f9; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; color: #64748b; font-size: 12.5px;">
+                    <span>⚡ <strong>Triage Prioritization:</strong> Ranked by predicted fraud risk</span>
+                    <span>🔍 <strong>SHAP Attribution:</strong> Transparent decision drivers</span>
+                    <span>🚩 <strong>Heuristic Checks:</strong> Early policy & address flags</span>
+                    <span>📝 <strong>Decision Audit:</strong> Integrated review logging</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 # =============================================================================
@@ -832,10 +1508,20 @@ elif page == "Assess a Claim":
             fig_bar.update_layout(
                 height=260,
                 margin=dict(l=10, r=10, t=10, b=10),
-                xaxis=dict(title="Score Impact", zeroline=True, zerolinecolor="#64748b"),
-                yaxis=dict(autorange="reversed"),
-                plot_bgcolor="#ffffff",
-                paper_bgcolor="#ffffff",
+                xaxis=dict(
+                    title="Score Impact",
+                    zeroline=True,
+                    zerolinecolor="rgba(100, 116, 139, 0.4)",
+                    gridcolor="rgba(148, 163, 184, 0.15)",
+                    title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                    tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+                ),
+                yaxis=dict(
+                    autorange="reversed",
+                    tickfont=dict(family="Plus Jakarta Sans", size=11, color="#1e293b"),
+                ),
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
             )
             st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -917,12 +1603,24 @@ elif page == "Model & Limitations":
             )
         )
         fig_cap.update_layout(
-            xaxis=dict(title="Share of Claims Reviewed", tickformat=".0%"),
-            yaxis=dict(title="Share of Frauds Caught", tickformat=".0%"),
+            xaxis=dict(
+                title="Share of Claims Reviewed",
+                tickformat=".0%",
+                gridcolor="rgba(148, 163, 184, 0.15)",
+                title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+            ),
+            yaxis=dict(
+                title="Share of Frauds Caught",
+                tickformat=".0%",
+                gridcolor="rgba(148, 163, 184, 0.15)",
+                title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+            ),
             height=320,
             margin=dict(l=10, r=10, t=10, b=10),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
         )
         st.plotly_chart(fig_cap, use_container_width=True)
 
@@ -936,7 +1634,7 @@ elif page == "Model & Limitations":
                 x=df_cal["predicted"],
                 y=df_cal["observed"],
                 mode="markers",
-                marker=dict(size=8, color="#1e3a8a"),
+                marker=dict(size=8, color="#4f46e5"),
                 name="Observed Tenths",
             )
         )
@@ -950,12 +1648,24 @@ elif page == "Model & Limitations":
             )
         )
         fig_cal.update_layout(
-            xaxis=dict(title="Predicted Fraud Score", tickformat=".0%"),
-            yaxis=dict(title="Observed Fraud Rate", tickformat=".0%"),
+            xaxis=dict(
+                title="Predicted Fraud Score",
+                tickformat=".0%",
+                gridcolor="rgba(148, 163, 184, 0.15)",
+                title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+            ),
+            yaxis=dict(
+                title="Observed Fraud Rate",
+                tickformat=".0%",
+                gridcolor="rgba(148, 163, 184, 0.15)",
+                title_font=dict(family="Plus Jakarta Sans", size=11, color="#475569"),
+                tickfont=dict(family="JetBrains Mono", size=10, color="#64748b"),
+            ),
             height=320,
             margin=dict(l=10, r=10, t=10, b=10),
-            plot_bgcolor="#ffffff",
-            paper_bgcolor="#ffffff",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
         )
         st.plotly_chart(fig_cal, use_container_width=True)
 
