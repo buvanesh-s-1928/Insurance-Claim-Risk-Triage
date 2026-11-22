@@ -1,46 +1,18 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claim Triage</title>
-<meta name="description" content="Decision support that ranks insurance claims for human review and explains each ranking.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A1536'/%3E%3Cpath d='M16 5l9 3v8c0 5-4 9-9 11-5-2-9-6-9-11V8z' fill='none' stroke='%23C9A64E' stroke-width='2'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="shell">
-  <nav class="spine" aria-label="Sections">
-    <a class="crest" href="#queue" aria-label="Claim Triage home">
-      <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true">
-        <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <path d="M20 8l9 3.2v8.3c0 5.3-3.6 9.4-9 11.5-5.4-2.1-9-6.2-9-11.5v-8.3z" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <path d="M20 13v14M14.5 19.5h11" stroke="currentColor" stroke-width="1.4"/>
-      </svg>
-    </a>
-    <ul class="spine-nav">
-      <li><a href="#queue" data-page="queue">Queue</a></li>
-      <li><a href="#assess" data-page="assess">Assess</a></li>
-      <li><a href="#model" data-page="model">Model</a></li>
-      <li><a href="#decisions" data-page="decisions">Decisions</a></li>
-    </ul>
-  </nav>
-
-  <main class="main" id="main" tabindex="-1">
-    <div id="view"></div>
-    <footer class="notice">
-      Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.
-    </footer>
-  </main>
-</div>
-
-<div class="scrim" id="scrim" hidden></div>
-<aside class="case" id="case" role="dialog" aria-modal="true" aria-labelledby="case-title" hidden></aside>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<input type="file" id="file" accept=".csv,text/csv" hidden>
-<script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Claim Triage | Explainable Fraud Risk Decision Support</title>
+    <meta name="description" content="Tactile decision-support platform that ranks insurance claims for human review and explains each ranking with SHAP." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0F19'/%3E%3Cpath d='M16 6l9 3.5v7c0 5-3.8 8.5-9 10.5-5.2-2-9-5.5-9-10.5v-7z' fill='none' stroke='%234F46E5' stroke-width='2.2'/%3E%3Cpath d='M16 11v10M11 16h10' stroke='%23818CF8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-DjfyJbGZ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-N6j49aHV.css">
+  </head>
+  <body class="bg-[#f1f5f9] text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
+    <div id="root"></div>
+  </body>
 </html>
