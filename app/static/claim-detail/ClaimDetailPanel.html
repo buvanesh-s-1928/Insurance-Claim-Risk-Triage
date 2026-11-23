@@ -1,0 +1,422 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim detail panel — Claim Triage</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#10B981',
+        'on-primary': '#0F172A',
+        'emerald': '#10B981',
+        'emerald-text': '#047857',
+        'emerald-bright': '#34D399',
+        'midnight': '#0F172A',
+        'on-midnight': '#F8FAFC',
+        'midnight-muted': '#94A3B8',
+        'midnight-surface': '#1E293B',
+        'accent': '#10B981',
+        'accent-text': '#047857',
+        'surface': '#F8FAFC',
+        'on-surface': '#0F172A',
+        'on-surface-variant': '#475569',
+        'surface-container': '#FFFFFF',
+        'surface-container-low': '#F1F5F9',
+        'surface-container-high': '#E2E8F0',
+        'porcelain': '#F8FAFC',
+        'on-porcelain': '#0F172A',
+        'on-porcelain-variant': '#475569',
+        'outline': '#CBD5E1',
+        'outline-dark': '#334155',
+        'risk-high': '#BE123C',
+        'risk-high-on-light': '#BE123C',
+        'on-risk-high': '#FFFFFF',
+        'risk-high-container': '#FFE4E6',
+        'on-risk-high-container': '#881337',
+        'risk-medium': '#B45309',
+        'on-risk-medium': '#FFFFFF',
+        'risk-medium-container': '#FEF3C7',
+        'on-risk-medium-container': '#78350F',
+        'risk-low': '#047857',
+        'risk-low-on-light': '#047857',
+        'on-risk-low': '#FFFFFF',
+        'risk-low-container': '#D1FAE5',
+        'on-risk-low-container': '#064E3B',
+        'risk-bar-low': '#94A3B8',
+        'error': '#BE123C',
+        'on-error': '#FFFFFF',
+        'error-container': '#FFE4E6',
+        'on-error-container': '#881337',
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '48px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['44px', { lineHeight: '50px', letterSpacing: '-0.8px', fontWeight: '700' }],
+        'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'display-md': ['34px', { lineHeight: '40px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-md-mobile': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'headline-lg': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '26px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '21px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'panel-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'panel-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+    .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
+    .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
+    .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
+    @media (prefers-reduced-motion: reduce) { .btn-emerald-lively:hover { transform: none; } }
+  </style>
+</head>
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Deep Midnight Navy Command Dock -->
+  <header class="sticky top-0 z-30 bg-midnight text-on-midnight border-b border-outline-dark">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-4 min-w-0">
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0">
+          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
+            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
+            </svg>
+          </div>
+          <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+        </a>
+        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-midnight-muted whitespace-nowrap">Batch: Sample 400</span>
+      </div>
+
+      <nav aria-label="Application" class="hidden md:flex items-center gap-1 bg-midnight-surface border border-outline-dark rounded-full p-1">
+        <a href="../claims-queue/ClaimsQueue.html" aria-current="page" class="px-4 py-1.5 rounded-full bg-primary text-on-primary font-label text-label-lg font-semibold flex items-center gap-2 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">format_list_numbered</span>
+          <span>Queue</span>
+        </a>
+        <a href="../assess-claim/AssessAClaim.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
+          <span>Assess</span>
+        </a>
+        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">analytics</span>
+          <span>Model</span>
+        </a>
+        <a href="../decisions/Decisions.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">fact_check</span>
+          <span>Decisions</span>
+        </a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-4 shrink-0">
+        <span class="font-label text-label-lg text-on-midnight whitespace-nowrap">Claire Vance</span>
+        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Take the tour</a>
+        <a href="../auth-account/CreateAccountLogin.html" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
+      </div>
+
+      <button type="button" id="rail-toggle" aria-label="Toggle navigation" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 border border-outline-dark rounded-DEFAULT text-on-midnight">
+        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">menu</span>
+      </button>
+    </div>
+
+    <div id="rail-content" class="hidden md:hidden border-t border-outline-dark bg-midnight px-6 py-4 flex-col gap-4">
+      <nav aria-label="Mobile Application" class="grid grid-cols-2 gap-2">
+        <a href="../claims-queue/ClaimsQueue.html" aria-current="page" class="px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-lg font-semibold text-center">Queue</a>
+        <a href="../assess-claim/AssessAClaim.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Assess</a>
+        <a href="../model-limits/ModelAndLimits.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Model</a>
+        <a href="../decisions/Decisions.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Decisions</a>
+      </nav>
+      <div class="flex items-center justify-between pt-2 border-t border-outline-dark text-body-sm">
+        <span class="text-on-midnight font-medium">Claire Vance</span>
+        <div class="flex items-center gap-4">
+          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Take the tour</a>
+          <a href="../auth-account/CreateAccountLogin.html" class="text-midnight-muted underline">Log out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex-1 max-w-7xl mx-auto w-full grid grid-cols-1 xl:grid-cols-12">
+    <!-- Crisp Porcelain Queue Context -->
+    <div class="hidden xl:flex xl:col-span-4 px-8 py-10 border-r border-outline bg-surface-container-low flex-col gap-6">
+      <div class="flex items-baseline justify-between border-b border-outline pb-4">
+        <div>
+          <span class="font-label text-label-sm text-emerald-text uppercase tracking-wider">Active queue</span>
+          <h2 class="font-headline text-headline-lg text-on-surface mt-0.5">Claims queue</h2>
+        </div>
+        <span class="font-body text-body-sm text-on-surface-variant tabular-nums">35 High of 400</span>
+      </div>
+
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-outline">
+            <th class="py-2.5 px-3 font-label text-label-sm text-on-surface-variant">Rank</th>
+            <th class="py-2.5 px-3 font-label text-label-sm text-on-surface-variant">Claim</th>
+            <th class="py-2.5 px-3 font-label text-label-sm text-on-surface-variant text-right">Score</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline">
+          <tr aria-selected="true" class="bg-surface-container border-l-2 border-l-primary">
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface tabular-nums font-semibold">1</td>
+            <td class="py-3 px-3 font-mono text-mono-sm text-emerald-text font-semibold">C-06315</td>
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface tabular-nums text-right font-semibold">22.7%</td>
+          </tr>
+          <tr class="hover:bg-surface-container">
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums">2</td>
+            <td class="py-3 px-3 font-mono text-mono-sm text-on-surface">C-04892</td>
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums text-right">21.4%</td>
+          </tr>
+          <tr class="hover:bg-surface-container">
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums">3</td>
+            <td class="py-3 px-3 font-mono text-mono-sm text-on-surface">C-01924</td>
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums text-right">19.8%</td>
+          </tr>
+          <tr class="hover:bg-surface-container">
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums">4</td>
+            <td class="py-3 px-3 font-mono text-mono-sm text-on-surface">C-07741</td>
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums text-right">18.9%</td>
+          </tr>
+          <tr class="hover:bg-surface-container">
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums">36</td>
+            <td class="py-3 px-3 font-mono text-mono-sm text-on-surface">C-03110</td>
+            <td class="py-3 px-3 font-body text-body-sm text-on-surface-variant tabular-nums text-right">11.2%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Elevated Porcelain Dossier -->
+    <main class="xl:col-span-8 p-4 md:p-8 flex flex-col" aria-label="Claim detail panel">
+      <div class="bg-surface-container text-on-surface rounded-lg border border-outline p-6 md:p-8 shadow-sm flex flex-col gap-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-outline pb-5">
+          <div>
+            <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface">Claim C-06315</h1>
+            <p class="font-body text-body-sm text-on-surface-variant tabular-nums">Rank 1 of 400</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" disabled class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface-container-low text-on-surface-variant rounded-DEFAULT border border-outline cursor-not-allowed font-label text-label-sm">
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">chevron_left</span>
+              <span>Previous</span>
+            </button>
+            <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface text-on-surface rounded-DEFAULT border border-outline hover:bg-surface-container-low font-label text-label-sm">
+              <span>Next</span>
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">chevron_right</span>
+            </button>
+            <a href="../claims-queue/ClaimsQueue.html" aria-label="Close claim detail panel" class="inline-flex items-center justify-center w-9 h-9 bg-surface text-on-surface rounded-DEFAULT border border-outline hover:bg-surface-container-low">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">close</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Risk Score + Arc Gauge -->
+        <section class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center border-b border-outline pb-7">
+          <div class="sm:col-span-5 flex items-center gap-5">
+            <svg viewBox="0 0 120 74" class="w-28 h-20 shrink-0" aria-hidden="true">
+              <path d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round"></path>
+              <path d="M12 62 A48 48 0 0 1 92 24" fill="none" stroke="#BE123C" stroke-width="10" stroke-linecap="round"></path>
+              <circle cx="92" cy="24" r="4" fill="#0F172A"></circle>
+            </svg>
+            <div class="flex flex-col gap-1 min-w-0">
+              <span class="font-headline text-display-lg text-on-surface tabular-nums">22.7%</span>
+              <span class="px-2.5 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm w-fit">High risk</span>
+            </div>
+          </div>
+
+          <div class="sm:col-span-7 flex flex-col gap-2">
+            <p class="font-body text-body-md text-on-surface-variant">
+              Among comparable past claims, the model expects about 23 in 100 to have been fraud. The overall rate is 6%.
+            </p>
+            <div class="flex justify-between font-label text-label-sm text-on-surface-variant tabular-nums pt-1">
+              <span>0%</span>
+              <span>Overall rate: 6%</span>
+              <span>30%</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Diverging Driver Bars -->
+        <section class="flex flex-col gap-4 border-b border-outline pb-7">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 class="font-headline text-headline-md text-on-surface">What drives this score</h2>
+            <span class="font-body text-body-sm text-on-surface-variant">Left lowers score · Right raises score</span>
+          </div>
+
+          <div class="flex flex-col divide-y divide-outline">
+            <div class="grid grid-cols-12 items-center gap-3 py-2.5">
+              <div class="col-span-5 font-body text-body-sm text-on-surface">Base cover: <span class="font-semibold">All Perils</span></div>
+              <div class="col-span-4 flex items-center"><div class="w-1/2"></div><div class="w-px h-5 bg-outline"></div><div class="w-1/2 pl-1"><div class="h-3 bg-risk-high rounded-sm" style="width: 82%;"></div></div></div>
+              <div class="col-span-3 text-right font-mono text-mono-sm text-risk-high tabular-nums">+6.4%</div>
+            </div>
+            <div class="grid grid-cols-12 items-center gap-3 py-2.5">
+              <div class="col-span-5 font-body text-body-sm text-on-surface">Vehicle make: <span class="font-semibold">Accura</span></div>
+              <div class="col-span-4 flex items-center"><div class="w-1/2"></div><div class="w-px h-5 bg-outline"></div><div class="w-1/2 pl-1"><div class="h-3 bg-risk-high rounded-sm" style="width: 50%;"></div></div></div>
+              <div class="col-span-3 text-right font-mono text-mono-sm text-risk-high tabular-nums">+3.9%</div>
+            </div>
+            <div class="grid grid-cols-12 items-center gap-3 py-2.5">
+              <div class="col-span-5 font-body text-body-sm text-on-surface">Fault: <span class="font-semibold">Policy holder</span></div>
+              <div class="col-span-4 flex items-center"><div class="w-1/2"></div><div class="w-px h-5 bg-outline"></div><div class="w-1/2 pl-1"><div class="h-3 bg-risk-high rounded-sm" style="width: 40%;"></div></div></div>
+              <div class="col-span-3 text-right font-mono text-mono-sm text-risk-high tabular-nums">+3.1%</div>
+            </div>
+            <div class="grid grid-cols-12 items-center gap-3 py-2.5">
+              <div class="col-span-5 font-body text-body-sm text-on-surface">Days policy–accident: <span class="font-semibold">8 to 15</span></div>
+              <div class="col-span-4 flex items-center"><div class="w-1/2"></div><div class="w-px h-5 bg-outline"></div><div class="w-1/2 pl-1"><div class="h-3 bg-risk-high rounded-sm" style="width: 28%;"></div></div></div>
+              <div class="col-span-3 text-right font-mono text-mono-sm text-risk-high tabular-nums">+2.2%</div>
+            </div>
+            <div class="grid grid-cols-12 items-center gap-3 py-2.5">
+              <div class="col-span-5 font-body text-body-sm text-on-surface">Police report filed: <span class="font-semibold">Yes</span></div>
+              <div class="col-span-4 flex items-center"><div class="w-1/2 flex justify-end pr-1"><div class="h-3 bg-primary rounded-sm" style="width: 28%;"></div></div><div class="w-px h-5 bg-outline"></div><div class="w-1/2"></div></div>
+              <div class="col-span-3 text-right font-mono text-mono-sm text-emerald-text tabular-nums">-2.1%</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Simple Checks -->
+        <section class="flex flex-col gap-3 border-b border-outline pb-7">
+          <h2 class="font-headline text-headline-md text-on-surface">Simple checks</h2>
+          <div class="flex items-start gap-3 bg-risk-medium-container border-l-2 border-l-risk-medium px-4 py-3 rounded-r-sm">
+            <span class="material-symbols-outlined text-[18px] text-on-risk-medium-container mt-0.5" aria-hidden="true">flag</span>
+            <div class="flex flex-col gap-0.5">
+              <span class="font-label text-label-lg text-on-risk-medium-container">Accident within 15 days of the policy starting</span>
+              <span class="font-body text-body-sm text-on-risk-medium-container">In past data, 18.4% of claims matching this check were found to be fraud (overall rate: 6.0%).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Decision Dock -->
+        <section class="flex flex-col gap-4 border-b border-outline pb-7">
+          <h2 class="font-headline text-headline-md text-on-surface">Your decision</h2>
+          <form id="decision-form" class="flex flex-col gap-4">
+            <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Claim decision">
+              <button type="button" data-dec="Under review" class="dec-pill px-4 py-2 rounded-DEFAULT bg-midnight text-on-midnight font-label text-label-lg font-semibold">Under review</button>
+              <button type="button" data-dec="Cleared" class="dec-pill px-4 py-2 rounded-DEFAULT border border-outline bg-surface text-on-surface hover:bg-surface-container-low font-label text-label-lg">Cleared</button>
+              <button type="button" data-dec="Escalated" class="dec-pill px-4 py-2 rounded-DEFAULT border border-outline bg-surface text-on-surface hover:bg-surface-container-low font-label text-label-lg">Escalated</button>
+            </div>
+
+            <label class="flex flex-col gap-1.5">
+              <span class="font-label text-label-lg text-on-surface">Investigator note</span>
+              <textarea rows="3" placeholder="Record what you checked or what follow-up is needed..." class="w-full px-3 py-2 bg-surface text-on-surface font-body text-body-md border border-outline rounded-DEFAULT focus:outline-none focus:border-midnight focus:ring-2 focus:ring-primary"></textarea>
+            </label>
+
+            <div class="flex items-center gap-4">
+              <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold">Save decision</button>
+              <span id="save-confirm" class="hidden font-body text-body-sm text-emerald-text font-medium" role="status">Saved under Claire Vance.</span>
+            </div>
+          </form>
+        </section>
+
+        <section>
+          <details class="pt-1">
+            <summary class="py-2 cursor-pointer font-label text-label-lg text-emerald-text">All claim details (22 fields)</summary>
+            <div class="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 font-body text-body-sm">
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Month</span><span class="text-on-surface font-medium">Oct</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Week of month</span><span class="text-on-surface font-medium">2</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Day of week</span><span class="text-on-surface font-medium">Tuesday</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Make</span><span class="text-on-surface font-medium">Accura</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Accident area</span><span class="text-on-surface font-medium">Urban</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Day of week claimed</span><span class="text-on-surface font-medium">Wednesday</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Month claimed</span><span class="text-on-surface font-medium">Oct</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Week claimed</span><span class="text-on-surface font-medium">3</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Sex</span><span class="text-on-surface font-medium">Male</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Marital status</span><span class="text-on-surface font-medium">Single</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Age of driver</span><span class="text-on-surface font-medium">34</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Fault</span><span class="text-on-surface font-medium">Policy holder</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Policy type</span><span class="text-on-surface font-medium">Sedan - All Perils</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Vehicle category</span><span class="text-on-surface font-medium">Sedan</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Vehicle price</span><span class="text-on-surface font-medium">30,000 to 39,000</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Deductible</span><span class="text-on-surface font-medium">400</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Driver rating</span><span class="text-on-surface font-medium">2</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Days policy–accident</span><span class="text-on-surface font-medium">8 to 15</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Days policy–claim</span><span class="text-on-surface font-medium">8 to 15</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Past claims</span><span class="text-on-surface font-medium">1</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Police report filed</span><span class="text-on-surface font-medium">Yes</span></div>
+              <div class="flex justify-between py-1 border-b border-outline"><span class="text-on-surface-variant">Witness present</span><span class="text-on-surface font-medium">No</span></div>
+            </div>
+          </details>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer class="border-t border-outline bg-surface">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const railBtn = document.getElementById('rail-toggle');
+      const railContent = document.getElementById('rail-content');
+      if (railBtn && railContent) {
+        railBtn.addEventListener('click', () => {
+          const hidden = railContent.classList.toggle('hidden');
+          railContent.classList.toggle('flex', !hidden);
+          railBtn.setAttribute('aria-expanded', String(!hidden));
+        });
+      }
+
+      document.querySelectorAll('.dec-pill').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.dec-pill').forEach((b) => {
+            b.className = 'dec-pill px-4 py-2 rounded-DEFAULT border border-outline bg-surface text-on-surface hover:bg-surface-container-low font-label text-label-lg';
+          });
+          btn.className = 'dec-pill px-4 py-2 rounded-DEFAULT bg-midnight text-on-midnight font-label text-label-lg font-semibold';
+        });
+      });
+
+      document.getElementById('decision-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('save-confirm').classList.remove('hidden');
+      });
+    })();
+  </script>
+
+
+</body></html>

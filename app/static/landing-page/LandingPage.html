@@ -1,0 +1,413 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Triage — Fraud investigation decision support</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#10B981',
+        'on-primary': '#0F172A',
+        'emerald': '#10B981',
+        'emerald-text': '#047857',
+        'emerald-bright': '#34D399',
+        'midnight': '#0F172A',
+        'on-midnight': '#F8FAFC',
+        'midnight-muted': '#94A3B8',
+        'midnight-surface': '#1E293B',
+        'accent': '#10B981',
+        'accent-text': '#047857',
+        'surface': '#F8FAFC',
+        'on-surface': '#0F172A',
+        'on-surface-variant': '#475569',
+        'surface-container': '#FFFFFF',
+        'surface-container-low': '#F1F5F9',
+        'surface-container-high': '#E2E8F0',
+        'porcelain': '#F8FAFC',
+        'on-porcelain': '#0F172A',
+        'on-porcelain-variant': '#475569',
+        'outline': '#CBD5E1',
+        'outline-dark': '#334155',
+        'risk-high': '#BE123C',
+        'risk-high-on-light': '#BE123C',
+        'on-risk-high': '#FFFFFF',
+        'risk-high-container': '#FFE4E6',
+        'on-risk-high-container': '#881337',
+        'risk-medium': '#B45309',
+        'on-risk-medium': '#FFFFFF',
+        'risk-medium-container': '#FEF3C7',
+        'on-risk-medium-container': '#78350F',
+        'risk-low': '#047857',
+        'risk-low-on-light': '#047857',
+        'on-risk-low': '#FFFFFF',
+        'risk-low-container': '#D1FAE5',
+        'on-risk-low-container': '#064E3B',
+        'risk-bar-low': '#94A3B8',
+        'error': '#BE123C',
+        'on-error': '#FFFFFF',
+        'error-container': '#FFE4E6',
+        'on-error-container': '#881337',
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '48px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['44px', { lineHeight: '50px', letterSpacing: '-0.8px', fontWeight: '700' }],
+        'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'display-md': ['34px', { lineHeight: '40px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-md-mobile': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'headline-lg': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '26px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '21px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'panel-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'panel-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+    .bg-midnight-mesh { background: radial-gradient(circle at 18% 20%, rgba(16,185,129,0.18), transparent 45%), radial-gradient(circle at 85% 80%, rgba(52,211,153,0.10), transparent 50%), #0F172A; }
+    .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
+    .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
+    .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
+    .pulse-live { animation: pulseGlow 2.4s infinite; }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.65); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+    @media (prefers-reduced-motion: reduce) { .pulse-live { animation: none; } .btn-emerald-lively:hover { transform: none; } }
+    input[type="range"].emerald-slider { -webkit-appearance: none; appearance: none; height: 6px; background: #E2E8F0; border-radius: 9999px; outline: none; }
+    input[type="range"].emerald-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #10B981; border: 2px solid #0F172A; border-radius: 9999px; cursor: ew-resize; box-shadow: 0 2px 8px rgba(15,23,42,0.25); }
+  </style>
+</head>
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Deep Midnight Navy Navigation (30% Secondary) -->
+  <header class="sticky top-0 z-30 bg-midnight/95 backdrop-blur-md text-on-midnight border-b border-outline-dark">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
+      <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm">
+        <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
+          <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
+            <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
+          </svg>
+        </div>
+        <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+      </a>
+
+      <nav aria-label="Primary" class="hidden md:flex items-center gap-8">
+        <a href="#sandbox" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight transition-colors">Live sandbox</a>
+        <a href="#workflow" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight transition-colors">How it works</a>
+        <a href="#limits" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight transition-colors">Limits</a>
+      </nav>
+
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="../auth-account/CreateAccountLogin.html" class="font-label text-label-lg text-midnight-muted hover:text-on-midnight px-3 py-1.5 transition-colors">Log in</a>
+        <a href="../claims-queue/ClaimsQueue.html" class="px-4 py-2 rounded-DEFAULT bg-primary btn-emerald-lively text-on-primary font-label text-label-lg font-semibold whitespace-nowrap">Open live queue</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 flex flex-col">
+    <!-- Dark Midnight Navy Hero Experience -->
+    <section class="bg-midnight bg-midnight-mesh text-on-midnight border-b border-outline-dark">
+      <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-6 flex flex-col gap-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark w-fit">
+            <span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>
+            <span class="font-label text-label-sm text-emerald-bright">400 sample claims loaded · 6.0% baseline rate</span>
+          </div>
+
+          <h1 class="font-headline text-display-lg-mobile md:text-display-lg text-on-midnight text-balance">
+            Look at the riskiest auto claims first. Never automate a denial.
+          </h1>
+
+          <p class="font-body text-body-md text-midnight-muted max-w-xl">
+            Claim Triage scores incoming auto accident claims, sorts them from highest to lowest risk, explains every ranking in plain language, and records a human investigator&#39;s decision.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="../claims-queue/ClaimsQueue.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold">
+              <span>Start triaging claims</span>
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+            </a>
+            <a href="../first-run-tutorial/FirstRunTutorial.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-DEFAULT bg-midnight-surface text-on-midnight border border-outline-dark hover:border-primary font-label text-label-lg">
+              <span>Take the 4-step tour</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Interactive Hero Triage Switcher -->
+        <div class="lg:col-span-6 bg-midnight-surface border border-outline-dark rounded-lg p-6 flex flex-col gap-5 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-lg text-on-midnight">Interactive claim preview</span>
+            <span class="font-body text-body-sm text-midnight-muted">Click a claim to inspect</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2" role="tablist" aria-label="Sample claims">
+            <button type="button" role="tab" aria-selected="true" data-hero-claim="0" class="hero-claim-btn px-3 py-2.5 rounded-DEFAULT bg-midnight border border-primary text-left">
+              <div class="font-mono text-mono-sm text-emerald-bright">C-06315</div>
+              <div class="font-body text-body-sm text-on-midnight font-semibold tabular-nums">22.7% High</div>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-hero-claim="1" class="hero-claim-btn px-3 py-2.5 rounded-DEFAULT bg-midnight/60 border border-outline-dark hover:border-midnight-muted text-left">
+              <div class="font-mono text-mono-sm text-midnight-muted">C-04892</div>
+              <div class="font-body text-body-sm text-on-midnight font-semibold tabular-nums">21.4% High</div>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-hero-claim="2" class="hero-claim-btn px-3 py-2.5 rounded-DEFAULT bg-midnight/60 border border-outline-dark hover:border-midnight-muted text-left">
+              <div class="font-mono text-mono-sm text-midnight-muted">C-03110</div>
+              <div class="font-body text-body-sm text-on-midnight font-semibold tabular-nums">11.2% Med</div>
+            </button>
+          </div>
+
+          <div class="bg-surface text-on-surface rounded-md p-5 flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-outline pb-3 gap-4">
+              <div>
+                <span id="hc-id" class="font-mono text-mono-sm text-emerald-text font-semibold">Claim C-06315 · Rank 1 of 400</span>
+                <p id="hc-summary" class="font-body text-body-sm text-on-surface-variant mt-0.5">Expects ~23 in 100 comparable claims to be fraud (overall rate 6%).</p>
+              </div>
+              <span id="hc-score" class="font-headline text-headline-lg text-risk-high tabular-nums">22.7%</span>
+            </div>
+
+            <div id="hc-drivers" class="flex flex-col gap-2 text-body-sm">
+              <div class="flex items-center justify-between"><span>Base cover: All Perils</span><span class="font-mono text-mono-sm text-risk-high tabular-nums">+6.4%</span></div>
+              <div class="flex items-center justify-between"><span>Vehicle make: Accura</span><span class="font-mono text-mono-sm text-risk-high tabular-nums">+3.9%</span></div>
+              <div class="flex items-center justify-between"><span>Police report filed: Yes</span><span class="font-mono text-mono-sm text-emerald-text tabular-nums">-2.1%</span></div>
+            </div>
+
+            <div class="pt-2 border-t border-outline flex items-center justify-between">
+              <span id="hc-flag" class="font-label text-label-sm text-risk-medium">Flag: Accident within 15 days</span>
+              <a href="../claim-detail/ClaimDetailPanel.html" class="font-label text-label-sm text-emerald-text underline underline-offset-4">Open full dossier</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Crisp Porcelain (60%) Interactive Capacity Sandbox -->
+    <section id="sandbox" class="max-w-7xl mx-auto px-6 md:px-10 py-16 w-full flex flex-col gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center bg-surface-container border border-outline rounded-lg p-6 md:p-10 shadow-sm">
+        <div class="lg:col-span-5 flex flex-col gap-5">
+          <span class="font-label text-label-sm text-emerald-text uppercase tracking-wider">Interactive simulator</span>
+          <h2 class="font-headline text-display-md-mobile md:text-display-md text-on-surface">See what your review capacity catches</h2>
+          <p class="font-body text-body-md text-on-surface-variant">
+            Drag the slider to match how many claims your investigators can inspect this week. The High band adjusts automatically.
+          </p>
+
+          <div class="bg-surface-container-low border border-outline rounded-md p-5 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <label for="lp-slider" class="font-label text-label-lg text-on-surface">Team review capacity</label>
+              <span id="lp-pct" class="font-mono text-mono-sm font-semibold text-emerald-text tabular-nums">10% (40 claims)</span>
+            </div>
+            <input id="lp-slider" type="range" min="5" max="25" value="10" step="1" class="emerald-slider w-full">
+            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-outline">
+              <div>
+                <span class="font-label text-label-sm text-on-surface-variant">Frauds caught</span>
+                <div id="lp-caught" class="font-headline text-headline-lg text-emerald-text tabular-nums">~24%</div>
+              </div>
+              <div>
+                <span class="font-label text-label-sm text-on-surface-variant">Random review</span>
+                <div id="lp-random" class="font-headline text-headline-lg text-on-surface-variant tabular-nums">10%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col gap-3">
+          <div class="flex items-center justify-between text-label-sm font-label text-on-surface-variant">
+            <span>400 sorted claims (riskiest left)</span>
+            <span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-primary inline-block"></span>In your review queue</span>
+          </div>
+          <div id="lp-bars" class="h-52 bg-surface-container-low border border-outline rounded-md p-4 flex items-end gap-0.5" role="img" aria-label="Sorted risk score distribution"></div>
+          <p class="font-body text-body-sm text-on-surface-variant">
+            A high score only prioritizes inspection. Investigators still review evidence and decide whether to clear, hold, or escalate.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Crisp Porcelain Unboxed 3-Step Flow -->
+    <section id="workflow" class="max-w-7xl mx-auto px-6 md:px-10 pb-16 w-full flex flex-col gap-8">
+      <div class="border-b border-outline pb-4">
+        <h2 class="font-headline text-headline-lg text-on-surface">Built for calm, transparent triage</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-outline">
+        <div class="pt-4 md:pt-0 md:pr-8 flex flex-col gap-2">
+          <span class="font-mono text-mono-sm text-emerald-text font-semibold">01 / RANK</span>
+          <h3 class="font-headline text-headline-md text-on-surface">Prioritize limited time</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Upload a CSV or load the 400-claim sample. Claims sort riskiest first based on 22 policy, vehicle, and reporting fields.</p>
+        </div>
+        <div class="pt-6 md:pt-0 md:px-8 flex flex-col gap-2">
+          <span class="font-mono text-mono-sm text-emerald-text font-semibold">02 / EXPLAIN</span>
+          <h3 class="font-headline text-headline-md text-on-surface">Plain-language reasons</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Every claim shows which factors raised or lowered its score relative to the 6.0% baseline, alongside simple rule checks.</p>
+        </div>
+        <div class="pt-6 md:pt-0 md:pl-8 flex flex-col gap-2">
+          <span class="font-mono text-mono-sm text-emerald-text font-semibold">03 / DECIDE</span>
+          <h3 class="font-headline text-headline-md text-on-surface">Human-recorded outcomes</h3>
+          <p class="font-body text-body-md text-on-surface-variant">Mark a claim Under review, Cleared, or Escalated with your note. Export your audit log as CSV anytime.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Midnight Navy Honest Limits Strip -->
+    <section id="limits" class="bg-midnight bg-midnight-mesh text-on-midnight border-t border-outline-dark">
+      <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7 flex flex-col gap-3">
+          <span class="font-label text-label-sm text-emerald-bright uppercase tracking-wider">Honest boundaries</span>
+          <h2 class="font-headline text-headline-lg text-on-midnight">What Claim Triage never does</h2>
+          <p class="font-body text-body-md text-midnight-muted">
+            Validated on 3,084 unseen historical claims (PR-AUC 0.14 vs. 0.06 random). It never rejects a claim, never calculates payout amounts, and never replaces an investigator.
+          </p>
+        </div>
+        <div class="lg:col-span-5 flex flex-wrap lg:justify-end gap-3">
+          <a href="../model-limits/ModelAndLimits.html" class="px-5 py-2.5 rounded-DEFAULT bg-midnight-surface border border-outline-dark text-on-midnight hover:border-primary font-label text-label-lg">Read model &amp; limits</a>
+          <a href="../assess-claim/AssessAClaim.html" class="px-5 py-2.5 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold">Test a claim live</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-surface border-t border-outline">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-6">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const claims = [
+        {
+          id: 'Claim C-06315 · Rank 1 of 400',
+          summary: 'Expects ~23 in 100 comparable claims to be fraud (overall rate 6%).',
+          score: '22.7%',
+          scoreColor: 'text-risk-high',
+          drivers: [
+            ['Base cover: All Perils', '+6.4%', 'text-risk-high'],
+            ['Vehicle make: Accura', '+3.9%', 'text-risk-high'],
+            ['Police report filed: Yes', '-2.1%', 'text-emerald-text']
+          ],
+          flag: 'Flag: Accident within 15 days',
+          flagColor: 'text-risk-medium'
+        },
+        {
+          id: 'Claim C-04892 · Rank 2 of 400',
+          summary: 'Expects ~21 in 100 comparable claims to be fraud (overall rate 6%).',
+          score: '21.4%',
+          scoreColor: 'text-risk-high',
+          drivers: [
+            ['Fault: Policy holder', '+3.1%', 'text-risk-high'],
+            ['Police report filed: No', '+2.6%', 'text-risk-high'],
+            ['Witness present: No', '+1.8%', 'text-risk-high']
+          ],
+          flag: 'Flag: No witness, no police report',
+          flagColor: 'text-risk-medium'
+        },
+        {
+          id: 'Claim C-03110 · Rank 36 of 400',
+          summary: 'Expects ~11 in 100 comparable claims to be fraud (overall rate 6%).',
+          score: '11.2%',
+          scoreColor: 'text-risk-medium',
+          drivers: [
+            ['Base cover: Collision', '+3.2%', 'text-risk-high'],
+            ['Vehicle price: 30k–39k', '+1.4%', 'text-risk-high'],
+            ['Days policy–accident: >30', '-1.1%', 'text-emerald-text']
+          ],
+          flag: 'No simple rule flags triggered',
+          flagColor: 'text-emerald-text'
+        }
+      ];
+
+      document.querySelectorAll('.hero-claim-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.heroClaim);
+          const c = claims[idx];
+          document.querySelectorAll('.hero-claim-btn').forEach((b) => {
+            const active = b === btn;
+            b.setAttribute('aria-selected', String(active));
+            b.classList.toggle('border-primary', active);
+            b.classList.toggle('bg-midnight', active);
+            b.classList.toggle('border-outline-dark', !active);
+            b.classList.toggle('bg-midnight/60', !active);
+          });
+          document.getElementById('hc-id').textContent = c.id;
+          document.getElementById('hc-summary').textContent = c.summary;
+          const sc = document.getElementById('hc-score');
+          sc.textContent = c.score;
+          sc.className = `font-headline text-headline-lg tabular-nums ${c.scoreColor}`;
+          document.getElementById('hc-drivers').innerHTML = c.drivers.map(([k, v, col]) =>
+            `<div class="flex items-center justify-between"><span>${k}</span><span class="font-mono text-mono-sm ${col} tabular-nums">${v}</span></div>`
+          ).join('');
+          const fl = document.getElementById('hc-flag');
+          fl.textContent = c.flag;
+          fl.className = `font-label text-label-sm ${c.flagColor}`;
+        });
+      });
+
+      const slider = document.getElementById('lp-slider');
+      const barsEl = document.getElementById('lp-bars');
+      function renderBars(pct) {
+        barsEl.innerHTML = '';
+        for (let i = 0; i < 60; i++) {
+          const bar = document.createElement('div');
+          const h = Math.max(10, Math.round(92 * Math.pow(1 - i / 59, 1.55) + 6));
+          bar.style.height = h + '%';
+          const cutoff = Math.round((pct / 100) * 60);
+          bar.className = 'flex-1 rounded-t-sm ' + (i < cutoff ? 'bg-primary' : 'bg-outline');
+          barsEl.appendChild(bar);
+        }
+        const claimsCount = pct * 4;
+        const caught = Math.min(54, Math.round(11 + pct * 1.3));
+        document.getElementById('lp-pct').textContent = `${pct}% (${claimsCount} claims)`;
+        document.getElementById('lp-caught').textContent = `~${caught}%`;
+        document.getElementById('lp-random').textContent = `${pct}%`;
+      }
+      slider.addEventListener('input', (e) => renderBars(Number(e.target.value)));
+      renderBars(10);
+    })();
+  </script>
+
+
+</body></html>

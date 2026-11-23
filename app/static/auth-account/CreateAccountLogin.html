@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account or log in — Claim Triage</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#10B981',
+        'on-primary': '#0F172A',
+        'emerald': '#10B981',
+        'emerald-text': '#047857',
+        'emerald-bright': '#34D399',
+        'midnight': '#0F172A',
+        'on-midnight': '#F8FAFC',
+        'midnight-muted': '#94A3B8',
+        'midnight-surface': '#1E293B',
+        'accent': '#10B981',
+        'accent-text': '#047857',
+        'surface': '#F8FAFC',
+        'on-surface': '#0F172A',
+        'on-surface-variant': '#475569',
+        'surface-container': '#FFFFFF',
+        'surface-container-low': '#F1F5F9',
+        'surface-container-high': '#E2E8F0',
+        'porcelain': '#F8FAFC',
+        'on-porcelain': '#0F172A',
+        'on-porcelain-variant': '#475569',
+        'outline': '#CBD5E1',
+        'outline-dark': '#334155',
+        'risk-high': '#BE123C',
+        'risk-high-on-light': '#BE123C',
+        'on-risk-high': '#FFFFFF',
+        'risk-high-container': '#FFE4E6',
+        'on-risk-high-container': '#881337',
+        'risk-medium': '#B45309',
+        'on-risk-medium': '#FFFFFF',
+        'risk-medium-container': '#FEF3C7',
+        'on-risk-medium-container': '#78350F',
+        'risk-low': '#047857',
+        'risk-low-on-light': '#047857',
+        'on-risk-low': '#FFFFFF',
+        'risk-low-container': '#D1FAE5',
+        'on-risk-low-container': '#064E3B',
+        'risk-bar-low': '#94A3B8',
+        'error': '#BE123C',
+        'on-error': '#FFFFFF',
+        'error-container': '#FFE4E6',
+        'on-error-container': '#881337',
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '48px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['44px', { lineHeight: '50px', letterSpacing: '-0.8px', fontWeight: '700' }],
+        'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'display-md': ['34px', { lineHeight: '40px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-md-mobile': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '700' }],
+        'headline-lg': ['26px', { lineHeight: '32px', letterSpacing: '-0.3px', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '26px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '21px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '500' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'panel-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'panel-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+    .bg-midnight-mesh { background: radial-gradient(circle at 20% 20%, rgba(16,185,129,0.18), transparent 45%), radial-gradient(circle at 80% 85%, rgba(52,211,153,0.10), transparent 50%), #0F172A; }
+    .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
+    .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
+    .pulse-live { animation: pulseGlow 2.4s infinite; }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.65); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+    @media (prefers-reduced-motion: reduce) { .pulse-live { animation: none; } .btn-emerald-lively:hover { transform: none; } }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-12">
+    <!-- Deep Midnight Navy Editorial Column (30%) -->
+    <aside class="lg:col-span-5 bg-midnight bg-midnight-mesh text-on-midnight px-8 py-12 lg:px-12 lg:py-14 flex flex-col justify-center gap-8 border-b lg:border-b-0 lg:border-r border-outline-dark">
+      <div class="flex flex-col gap-6">
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 w-fit">
+          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
+            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
+            </svg>
+          </div>
+          <span class="font-headline text-headline-md text-on-midnight">Claim Triage</span>
+        </a>
+
+        <div class="flex flex-col gap-3">
+          <span class="font-label text-label-sm text-emerald-bright uppercase tracking-wider">Investigator workspace</span>
+          <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-midnight text-balance">
+            Every decision stays under your name.
+          </h1>
+          <p class="font-body text-body-md text-midnight-muted">
+            Sign in to load your claims queue, inspect plain-language risk drivers, and record review notes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Live Batch Snapshot Card -->
+      <div class="bg-midnight-surface/90 backdrop-blur-sm border border-outline-dark rounded-lg p-5 flex flex-col gap-4 shadow-lg">
+        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+          <span class="font-label text-label-sm text-on-midnight">Sample batch ready</span>
+          <span class="inline-flex items-center gap-1.5 font-mono text-mono-sm text-emerald-bright">
+            <span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>400 claims
+          </span>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-left">
+          <div>
+            <span class="font-label text-label-sm text-midnight-muted">High band</span>
+            <div class="font-headline text-headline-md text-on-midnight tabular-nums">35</div>
+          </div>
+          <div>
+            <span class="font-label text-label-sm text-midnight-muted">Baseline rate</span>
+            <div class="font-headline text-headline-md text-on-midnight tabular-nums">6.0%</div>
+          </div>
+          <div>
+            <span class="font-label text-label-sm text-midnight-muted">Top score</span>
+            <div class="font-headline text-headline-md text-emerald-bright tabular-nums">22.7%</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between pt-3 border-t border-outline-dark text-body-sm">
+          <span class="font-mono text-mono-sm text-emerald-bright">C-06315 · Rank 1</span>
+          <span class="text-midnight-muted">Base cover: All Perils</span>
+        </div>
+      </div>
+
+      <ul class="flex flex-col gap-3.5 border-t border-outline-dark pt-6 text-body-sm text-midnight-muted">
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Decisions are saved locally under your investigator profile.</span></li>
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Nothing here automatically approves or rejects a claim.</span></li>
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Includes a 400-claim sample batch and 4-step walkthrough.</span></li>
+      </ul>
+    </aside>
+
+    <!-- Crisp Porcelain Sign-in Stage (60%) -->
+    <main class="lg:col-span-7 bg-surface px-6 py-12 md:px-14 flex items-center justify-center">
+      <div class="w-full max-w-md bg-surface-container border border-outline rounded-lg p-7 md:p-9 shadow-sm flex flex-col gap-6">
+        <div class="grid grid-cols-2 bg-surface-container-low p-1 rounded-DEFAULT border border-outline" role="tablist" aria-label="Account mode">
+          <button type="button" role="tab" aria-selected="true" id="tab-create" class="py-2 rounded-sm bg-midnight text-on-midnight font-label text-label-lg">Create account</button>
+          <button type="button" role="tab" aria-selected="false" id="tab-login" class="py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg">Log in</button>
+        </div>
+
+        <form id="auth-form" class="flex flex-col gap-4">
+          <label id="field-name" class="flex flex-col gap-1.5">
+            <span class="font-label text-label-lg text-on-surface">Full name</span>
+            <input type="text" value="Claire Vance" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+          </label>
+
+          <label class="flex flex-col gap-1.5">
+            <span class="font-label text-label-lg text-on-surface">Work email</span>
+            <input type="email" value="claire.vance@claimtriage.local" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+          </label>
+
+          <label class="flex flex-col gap-1.5">
+            <span class="font-label text-label-lg text-on-surface">Password</span>
+            <input type="password" value="••••••••••••" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+          </label>
+
+          <button id="auth-submit" type="submit" class="mt-2 w-full py-3 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold">
+            Create account &amp; start tour
+          </button>
+        </form>
+
+        <div class="border-t border-outline pt-4 flex flex-wrap items-center justify-between gap-2 text-body-sm text-on-surface-variant">
+          <span>Demo investigator ready</span>
+          <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-sm text-emerald-text underline underline-offset-4">Skip straight to queue</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="bg-surface border-t border-outline">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const tabCreate = document.getElementById('tab-create');
+      const tabLogin = document.getElementById('tab-login');
+      const nameField = document.getElementById('field-name');
+      const submitBtn = document.getElementById('auth-submit');
+
+      function setMode(isCreate) {
+        tabCreate.setAttribute('aria-selected', String(isCreate));
+        tabLogin.setAttribute('aria-selected', String(!isCreate));
+        tabCreate.classList.toggle('bg-midnight', isCreate);
+        tabCreate.classList.toggle('text-on-midnight', isCreate);
+        tabCreate.classList.toggle('text-on-surface-variant', !isCreate);
+        tabLogin.classList.toggle('bg-midnight', !isCreate);
+        tabLogin.classList.toggle('text-on-midnight', !isCreate);
+        tabLogin.classList.toggle('text-on-surface-variant', isCreate);
+        nameField.classList.toggle('hidden', !isCreate);
+        submitBtn.textContent = isCreate ? 'Create account & start tour' : 'Log in to claims queue';
+      }
+
+      tabCreate.addEventListener('click', () => setMode(true));
+      tabLogin.addEventListener('click', () => setMode(false));
+      document.getElementById('auth-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const isCreate = tabCreate.getAttribute('aria-selected') === 'true';
+        window.location.href = isCreate ? '../first-run-tutorial/FirstRunTutorial.html' : '../claims-queue/ClaimsQueue.html';
+      });
+    })();
+  </script>
+
+
+</body></html>
