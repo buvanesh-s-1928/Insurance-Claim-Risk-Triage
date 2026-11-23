@@ -225,3 +225,9 @@ __marimo__/
 # Local SQLite database
 data/decisions.db
 *.db
+
+# Local Jupyter Notebooks (not pushed to remote)
+*.ipynb
+
+stitch_claim_triage_platform/
+data/claims_fraud_data_v1_legacy.csv

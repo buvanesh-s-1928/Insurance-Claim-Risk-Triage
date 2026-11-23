@@ -1,2 +1,2 @@
 ClaimID,Month,WeekOfMonth,DayOfWeek,Make,AccidentArea,DayOfWeekClaimed,MonthClaimed,WeekOfMonthClaimed,PolicyType,VehicleCategory,VehiclePrice,Deductible,Days:Policy-Accident,Days:Policy-Claim,PastNumberOfClaims,AgeOfVehicle,PoliceReportFiled,WitnessPresent,AgentType,AddressChange-Claim,NumberOfCars,BasePolicy
-C-00001,Jul,1,Thursday,Chevrolet,Urban,Friday,Jul,3,Sedan - Liability,Sport,"20,000 to 29,000",400,more than 30,more than 30,none,7 years,No,No,External,no change,1 vehicle,Liability
+C-00001,Mar,4,Wednesday,Honda,Rural,Tuesday,Apr,1,Utility - Collision,Utility,"less than 20,000",400,more than 30,more than 30,none,3 years,Yes,No,External,4 to 8 years,2 vehicles,Collision

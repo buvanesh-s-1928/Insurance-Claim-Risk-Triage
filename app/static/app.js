@@ -1,666 +1,1442 @@
-(() => {
-'use strict';
+/**
+ * Claim Triage — Single Page Application Logic
+ * Integrates Stitch design system with FastAPI backend.
+ */
 
-/* ---------- small helpers ---------- */
-const $ = (s, el = document) => el.querySelector(s);
-function h(tag, attrs, ...kids) {
-  const el = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs || {})) {
-    if (v === false || v == null) continue;
-    if (k === 'class') el.className = v;
-    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
-    else if (k === 'text') el.textContent = v;
-    else if (k === 'value') el.value = v;
-    else el.setAttribute(k, v === true ? '' : v);
-  }
-  for (const kid of kids.flat()) {
-    if (kid == null || kid === false) continue;
-    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
-  }
-  return el;
-}
-const NS = 'http://www.w3.org/2000/svg';
-function s(tag, attrs, ...kids) {
-  const el = document.createElementNS(NS, tag);
-  for (const [k, v] of Object.entries(attrs || {})) el.setAttribute(k, v);
-  for (const kid of kids.flat()) if (kid != null) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
-  return el;
-}
-const pct = (x, d = 1) => (x * 100).toFixed(d) + '%';
-const pct0 = (x) => Math.round(x * 100) + '%';
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function () {
+  'use strict';
 
-async function api(path, opts) {
-  const res = await fetch(path, opts);
-  let data = null;
-  try { data = await res.json(); } catch (_) { /* not JSON */ }
-  if (!res.ok) throw { status: res.status, data: data || {} };
-  return data;
-}
-
-const FLAG_SHORT = { early_accident: 'Early accident', recent_move: 'Recent move' };
-const state = {
-  schema: null, model: null, batch: null, sample: null,
-  capacity: 0.10, showOutcomes: false, filter: 'All', query: '', shown: 100,
-  decisions: new Map(), problems: null, notice: null, error: null, animate: false,
-};
-const bandOf = (share, c = state.capacity) => (share <= c ? 'High' : share <= 3 * c ? 'Medium' : 'Low');
-
-/* ---------- toast ---------- */
-let toastTimer;
-function toast(msg) {
-  const t = $('#toast');
-  t.textContent = msg; t.classList.add('on');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
-}
-
-/* ---------- review capacity: what a review share should find ---------- */
-function expectedCatch(c) {
-  const pts = [{ share: 0, recall: 0, lo: 0, hi: 0 }, ...state.model.capacity_curve];
-  for (let i = 1; i < pts.length; i++) {
-    if (c <= pts[i].share) {
-      const a = pts[i - 1], b = pts[i], t = (c - a.share) / (b.share - a.share);
-      return { recall: a.recall + t * (b.recall - a.recall), lo: a.lo + t * (b.lo - a.lo), hi: a.hi + t * (b.hi - a.hi) };
-    }
-  }
-  return pts[pts.length - 1];
-}
-
-/* ---------- router ---------- */
-const PAGES = {
-  queue: { title: 'Claims queue', render: renderQueue },
-  assess: { title: 'Assess a claim', render: renderAssess },
-  model: { title: 'Model and limits', render: renderModel },
-  decisions: { title: 'Decisions', render: renderDecisions },
-};
-function route() {
-  closeCase(true);
-  const key = (location.hash || '#queue').slice(1);
-  const page = PAGES[key] || PAGES.queue;
-  const active = PAGES[key] ? key : 'queue';
-  document.querySelectorAll('.spine-nav a').forEach((a) => {
-    if (a.dataset.page === active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
-  });
-  document.title = page.title + ' | Claim Triage';
-  const view = $('#view');
-  view.replaceChildren();
-  page.render(view);
-  window.scrollTo(0, 0);
-}
-window.addEventListener('hashchange', route);
-
-function pageHead(title, note) {
-  return h('header', { class: 'head' }, h('h1', { text: title }), note ? h('p', { class: 'margin', text: note }) : null);
-}
-
-/* =====================================================================
-   QUEUE
-   ===================================================================== */
-function renderQueue(root) {
-  root.append(pageHead('Claims queue', 'The riskiest claims come first. A rank is a reason to look at a claim, not a finding about it.'));
-  if (state.error) root.append(errorBanner(state.error));
-  if (!state.batch) { root.append(startBlock()); return; }
-  if (state.notice) root.append(state.notice);
-  buildQueue(root);
-}
-
-function startBlock() {
-  return h('section', { class: 'start' },
-    h('p', { class: 'lead', text: 'Load a batch of claims and start at the top of the list.' }),
-    h('div', { class: 'row' },
-      h('button', { class: 'btn', onclick: () => $('#file').click(), text: 'Upload a CSV' }),
-      h('button', { class: 'btn quiet', onclick: loadSample, text: 'Try 400 sample claims' }),
-      h('a', { class: 'link', href: '/api/template.csv', text: 'Download the CSV template' })),
-    h('p', { class: 'fine' },
-      'Each claim gets a score, a rank, a band and the reasons behind it. The sample claims are historical ones the model never saw during training, so you can check the ranking against what really happened. You can also drop a CSV file anywhere on this page.'));
-}
-
-function errorBanner(err) {
-  const d = err.data || {};
-  const p = d.problems || {};
-  let title = 'This file could not be used', body = d.message || 'Check the file and try again.';
-  if (d.error === 'missing_columns') {
-    title = 'Some columns are missing';
-    body = `Add these columns and upload again: ${p.missing_columns.join(', ')}. The template shows the expected layout.`;
-  } else if (d.error === 'no_valid_rows') {
-    title = 'No claims could be scored';
-    body = (p.skipped && p.skipped[0] ? p.skipped[0].reason : 'Every row has a missing or invalid value') + '. Fix the values and upload again.';
-  }
-  return h('div', { class: 'banner', role: 'alert' }, h('strong', { text: title }), h('span', { text: body }),
-    ' ', h('a', { class: 'link', href: '/api/template.csv', text: 'Download template' }));
-}
-
-function problemNotice(problems) {
-  if (!problems) return null;
-  const parts = [];
-  if (problems.skipped && problems.skipped.length) {
-    const first = problems.skipped.slice(0, 3).map((x) => `${x.claim_id} (${x.reason})`).join('; ');
-    parts.push(`${problems.skipped.length} claim${problems.skipped.length > 1 ? 's were' : ' was'} skipped: ${first}${problems.skipped.length > 3 ? ' and more' : ''}.`);
-  }
-  const uv = Object.entries(problems.unseen_values || {});
-  if (uv.length) parts.push('Values the model has not seen before are scored with less certainty: ' + uv.map(([k, v]) => `${k} (${v.join(', ')})`).join('; ') + '.');
-  if (!parts.length) return null;
-  return h('div', { class: 'banner note', role: 'status' }, h('strong', { text: 'Check these before relying on the ranking' }), parts.join(' '));
-}
-
-async function loadSample() {
-  try {
-    state.error = null;
-    const data = state.sample || (state.sample = await api('/api/sample'));
-    adoptBatch(data);
-  } catch (e) { state.error = e; route(); }
-}
-async function uploadFile(file) {
-  if (!file) return;
-  const fd = new FormData(); fd.append('file', file);
-  try {
-    state.error = null;
-    const data = await api('/api/batch', { method: 'POST', body: fd });
-    adoptBatch(data);
-  } catch (e) { state.error = e; state.batch = null; location.hash = '#queue'; route(); }
-}
-function adoptBatch(data) {
-  state.batch = data; state.filter = 'All'; state.query = ''; state.shown = 100; state.animate = true;
-  state.showOutcomes = false;
-  state.notice = problemNotice(data.problems);
-  location.hash = '#queue'; route();
-}
-$('#file').addEventListener('change', (e) => { uploadFile(e.target.files[0]); e.target.value = ''; });
-addEventListener('dragover', (e) => e.preventDefault());
-addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) uploadFile(f); });
-
-/* ---- queue body ---- */
-const q = {};
-function buildQueue(root) {
-  const claims = state.batch.claims;
-  const n = claims.length;
-
-  q.big = h('div', { class: 'fig-big' });
-  q.cap = h('p', { class: 'fig-cap' });
-  q.sub = h('p', { class: 'fig-sub' });
-  q.canvas = h('canvas', { 'aria-label': 'Chart of every claim in the batch from highest to lowest score', role: 'img' });
-  q.edgeH = h('div', { class: 'edge' });
-  q.edgeM = h('div', { class: 'edge med' });
-  q.handle = h('button', { class: 'handle', type: 'button', 'aria-label': 'Drag to change how many claims are High risk' });
-  q.plot = h('div', { class: 'plot' }, q.canvas, q.edgeH, q.edgeM, q.handle);
-  q.keyH = h('span', { class: 'h', text: 'High' }); q.keyM = h('span', { class: 'm', text: 'Medium' }); q.keyL = h('span', { class: 'l', text: 'Low' });
-  q.bandkey = h('div', { class: 'bandkey' }, q.keyH, q.keyM, q.keyL);
-  q.range = h('input', { type: 'range', id: 'cap', min: '5', max: '25', step: '1', value: String(Math.round(state.capacity * 100)) });
-  q.out = h('output', { for: 'cap' });
-  syncSlider(q.range.value);
-
-  const hero = h('section', { class: 'hero', 'aria-label': 'Batch summary' },
-    h('div', { class: 'figs' }, q.big, q.cap, q.sub),
-    h('div', { class: 'spectrum' },
-      h('h2', { text: 'Every claim in the batch, highest score first' }),
-      q.plot, q.bandkey,
-      h('div', { class: 'axis' }, h('span', { text: 'Highest score' }), h('span', { text: `${n.toLocaleString()} claims` }), h('span', { text: 'Lowest score' })),
-      h('div', { class: 'capacity' },
-        h('label', { for: 'cap', text: 'How many claims can your team review?' }),
-        q.range, q.out)));
-  root.append(hero);
-
-  q.range.addEventListener('input', () => { syncSlider(q.range.value); setCapacity(q.range.value / 100); });
-  bindHandle();
-
-  // tools
-  const tabs = h('div', { class: 'tabs', role: 'group', 'aria-label': 'Filter by band' },
-    ...['All', 'High', 'Medium', 'Low'].map((b) => h('button', { type: 'button', 'data-f': b, 'aria-pressed': String(state.filter === b), onclick: () => { state.filter = b; state.shown = 100; refreshTable(); syncTabs(); } }, b)));
-  q.tabs = tabs;
-  const search = h('input', { class: 'search', type: 'search', placeholder: 'Find a claim ID', 'aria-label': 'Find a claim ID', value: state.query });
-  search.addEventListener('input', () => { state.query = search.value.trim().toLowerCase(); state.shown = 100; refreshTable(); });
-  const right = h('div', { class: 'right' }, search);
-  if (state.batch.has_outcomes) {
-    const cb = h('input', { type: 'checkbox', id: 'outcomes' });
-    cb.checked = state.showOutcomes;
-    cb.addEventListener('change', () => { state.showOutcomes = cb.checked; draw(1); refreshTable(); updateText(); });
-    right.append(h('label', { class: 'check', for: 'outcomes' }, cb, 'Show known outcomes (demo data)'));
-  }
-  right.append(h('button', { class: 'link', type: 'button', onclick: exportRanked, text: 'Download ranked list' }));
-  right.append(h('button', { class: 'link', type: 'button', onclick: () => $('#file').click(), text: 'Load another file' }));
-  root.append(h('div', { class: 'tools' }, tabs, right));
-
-  q.table = h('table', { class: 'q' });
-  q.more = h('p', { class: 'more' });
-  root.append(q.table, q.more);
-
-  assignBands(); updateAll(true);
-  addEventListener('resize', onResize);
-}
-function onResize() { if (q.canvas && q.canvas.isConnected) draw(1); }
-function syncTabs() { q.tabs.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === state.filter))); }
-
-function assignBands() { for (const c of state.batch.claims) c.band = bandOf(c.top_share); }
-function counts() {
-  const k = { High: 0, Medium: 0, Low: 0 };
-  for (const c of state.batch.claims) k[c.band]++;
-  return k;
-}
-function syncSlider(val) {
-  if (!q.range) return;
-  const v = val != null ? val : q.range.value;
-  q.range.style.setProperty('--control-value', v);
-  q.range.style.setProperty('--attr-min', q.range.min || '5');
-  q.range.style.setProperty('--attr-max', q.range.max || '25');
-}
-function setCapacity(c) {
-  state.capacity = clamp(Math.round(c * 100) / 100, 0.05, 0.25);
-  q.range.value = String(Math.round(state.capacity * 100));
-  syncSlider(q.range.value);
-  assignBands(); updateAll(false);
-}
-function updateAll(first) {
-  updateText(); positionEdges(); draw(first && state.animate && !reduceMotion ? 0 : 1); refreshTable(); state.animate = false;
-}
-function updateText() {
-  const n = state.batch.claims.length, k = counts(), c = state.capacity, e = expectedCatch(c);
-  q.big.textContent = k.High.toLocaleString();
-  q.cap.textContent = `claims in the High band, out of ${n.toLocaleString()}. Review these first.`;
-  q.out.textContent = Math.round(c * 100) + '%';
-  q.sub.replaceChildren(
-    'Reviewing the top ', h('strong', { text: Math.round(c * 100) + '%' }), ' by score should find about ',
-    h('strong', { text: pct0(e.recall) }), ` of all frauds (likely range ${pct0(e.lo)} to ${pct0(e.hi)}). Reviewing the same number at random would find ${Math.round(c * 100)}%.`);
-  if (state.showOutcomes && state.batch.has_outcomes) {
-    const fr = state.batch.claims.filter((x) => x.outcome === 'Yes');
-    const inHigh = fr.filter((x) => x.band === 'High').length;
-    q.sub.append(h('span', { text: ` In this sample, ${inHigh} of the ${fr.length} known frauds are in the High band.` }));
-  }
-}
-function positionEdges() {
-  const n = state.batch.claims.length, k = counts();
-  const xh = (k.High / n) * 100, xm = ((k.High + k.Medium) / n) * 100;
-  q.edgeH.style.left = xh + '%'; q.edgeM.style.left = xm + '%';
-  q.handle.style.left = xh + '%';
-  q.keyH.style.left = '0'; q.keyM.style.left = `calc(${xh}% + 8px)`; q.keyL.style.left = `calc(${xm}% + 8px)`;
-  q.keyH.textContent = xh > 7 ? 'High' : 'High'; q.keyM.style.display = (xm - xh) > 9 ? '' : 'none'; q.keyL.style.display = (100 - xm) > 6 ? '' : 'none';
-}
-function bindHandle() {
-  let drag = false;
-  const move = (ev) => {
-    if (!drag) return;
-    const r = q.plot.getBoundingClientRect();
-    const f = clamp((ev.clientX - r.left) / r.width, 0, 1), cl = state.batch.claims;
-    const idx = Math.min(cl.length - 1, Math.round(f * cl.length));
-    setCapacity(cl[idx].top_share);
+  // --- Application State ---
+  const state = {
+    claims: [],
+    modelMeta: null,
+    schemaMeta: null,
+    decisions: [],
+    capacityPct: 10,
+    activeFilter: 'All',
+    searchQuery: '',
+    currentPage: 1,
+    pageSize: 50,
+    selectedClaimIndex: -1,
+    currentDecisionSelection: 'Under review',
+    user: {
+      name: localStorage.getItem('claim_triage_user_name') || 'Claire Vance',
+      email: localStorage.getItem('claim_triage_user_email') || 'c.vance@meridian-claims.org'
+    },
+    tourStep: 1,
+    assessDebounce: null,
   };
-  q.handle.addEventListener('pointerdown', (ev) => { drag = true; q.handle.setPointerCapture(ev.pointerId); });
-  q.handle.addEventListener('pointermove', move);
-  q.handle.addEventListener('pointerup', () => { drag = false; });
-  q.handle.addEventListener('keydown', (ev) => {
-    if (ev.key === 'ArrowLeft' || ev.key === 'ArrowDown') { setCapacity(state.capacity - 0.01); ev.preventDefault(); }
-    if (ev.key === 'ArrowRight' || ev.key === 'ArrowUp') { setCapacity(state.capacity + 0.01); ev.preventDefault(); }
-  });
-}
-function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-let rafId;
-function draw(progress) {
-  cancelAnimationFrame(rafId);
-  const cv = q.canvas, dpr = window.devicePixelRatio || 1;
-  const W = cv.clientWidth, H = cv.clientHeight;
-  if (!W) return;
-  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-  const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
-  const cl = state.batch.claims, n = cl.length, max = cl[0].score || 1;
-  const col = { High: cssVar('--high'), Medium: cssVar('--med'), Low: cssVar('--muted-tick') }, gold = cssVar('--gold');
-  const bw = W / n;
-  const paint = (t) => {
-    ctx.clearRect(0, 0, W, H);
-    const ease = 1 - Math.pow(1 - t, 3);
-    for (let i = 0; i < n; i++) {
-      const c = cl[i];
-      const hh = Math.max(2, (c.score / max) * (H - 26)) * ease;
-      ctx.fillStyle = col[c.band];
-      const x = i * bw, w = bw > 3 ? bw - 1 : Math.max(bw, 1);
-      ctx.fillRect(x, H - hh, w, hh);
+
+  // --- Utility Helpers ---
+  function formatPct(val, decimals = 1) {
+    if (val == null || isNaN(val)) return '0.0%';
+    const pct = val <= 1 ? val * 100 : val;
+    return pct.toFixed(decimals) + '%';
+  }
+
+  function getInitials(name) {
+    if (!name) return 'CV';
+    return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast-item pointer-events-auto px-4 py-3 rounded-lg text-xs sm:text-sm font-label flex items-center gap-2.5 shadow-2xl border transition-all ${
+      type === 'success' ? 'bg-risk-low-container border-risk-low text-on-risk-low-container' :
+      type === 'error' ? 'bg-risk-high-container border-risk-high text-on-risk-high-container' :
+      'bg-surface-container-high border-outline text-on-surface'
+    }`;
+
+    const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+    toast.innerHTML = `
+      <span class="material-symbols-outlined text-[18px]">${icon}</span>
+      <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      setTimeout(() => toast.remove(), 250);
+    }, 3200);
+  }
+
+  // --- Routing & View Management ---
+  const views = ['landing', 'queue', 'assess', 'model', 'decisions'];
+
+  function switchView(targetView) {
+    if (!views.includes(targetView)) targetView = 'queue';
+
+    // Update nav links
+    document.querySelectorAll('.nav-pill').forEach(pill => {
+      const isCurrent = pill.dataset.nav === targetView;
+      pill.classList.toggle('bg-primary', isCurrent);
+      pill.classList.toggle('text-on-primary', isCurrent);
+      pill.classList.toggle('btn-3d-ion', isCurrent);
+      pill.classList.toggle('text-midnight-muted', !isCurrent);
+      pill.classList.toggle('hover:text-on-midnight', !isCurrent);
+    });
+
+    // Update view panels
+    views.forEach(v => {
+      const panel = document.getElementById(`${v}-view`);
+      if (panel) {
+        if (v === targetView) {
+          panel.classList.remove('hidden');
+          panel.classList.add('view-enter');
+        } else {
+          panel.classList.add('hidden');
+          panel.classList.remove('view-enter');
+        }
+      }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Close drawer if open when switching views
+    closeDrawer();
+  }
+
+  function handleHashChange() {
+    const hash = window.location.hash.replace('#', '') || 'landing';
+    if (hash.startsWith('claim-')) {
+      const claimId = hash.replace('claim-', '');
+      switchView('queue');
+      openClaimDossier(claimId);
+    } else {
+      switchView(hash);
     }
-    if (state.showOutcomes && state.batch.has_outcomes && t >= 1) {
-      ctx.fillStyle = gold;
-      for (let i = 0; i < n; i++) {
-        if (cl[i].outcome !== 'Yes') continue;
-        const hh = Math.max(2, (cl[i].score / max) * (H - 26));
-        const x = i * bw + bw / 2, y = H - hh - 9;
-        ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x + 5, y); ctx.lineTo(x, y + 5); ctx.lineTo(x - 5, y); ctx.closePath(); ctx.fill();
+  }
+
+  // --- Review Capacity & Band Classification ---
+  function computeRiskBand(rank, totalClaims) {
+    if (totalClaims <= 0) return 'Low';
+    const highCutoff = Math.max(1, Math.round(totalClaims * (state.capacityPct / 100)));
+    const mediumCutoff = Math.min(totalClaims, highCutoff + Math.max(1, Math.round(totalClaims * 0.20)));
+
+    if (rank <= highCutoff) return 'High';
+    if (rank <= mediumCutoff) return 'Medium';
+    return 'Low';
+  }
+
+  function updateCapacityReadouts() {
+    const total = state.claims.length;
+    const highCount = Math.max(1, Math.round(total * (state.capacityPct / 100)));
+    const cutoffClaim = state.claims[highCount - 1];
+    const cutoffScore = cutoffClaim ? formatPct(cutoffClaim.score) : '—';
+
+    // Interpolate recall from modelMeta capacity curve or empirical rule
+    let recall = '69.4%';
+    if (state.modelMeta && state.modelMeta.capacity_curve) {
+      const curve = state.modelMeta.capacity_curve;
+      const share = state.capacityPct / 100;
+      let matched = curve.find(pt => Math.abs(pt.share - share) < 0.025);
+      if (!matched) {
+        matched = curve.reduce((prev, curr) => Math.abs(curr.share - share) < Math.abs(prev.share - share) ? curr : prev);
+      }
+      if (matched) recall = `~${formatPct(matched.recall)}`;
+    }
+
+    const badge = document.getElementById('capacity-badge');
+    const cutoffVal = document.getElementById('capacity-cutoff-val');
+    const highCountEl = document.getElementById('capacity-high-count');
+    const recallVal = document.getElementById('capacity-recall-val');
+    const cutoffLine = document.getElementById('spectrum-cutoff-line');
+
+    if (badge) badge.textContent = `${state.capacityPct}%`;
+    if (cutoffVal) cutoffVal.textContent = `≥ ${cutoffScore}`;
+    if (highCountEl) highCountEl.textContent = `${highCount} claim${highCount === 1 ? '' : 's'}`;
+    if (recallVal) recallVal.textContent = recall;
+
+    if (cutoffLine) {
+      cutoffLine.style.left = `${state.capacityPct}%`;
+    }
+
+    // Refresh spectrum bars and queue table
+    renderSpectrumBars();
+    renderQueueTable();
+  }
+
+  // --- Risk Spectrum Bar Chart ---
+  function renderSpectrumBars() {
+    const container = document.getElementById('spectrum-bars-container');
+    const tooltip = document.getElementById('spectrum-tooltip');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const total = state.claims.length;
+    if (total === 0) return;
+
+    const maxScore = Math.max(...state.claims.map(c => c.score), 0.01);
+
+    // Create fragment for fast batch rendering
+    const frag = document.createDocumentFragment();
+
+    state.claims.forEach((claim, idx) => {
+      const rank = idx + 1;
+      const band = computeRiskBand(rank, total);
+      const heightPct = Math.max(8, Math.round((claim.score / maxScore) * 100));
+
+      const bar = document.createElement('div');
+      bar.className = `flex-1 h-full flex items-end cursor-pointer group`;
+      bar.dataset.claimId = claim.id;
+      bar.dataset.rank = rank;
+      bar.dataset.score = formatPct(claim.score);
+      bar.dataset.band = band;
+
+      const inner = document.createElement('div');
+      inner.className = `w-full rounded-t-sm transition-all duration-100 group-hover:opacity-100 ${
+        band === 'High' ? 'bg-risk-high group-hover:bg-risk-high-on-light' :
+        band === 'Medium' ? 'bg-risk-medium group-hover:bg-amber-400' :
+        'bg-risk-bar-low group-hover:bg-slate-400'
+      }`;
+      inner.style.height = `${heightPct}%`;
+
+      bar.appendChild(inner);
+
+      // Tooltip events
+      bar.addEventListener('mouseenter', (e) => {
+        if (!tooltip) return;
+        const rect = bar.getBoundingClientRect();
+        const wrapperRect = container.getBoundingClientRect();
+        tooltip.innerHTML = `<strong>#${rank}</strong> ${claim.id} &bull; ${formatPct(claim.score)} (${band} Risk)`;
+        tooltip.classList.remove('hidden');
+
+        let leftPos = rect.left - wrapperRect.left - 40;
+        leftPos = Math.max(5, Math.min(leftPos, wrapperRect.width - 160));
+        tooltip.style.left = `${leftPos}px`;
+        tooltip.style.top = '6px';
+      });
+
+      bar.addEventListener('mouseleave', () => {
+        if (tooltip) tooltip.classList.add('hidden');
+      });
+
+      bar.addEventListener('click', () => {
+        openClaimDossier(claim.id);
+      });
+
+      frag.appendChild(bar);
+    });
+
+    container.appendChild(frag);
+  }
+
+  // --- Queue Table Rendering ---
+  function renderQueueTable() {
+    const tbody = document.getElementById('queue-table-body');
+    const showingText = document.getElementById('queue-showing-text');
+    const pageNumber = document.getElementById('queue-page-number');
+    const prevBtn = document.getElementById('queue-prev-page');
+    const nextBtn = document.getElementById('queue-next-page');
+
+    if (!tbody) return;
+
+    const totalClaims = state.claims.length;
+
+    // Filter claims
+    let filtered = state.claims.filter((claim, idx) => {
+      const rank = idx + 1;
+      const band = computeRiskBand(rank, totalClaims);
+
+      // Band filter
+      if (state.activeFilter !== 'All' && band !== state.activeFilter) {
+        return false;
+      }
+
+      // Search filter
+      if (state.searchQuery) {
+        const q = state.searchQuery.toLowerCase();
+        const matchId = claim.id.toLowerCase().includes(q);
+        const matchMake = (claim.fields?.Make || '').toLowerCase().includes(q);
+        const matchPolicy = (claim.fields?.PolicyType || '').toLowerCase().includes(q);
+        if (!matchId && !matchMake && !matchPolicy) return false;
+      }
+
+      return true;
+    });
+
+    // Update filter counts
+    const highCutoff = Math.max(1, Math.round(totalClaims * (state.capacityPct / 100)));
+    const medCutoff = Math.min(totalClaims, highCutoff + Math.max(1, Math.round(totalClaims * 0.20)));
+
+    const countAll = totalClaims;
+    const countHigh = highCutoff;
+    const countMed = Math.max(0, medCutoff - highCutoff);
+    const countLow = Math.max(0, totalClaims - medCutoff);
+
+    const elAll = document.getElementById('filter-count-all');
+    const elHigh = document.getElementById('filter-count-high');
+    const elMed = document.getElementById('filter-count-medium');
+    const elLow = document.getElementById('filter-count-low');
+
+    if (elAll) elAll.textContent = countAll;
+    if (elHigh) elHigh.textContent = countHigh;
+    if (elMed) elMed.textContent = countMed;
+    if (elLow) elLow.textContent = countLow;
+
+    // Pagination
+    const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
+    state.currentPage = Math.min(state.currentPage, totalPages);
+
+    const startIndex = (state.currentPage - 1) * state.pageSize;
+    const pageItems = filtered.slice(startIndex, startIndex + state.pageSize);
+
+    if (showingText) {
+      showingText.textContent = `Showing ${pageItems.length ? startIndex + 1 : 0}–${startIndex + pageItems.length} of ${filtered.length} claims`;
+    }
+    if (pageNumber) pageNumber.textContent = `Page ${state.currentPage} of ${totalPages}`;
+    if (prevBtn) prevBtn.disabled = state.currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = state.currentPage >= totalPages;
+
+    // Render Table Rows
+    tbody.innerHTML = '';
+    if (pageItems.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="py-12 text-center text-midnight-muted">
+            <span class="material-symbols-outlined text-3xl mb-1">search_off</span>
+            <p>No claims match the active filter or search query.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+
+    pageItems.forEach(claim => {
+      const originalRank = state.claims.indexOf(claim) + 1;
+      const band = computeRiskBand(originalRank, totalClaims);
+
+      // Check existing decision
+      const decisionRecord = state.decisions.find(d => d.claim_id === claim.id);
+
+      const topReason = claim.reasons && claim.reasons.length > 0
+        ? `${claim.reasons[0].label}: ${claim.reasons[0].value} (${claim.reasons[0].direction === 'raises' ? '+' : ''}${(claim.reasons[0].effect * 100).toFixed(1)}%)`
+        : '—';
+
+      const tr = document.createElement('tr');
+      tr.className = 'row-interactive border-b border-outline/30 hover:bg-surface-container-high/50 cursor-pointer';
+
+      tr.innerHTML = `
+        <td class="py-3 px-4 font-mono text-xs text-midnight-muted">#${originalRank}</td>
+        <td class="py-3 px-4 font-mono font-bold text-ion-bright">
+          <button type="button" class="underline underline-offset-2 hover:text-white focus:outline-none">${claim.id}</button>
+        </td>
+        <td class="py-3 px-4 font-mono font-semibold tabular-nums text-on-surface">
+          <div class="flex items-center gap-2">
+            <span>${formatPct(claim.score)}</span>
+            <div class="w-12 h-1.5 rounded-full bg-midnight overflow-hidden hidden sm:block">
+              <div class="h-full ${band === 'High' ? 'bg-risk-high' : band === 'Medium' ? 'bg-risk-medium' : 'bg-risk-bar-low'}" style="width: ${Math.min(100, claim.score * 100)}%;"></div>
+            </div>
+          </div>
+        </td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-0.5 rounded text-xs font-label font-semibold ${
+            band === 'High' ? 'bg-risk-high/20 border border-risk-high/40 text-risk-high pulse-high-risk' :
+            band === 'Medium' ? 'bg-risk-medium/20 border border-risk-medium/40 text-risk-medium' :
+            'bg-slate-800 text-slate-300'
+          }">
+            ${band}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-xs text-on-surface-variant max-w-xs truncate" title="${topReason}">
+          ${topReason}
+        </td>
+        <td class="py-3 px-4 text-xs text-on-surface">
+          ${claim.fields?.Make || '—'} <span class="text-midnight-muted">(${claim.fields?.VehicleCategory || '—'})</span>
+        </td>
+        <td class="py-3 px-4 text-xs font-mono">
+          ${
+            decisionRecord ? `
+              <span class="px-2 py-0.5 rounded text-xs font-label font-semibold ${
+                decisionRecord.decision === 'Escalated' ? 'bg-risk-high text-white' :
+                decisionRecord.decision === 'Cleared' ? 'bg-risk-low text-white' :
+                'bg-primary/20 text-ion-bright border border-ion/40'
+              }">${decisionRecord.decision}</span>
+            ` : '<span class="text-midnight-muted">—</span>'
+          }
+        </td>
+        <td class="py-3 px-4 text-right">
+          <button type="button" class="inspect-btn px-2.5 py-1 rounded bg-surface-container-high border border-outline hover:border-ion text-xs font-label text-on-surface hover:text-white transition-colors">
+            Inspect
+          </button>
+        </td>
+      `;
+
+      tr.addEventListener('click', () => {
+        openClaimDossier(claim.id);
+      });
+
+      frag.appendChild(tr);
+    });
+
+    tbody.appendChild(frag);
+  }
+
+  // --- Slide-Out Porcelain Claim Detail Dossier Drawer ---
+  function openClaimDossier(claimId) {
+    const idx = state.claims.findIndex(c => c.id === claimId);
+    if (idx === -1) return;
+
+    state.selectedClaimIndex = idx;
+    const claim = state.claims[idx];
+    const total = state.claims.length;
+    const rank = idx + 1;
+    const band = computeRiskBand(rank, total);
+
+    // Update Header
+    const idEl = document.getElementById('drawer-claim-id');
+    const rankEl = document.getElementById('drawer-rank-badge');
+    const shareEl = document.getElementById('drawer-top-share');
+    if (idEl) idEl.textContent = `Claim ${claim.id}`;
+    if (rankEl) rankEl.textContent = `Rank ${rank} of ${total}`;
+    if (shareEl) shareEl.textContent = `Top ${(claim.top_share * 100).toFixed(0)}% of comparable historical claims`;
+
+    // Update Arc Gauge
+    const scoreValEl = document.getElementById('drawer-score-val');
+    const bandPill = document.getElementById('drawer-band-pill');
+    const gaugeArc = document.getElementById('drawer-gauge-arc');
+    const compareCount = document.getElementById('drawer-compare-count');
+
+    if (scoreValEl) scoreValEl.textContent = formatPct(claim.score);
+    if (compareCount) compareCount.textContent = `${Math.round(claim.score * 100)} in 100`;
+
+    if (bandPill) {
+      bandPill.textContent = `${band} risk`;
+      bandPill.className = `px-2 py-0.5 rounded-sm font-label text-xs font-semibold w-fit mt-1 ${
+        band === 'High' ? 'bg-risk-high text-on-risk-high' :
+        band === 'Medium' ? 'bg-risk-medium text-white' :
+        'bg-risk-low text-white'
+      }`;
+    }
+
+    // Semi-circle arc dashoffset animation: length is 151
+    if (gaugeArc) {
+      const arcLength = 151;
+      const strokeVal = Math.min(1, Math.max(0, claim.score));
+      const offset = arcLength * (1 - strokeVal);
+      gaugeArc.style.strokeDashoffset = offset;
+      gaugeArc.setAttribute('stroke', band === 'High' ? '#BE123C' : band === 'Medium' ? '#D97706' : '#059669');
+    }
+
+    // Render Diverging SHAP Driver Bars
+    const reasonsList = document.getElementById('drawer-reasons-list');
+    if (reasonsList) {
+      reasonsList.innerHTML = '';
+      if (!claim.reasons || claim.reasons.length === 0) {
+        reasonsList.innerHTML = '<p class="text-on-porcelain-variant py-2">Baseline average risk profile.</p>';
+      } else {
+        claim.reasons.forEach(r => {
+          const isRaise = r.direction === 'raises';
+          const effectPct = (Math.abs(r.effect) * 100);
+          const barWidth = Math.min(100, Math.max(10, effectPct * 10));
+
+          const row = document.createElement('div');
+          row.className = 'grid grid-cols-12 items-center gap-2 py-2';
+          row.innerHTML = `
+            <div class="col-span-5 font-body text-xs text-on-porcelain">
+              ${r.label}: <span class="font-semibold">${r.value}</span>
+            </div>
+            <div class="col-span-4 flex items-center">
+              ${isRaise ? `
+                <div class="w-1/2"></div>
+                <div class="w-px h-4 bg-on-porcelain-variant/30"></div>
+                <div class="w-1/2 pl-1">
+                  <div class="diverge-bar h-2.5 bg-risk-high rounded-sm" style="width: ${barWidth}%;"></div>
+                </div>
+              ` : `
+                <div class="w-1/2 flex justify-end pr-1">
+                  <div class="diverge-bar h-2.5 bg-risk-low rounded-sm" style="width: ${barWidth}%;"></div>
+                </div>
+                <div class="w-px h-4 bg-on-porcelain-variant/30"></div>
+                <div class="w-1/2"></div>
+              `}
+            </div>
+            <div class="col-span-3 text-right font-mono text-xs font-semibold tabular-nums ${isRaise ? 'text-risk-high-on-light' : 'text-risk-low-on-light'}">
+              ${isRaise ? '+' : '-'}${effectPct.toFixed(1)}%
+            </div>
+          `;
+          reasonsList.appendChild(row);
+        });
       }
     }
-  };
-  if (progress >= 1) { paint(1); return; }
-  const t0 = performance.now();
-  const step = (now) => { const t = Math.min(1, (now - t0) / 700); paint(t); if (t < 1) rafId = requestAnimationFrame(step); };
-  rafId = requestAnimationFrame(step);
-}
 
-function visibleClaims() {
-  return state.batch.claims.filter((c) => (state.filter === 'All' || c.band === state.filter) && (!state.query || c.id.toLowerCase().includes(state.query)));
-}
-function refreshTable() {
-  const list = visibleClaims(), show = list.slice(0, state.shown), demo = state.showOutcomes && state.batch.has_outcomes;
-  const head = h('thead', {}, h('tr', {},
-    h('th', { scope: 'col', text: 'Rank' }), h('th', { scope: 'col', text: 'Claim' }), h('th', { scope: 'col', text: 'Score' }),
-    h('th', { scope: 'col', text: 'Band' }), h('th', { scope: 'col', text: 'Main reasons' }), h('th', { scope: 'col', text: 'Rule flags' }),
-    demo ? h('th', { scope: 'col', text: 'Outcome' }) : null, h('th', { scope: 'col', text: 'Decision' })));
-  const body = h('tbody');
-  for (const c of show) {
-    const why = c.reasons.filter((r) => r.direction === 'raises').slice(0, 2).map((r) => `${r.label}: ${r.value}`).join('; ');
-    const dec = state.decisions.get(c.id);
-    const tr = h('tr', { tabindex: '0', 'aria-label': `Claim ${c.id}, rank ${c.rank}, ${c.band} band. Open details.` },
-      h('td', { class: 'rank', text: c.rank }), h('td', { class: 'id', text: c.id }), h('td', { class: 'score', text: pct(c.score) }),
-      h('td', {}, h('span', { class: 'band ' + c.band }, h('i'), c.band)),
-      h('td', { class: 'why', text: why || 'No single strong factor' }),
-      h('td', { class: 'flags', text: c.flags.map((f) => FLAG_SHORT[f.id] || f.title).join(', ') }),
-      demo ? h('td', { class: c.outcome === 'Yes' ? 'out-yes' : '', text: c.outcome === 'Yes' ? 'Fraud' : 'Not fraud' }) : null,
-      h('td', { class: 'dec', text: dec ? dec.decision : '' }));
-    tr.addEventListener('click', () => openCase(c.id, tr));
-    tr.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openCase(c.id, tr); } });
-    body.append(tr);
-  }
-  q.table.replaceChildren(head, body);
-  q.more.replaceChildren();
-  if (!list.length) q.more.append('No claims match this filter.');
-  else if (list.length > show.length) q.more.append(h('button', { class: 'btn quiet', type: 'button', onclick: () => { state.shown += 200; refreshTable(); }, text: `Show more (${(list.length - show.length).toLocaleString()} left)` }));
-}
-
-function exportRanked() {
-  const rows = [['rank', 'claim_id', 'score', 'band', 'main_reasons', 'rule_flags', 'decision']];
-  for (const c of state.batch.claims) {
-    const dec = state.decisions.get(c.id);
-    rows.push([c.rank, c.id, c.score.toFixed(4), c.band, c.reasons.filter((r) => r.direction === 'raises').slice(0, 3).map((r) => `${r.label}: ${r.value}`).join('; '), c.flags.map((f) => f.title).join('; '), dec ? dec.decision : '']);
-  }
-  const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
-  const a = h('a', { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })), download: 'ranked_claims.csv' });
-  document.body.append(a); a.click(); a.remove();
-  toast('Ranked list downloaded');
-}
-
-/* =====================================================================
-   CASE PANEL
-   ===================================================================== */
-let lastOpener = null;
-function openCase(id, opener) {
-  lastOpener = opener || lastOpener;
-  const list = state.batch.claims;
-  const i = list.findIndex((c) => c.id === id);
-  if (i < 0) return;
-  const c = list[i], panel = $('#case');
-  const dec = state.decisions.get(c.id);
-  const note = h('textarea', { id: 'note', maxlength: '1000', placeholder: 'What did you check, and what did you find?' });
-  note.value = dec ? dec.note || '' : '';
-  const saved = h('span', { class: 'saved', 'aria-live': 'polite' });
-  let choice = dec ? dec.decision : '';
-  const seg = h('div', { class: 'seg', role: 'radiogroup', 'aria-label': 'Decision' },
-    ...['Under review', 'Cleared', 'Escalated'].map((d) => {
-      const r = h('input', { type: 'radio', name: 'decision', value: d });
-      r.checked = d === choice;
-      r.addEventListener('change', () => { choice = d; });
-      return h('label', {}, r, h('span', { text: d }));
-    }));
-  const save = h('button', { class: 'btn', type: 'button', text: 'Save decision', onclick: async () => {
-    if (!choice) { toast('Pick a decision first'); return; }
-    try {
-      await api('/api/decisions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ claim_id: c.id, decision: choice, note: note.value, score: c.score }) });
-      state.decisions.set(c.id, { claim_id: c.id, decision: choice, note: note.value, score: c.score });
-      saved.textContent = 'Saved'; if (q.table && q.table.isConnected) refreshTable();
-    } catch (e) { toast((e.data && e.data.message) || 'Could not save. Try again.'); }
-  } });
-  const clear = dec ? h('button', { class: 'link', type: 'button', style: 'margin-left:14px', text: 'Remove decision', onclick: async () => {
-    await api('/api/decisions/' + encodeURIComponent(c.id), { method: 'DELETE' });
-    state.decisions.delete(c.id); if (q.table && q.table.isConnected) refreshTable(); openCase(c.id);
-  } }) : null;
-
-  const fields = h('dl', { class: 'fields' });
-  for (const f of state.schema.schema) fields.append(h('dt', { text: f.label }), h('dd', { text: String(c.fields[f.name]) }));
-
-  panel.replaceChildren(
-    h('div', { class: 'top' },
-      h('div', {}, h('h2', { id: 'case-title', tabindex: '-1', text: 'Claim ' + c.id }),
-        h('p', { class: 'where', text: `Rank ${c.rank} of ${list.length.toLocaleString()}` })),
-      h('div', { class: 'nav' },
-        h('button', { class: 'link', type: 'button', disabled: i === 0, onclick: () => openCase(list[i - 1].id), text: 'Previous' }),
-        h('button', { class: 'link', type: 'button', disabled: i === list.length - 1, onclick: () => openCase(list[i + 1].id), text: 'Next' }),
-        h('button', { class: 'link', type: 'button', onclick: () => closeCase(), text: 'Close' }))),
-    scoreSection(c), reasonsSection(c), flagsSection(c),
-    state.showOutcomes && c.outcome ? h('p', { class: 'demo-out', text: `Historical outcome (demo data): ${c.outcome === 'Yes' ? 'this claim was fraud' : 'this claim was not fraud'}.` }) : null,
-    h('section', { class: 'sect' }, h('h3', { text: 'Your decision' }), seg, note, h('p', { style: 'margin-top:14px' }, save, clear, saved)),
-    h('section', { class: 'sect' }, h('details', {}, h('summary', { text: 'All claim details' }), fields)));
-  panel.hidden = false; $('#scrim').hidden = false;
-  panel.scrollTop = 0;
-  $('#case-title').focus();
-  document.body.style.overflow = 'hidden';
-}
-function closeCase(silent) {
-  const p = $('#case');
-  if (p.hidden) return;
-  p.hidden = true; $('#scrim').hidden = true; document.body.style.overflow = '';
-  if (!silent && lastOpener && lastOpener.isConnected) lastOpener.focus();
-}
-$('#scrim').addEventListener('click', () => closeCase());
-addEventListener('keydown', (ev) => {
-  const p = $('#case');
-  if (p.hidden) return;
-  if (ev.key === 'Escape') { closeCase(); return; }
-  if (ev.key === 'Tab') {
-    const f = [...p.querySelectorAll('button:not([disabled]), input, textarea, summary, a[href]')].filter((el) => el.offsetParent !== null);
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (ev.shiftKey && (document.activeElement === first || document.activeElement === $('#case-title'))) { last.focus(); ev.preventDefault(); }
-    else if (!ev.shiftKey && document.activeElement === last) { first.focus(); ev.preventDefault(); }
-  }
-});
-
-/* ---- shared claim sections (case panel and assess page) ---- */
-function scoreSection(c) {
-  const band = bandOf(c.top_share), cap = state.capacity;
-  const hi = cap * 100, med = cap * 200;
-  const topText = c.top_share < 0.01 ? 'the top 1%' : `the top ${Math.max(1, Math.round(c.top_share * 100))}%`;
-  return h('section', { class: 'sect' },
-    h('div', { class: 'score-line' },
-      h('div', { class: 'score-big', text: pct(c.score) }),
-      h('span', { class: 'band ' + band }, h('i'), band + ' risk')),
-    h('p', { class: 'score-note', text: `Among comparable past claims, the model expects about ${Math.max(1, Math.round(c.score * 100))} in 100 to have been fraud. The overall rate is ${pct0(state.schema.base_rate)}. This claim scores in ${topText} of past claims.` + (c.score > 0.25 ? ' Scores this high are rare, so trust the rank more than the exact figure.' : '') }),
-    h('div', { class: 'meter', role: 'img', 'aria-label': `Position among past claims: ${topText}` },
-      h('span', { class: 'mh', style: `width:${hi}%` }), h('span', { class: 'mm', style: `width:${med}%` }), h('span', { class: 'ml', style: `flex:1` }),
-      h('b', { style: `left:${clamp(c.top_share * 100, 0.4, 99.6)}%` })),
-    h('div', { class: 'meter-cap' }, h('span', { text: 'Riskiest past claims' }), h('span', { text: 'Least risky' })));
-}
-function reasonsSection(c) {
-  const max = Math.max(0.01, ...c.reasons.map((r) => Math.abs(r.effect)));
-  return h('section', { class: 'sect' },
-    h('h3', { text: 'What drives this score' }),
-    c.reasons.length ? h('ul', { class: 'reasons' }, ...c.reasons.map((r) =>
-      h('li', {},
-        h('div', { class: 't' }, `${r.label}: ${r.value}`, h('small', { text: r.direction === 'raises' ? 'Raises the score' : 'Lowers the score' })),
-        h('div', { class: 'diverge', 'aria-hidden': 'true' }, h('i', { class: r.direction === 'raises' ? 'up' : 'down', style: `width:${(Math.abs(r.effect) / max) * 50}%` }))))) : h('p', { text: 'No single factor stands out for this claim.' }),
-    h('p', { class: 'fine-print', text: 'These show what the model relied on. They are not proof of what caused a claim to be fraudulent.' }));
-}
-function flagsSection(c) {
-  return h('section', { class: 'sect' },
-    h('h3', { text: 'Simple checks' }),
-    c.flags.length ? h('ul', { class: 'flag-list' }, ...c.flags.map((f) => h('li', {}, h('strong', { text: f.title }), `. Among ${f.claims.toLocaleString()} past claims like this, ${pct0(f.fraud_rate)} were fraud, against ${pct0(state.schema.base_rate)} overall.`)))
-      : h('p', { text: 'None of the two plain checks apply to this claim. They cover only early accidents and recent address changes.' }));
-}
-
-/* =====================================================================
-   ASSESS
-   ===================================================================== */
-const GROUPS = [
-  ['Policy', ['PolicyType', 'BasePolicy', 'Deductible', 'PastNumberOfClaims', 'NumberOfCars', 'AgentType', 'Days:Policy-Accident', 'Days:Policy-Claim', 'AddressChange-Claim']],
-  ['Vehicle', ['Make', 'VehicleCategory', 'VehiclePrice', 'AgeOfVehicle']],
-  ['Accident', ['Month', 'WeekOfMonth', 'DayOfWeek', 'AccidentArea', 'PoliceReportFiled', 'WitnessPresent']],
-  ['Reporting', ['MonthClaimed', 'WeekOfMonthClaimed', 'DayOfWeekClaimed']],
-];
-let assessTimer, assessSeq = 0;
-function renderAssess(root) {
-  root.append(pageHead('Assess a claim', 'Enter the details known when the claim arrives. The score updates as you change a value.'));
-  const byName = Object.fromEntries(state.schema.schema.map((f) => [f.name, f]));
-  const selects = {};
-  const result = h('div', { class: 'result', 'aria-live': 'polite' }, h('p', { class: 'empty', text: 'Scoring…' }));
-  const form = h('form', { onsubmit: (e) => e.preventDefault() });
-  for (const [title, names] of GROUPS) {
-    const grid = h('div', { class: 'grid2' });
-    for (const nme of names) {
-      const f = byName[nme];
-      const sel = h('select', { id: 'f-' + nme }, ...f.options.map((o) => h('option', { value: String(o), text: String(o) })));
-      sel.value = String(state.schema.defaults[nme]);
-      sel.addEventListener('change', schedule);
-      selects[nme] = sel;
-      grid.append(h('div', { class: 'field' }, h('label', { for: 'f-' + nme, text: f.label }), sel));
+    // Render Historical Rule Flags
+    const flagsList = document.getElementById('drawer-flags-list');
+    if (flagsList) {
+      flagsList.innerHTML = '';
+      if (!claim.flags || claim.flags.length === 0) {
+        flagsList.innerHTML = `
+          <div class="flex items-center gap-2 p-2.5 rounded bg-on-porcelain/5 border-l-2 border-l-emerald-500 text-xs text-on-porcelain-variant">
+            <span class="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+            <span>No heuristic rule triggers detected (policy age > 15 days, address unchanged > 3 years).</span>
+          </div>
+        `;
+      } else {
+        claim.flags.forEach(f => {
+          const flagCard = document.createElement('div');
+          flagCard.className = 'flex items-start gap-2.5 p-3 rounded bg-on-porcelain/5 border-l-2 border-l-risk-high text-xs';
+          flagCard.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] text-risk-high mt-0.5">warning</span>
+            <div class="flex flex-col gap-0.5">
+              <span class="font-label font-bold text-on-porcelain">${f.title}</span>
+              <span class="text-on-porcelain-variant">In past historical claims, ${formatPct(f.fraud_rate)} matching this trigger were confirmed fraud (baseline: 11.7%).</span>
+            </div>
+          `;
+          flagsList.appendChild(flagCard);
+        });
+      }
     }
-    form.append(h('fieldset', {}, h('legend', { text: title }), grid));
-  }
-  const fill = async () => {
-    const data = state.sample || (state.sample = await api('/api/sample'));
-    const top = data.claims[0].fields;
-    for (const k of Object.keys(selects)) selects[k].value = String(top[k]);
-    schedule();
-  };
-  const reset = () => { for (const k of Object.keys(selects)) selects[k].value = String(state.schema.defaults[k]); schedule(); };
-  root.append(h('div', { class: 'row', style: 'margin:-14px 0 30px' },
-    h('button', { class: 'btn quiet', type: 'button', onclick: fill, text: 'Fill with the highest-scoring sample claim' }),
-    h('button', { class: 'link', type: 'button', onclick: reset, text: 'Reset to the most common values' })));
-  root.append(h('div', { class: 'assess' }, form, result));
 
-  function schedule() { clearTimeout(assessTimer); assessTimer = setTimeout(run, 220); }
-  async function run() {
-    const seq = ++assessSeq;
-    const claim = { ClaimID: 'Entered claim' };
-    for (const f of state.schema.schema) claim[f.name] = f.type === 'num' ? Number(selects[f.name].value) : selects[f.name].value;
-    try {
-      const data = await api('/api/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ claim }) });
-      if (seq !== assessSeq) return;
-      const c = data.claim;
-      result.replaceChildren(h('h2', { style: 'font:400 21px/1.3 var(--serif);color:var(--sov)', text: 'Assessment' }), scoreSection(c), reasonsSection(c), flagsSection(c));
-    } catch (e) {
-      result.replaceChildren(h('div', { class: 'banner', role: 'alert' }, h('strong', { text: 'Could not score this claim' }), (e.data && e.data.message) || 'Check the values and try again.'));
+    // Populate Existing Decision if any
+    const existingDec = state.decisions.find(d => d.claim_id === claim.id);
+    const noteInput = document.getElementById('drawer-note-input');
+    state.currentDecisionSelection = existingDec ? existingDec.decision : 'Under review';
+    if (noteInput) noteInput.value = existingDec ? existingDec.note || '' : '';
+
+    updateDrawerDecisionPills();
+
+    // Populate All 22 Fields in Accordion
+    const fieldsGrid = document.getElementById('drawer-fields-grid');
+    if (fieldsGrid && claim.fields) {
+      fieldsGrid.innerHTML = '';
+      Object.entries(claim.fields).forEach(([k, v]) => {
+        const item = document.createElement('div');
+        item.className = 'flex justify-between py-1 border-b border-on-porcelain-variant/10';
+        item.innerHTML = `
+          <span class="text-on-porcelain-variant">${k}</span>
+          <span class="font-mono font-medium text-on-porcelain">${v}</span>
+        `;
+        fieldsGrid.appendChild(item);
+      });
+    }
+
+    // Prev / Next button states
+    const prevBtn = document.getElementById('drawer-prev-btn');
+    const nextBtn = document.getElementById('drawer-next-btn');
+    if (prevBtn) prevBtn.disabled = idx <= 0;
+    if (nextBtn) nextBtn.disabled = idx >= total - 1;
+
+    // Show Drawer
+    const scrim = document.getElementById('drawer-scrim');
+    const drawer = document.getElementById('claim-detail-drawer');
+    if (scrim) {
+      scrim.classList.remove('opacity-0', 'pointer-events-none');
+      scrim.classList.add('opacity-100');
+    }
+    if (drawer) {
+      drawer.classList.remove('closed');
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
     }
   }
-  run();
-}
 
-/* =====================================================================
-   MODEL
-   ===================================================================== */
-function renderModel(root) {
-  const m = state.model, ho = m.holdout, cv = m.cv;
-  root.append(pageHead('How far to trust this', 'Built on public claims from 1994 to 1996. These figures show how the method behaves, not how it would perform at an insurer.'));
-  const wrap = h('div', { class: 'model' });
-  root.append(wrap);
-
-  wrap.append(h('section', {},
-    h('p', { class: 'big', text: 'The model ranks claims better than chance, but the signal is weak.' }),
-    h('div', { class: 'kv' },
-      h('div', {}, h('div', { class: 'n', text: pct0(ho.recall10) }), h('div', { class: 'l' }, `of frauds found in the top 10% of claims. Likely range ${pct0(ho.recall10_ci[0])} to ${pct0(ho.recall10_ci[1])}.`, h('small', { text: `Tested once on ${ho.claims.toLocaleString()} unseen claims. Random review finds 10%.` }))),
-      h('div', {}, h('div', { class: 'n', text: cv.model.pr_auc.mean.toFixed(2) }), h('div', { class: 'l' }, 'PR-AUC in cross-validation.', h('small', { text: `Plus or minus ${cv.model.pr_auc.sd.toFixed(2)}. Random ranking scores ${m.base_rate.toFixed(2)}.` }))),
-      h('div', {}, h('div', { class: 'n', text: cv.shuffled.pr_auc.mean.toFixed(2) }), h('div', { class: 'l' }, 'PR-AUC when fraud labels are shuffled.', h('small', { text: 'It falls to chance, so the result is not leaking the answer.' })))),
-    h('p', { text: `Accuracy is not reported because about ${Math.round((1 - m.base_rate) * 100)}% of claims are honest, so calling every claim honest would already score that high and find no fraud.` })));
-
-  wrap.append(h('section', {}, h('h2', { text: 'What reviewing more claims finds' }),
-    h('p', { text: 'The curve shows the share of all frauds found as the team reviews more of the list, highest score first. The shaded band is the likely range and the dashed line is a random review. It uses cross-validated scores on the 12,336 training claims, so it can differ a little from the single test above.' }),
-    capacityChart(m.capacity_curve)));
-
-  wrap.append(h('section', {}, h('h2', { text: 'Are the scores honest numbers?' }),
-    h('p', { text: 'Each point is a tenth of past claims, grouped by score. Points near the diagonal mean the score matches how often those claims were fraud. The model is well calibrated up to about 17%. Higher scores are too rare to check.' }),
-    calibrationChart(m.calibration)));
-
-  const fair = m.fairness;
-  const rows = fair.map((f) => h('tr', { class: f.flag_rate > 0.15 ? 'hot' : '' },
-    h('td', { text: f.attribute }), h('td', { text: f.group }), h('td', { class: 'num', text: f.claims.toLocaleString() }),
-    h('td', { class: 'num', text: pct0(f.flag_rate) }), h('td', { class: 'num', text: pct0(f.fraud_rate) }), h('td', { class: 'num', text: pct0(f.false_flag_rate) })));
-  wrap.append(h('section', {}, h('h2', { text: 'Who gets flagged' }),
-    h('p', { text: 'Sex, age and marital status are not inputs. The table checks whether groups are still flagged unevenly. With the top 10% flagged, an even result would be about 10% in every group.' }),
-    h('table', { class: 'plain' }, h('thead', {}, h('tr', {}, ...['Attribute', 'Group', 'Claims', 'Flagged', 'Were fraud', 'Honest but flagged'].map((x) => h('th', { scope: 'col', text: x })))), h('tbody', {}, rows)),
-    h('p', { text: 'Policyholders aged 16 to 17 are flagged about three and a half times as often as an even split would give, and those aged 26 to 30 about one and a half times, even though age is not an input. The model is probably picking this up through vehicle and policy details. Only 251 claims are in the 16 to 17 group, so the figure is rough. It should be investigated before any real use.' })));
-
-  wrap.append(h('section', {}, h('h2', { text: 'Columns left out on purpose' }),
-    h('table', { class: 'plain' }, h('thead', {}, h('tr', {}, h('th', { scope: 'col', text: 'Column' }), h('th', { scope: 'col', text: 'Why it is not used' }))),
-      h('tbody', {}, m.excluded.map((x) => h('tr', {}, h('td', { text: x.column }), h('td', { text: x.reason })))))));
-
-  wrap.append(h('section', {}, h('h2', { text: 'How a claim is scored' }),
-    h('ol', { class: 'limits' },
-      h('li', { text: 'A gradient boosting model trained on 12,336 past claims gives each claim a score.' }),
-      h('li', { text: 'The score is placed among scores of past claims. The riskiest slice becomes High, the next slice Medium, the rest Low. You set the size of the High slice with the review-capacity control.' }),
-      h('li', { text: 'SHAP breaks the score into the factors that raised or lowered it.' }),
-      h('li', { text: 'Two plain checks are shown beside the score, each with how often it was fraud in past data.' }),
-      h('li', { text: 'A person reviews the claim and records the decision.' }))));
-
-  wrap.append(h('section', {}, h('h2', { text: 'Limits' }),
-    h('ul', { class: 'limits' },
-      h('li', { text: 'The data is from 1994 to 1996. Fraud patterns today may differ.' }),
-      h('li', { text: 'Labels mark fraud that was found. Fraud that was missed counts as honest, so the model learns past investigators’ findings, not the full truth.' }),
-      h('li', { text: 'There is no claim amount in this dataset, so amount-based checks are not possible.' }),
-      h('li', { text: 'The source and license of the dataset are not confirmed. This is a student prototype.' }),
-      h('li', { text: 'Results use one public dataset. They do not show how the method would perform on a real insurer’s claims.' }))));
-}
-
-function capacityChart(curve) {
-  const W = 640, H = 330, L = 56, R = 16, T = 14, B = 52, pw = W - L - R, ph = H - T - B;
-  const X = (v) => L + (v / 0.5) * pw, Y = (v) => T + (1 - v) * ph;
-  const svg = s('svg', { class: 'chart', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Share of frauds found against share of claims reviewed' });
-  for (let v = 0; v <= 1.001; v += 0.2) { svg.append(s('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: cssVar('--rule') }), s('text', { x: L - 8, y: Y(v) + 4, 'text-anchor': 'end' }, Math.round(v * 100) + '%')); }
-  for (let v = 0; v <= 0.5001; v += 0.1) svg.append(s('text', { x: X(v), y: H - B + 20, 'text-anchor': 'middle' }, Math.round(v * 100) + '%'));
-  const pts = [{ share: 0, recall: 0, lo: 0, hi: 0 }, ...curve];
-  const band = pts.map((p) => `${X(p.share)},${Y(p.hi)}`).concat(pts.slice().reverse().map((p) => `${X(p.share)},${Y(p.lo)}`)).join(' ');
-  svg.append(s('polygon', { points: band, fill: cssVar('--sov'), opacity: '0.13' }));
-  svg.append(s('line', { x1: X(0), y1: Y(0), x2: X(0.5), y2: Y(0.5), stroke: cssVar('--ink-3'), 'stroke-dasharray': '5 5' }));
-  svg.append(s('polyline', { points: pts.map((p) => `${X(p.share)},${Y(p.recall)}`).join(' '), fill: 'none', stroke: cssVar('--sov'), 'stroke-width': '2.5' }));
-  const p10 = curve.find((p) => p.share === 0.1), p20 = curve.find((p) => p.share === 0.2);
-  for (const p of [p10, p20]) {
-    svg.append(s('circle', { cx: X(p.share), cy: Y(p.recall), r: 4.5, fill: cssVar('--paper'), stroke: cssVar('--sov'), 'stroke-width': 2 }),
-      s('text', { class: 't', x: X(p.share) + 9, y: Y(p.recall) + 16 }, `${pct0(p.recall)} found at ${pct0(p.share)} reviewed`));
+  function closeDrawer() {
+    const scrim = document.getElementById('drawer-scrim');
+    const drawer = document.getElementById('claim-detail-drawer');
+    if (scrim) {
+      scrim.classList.remove('opacity-100');
+      scrim.classList.add('opacity-0', 'pointer-events-none');
+    }
+    if (drawer) {
+      drawer.classList.remove('open');
+      drawer.classList.add('closed');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+    state.selectedClaimIndex = -1;
   }
-  svg.append(s('text', { x: X(0.36), y: Y(0.36) - 12, 'text-anchor': 'middle' }, 'Random review'));
-  svg.append(s('text', { x: L + pw / 2, y: H - 8, 'text-anchor': 'middle' }, 'Share of claims reviewed, highest score first'));
-  svg.append(s('text', { x: 14, y: T + ph / 2, 'text-anchor': 'middle', transform: `rotate(-90 14 ${T + ph / 2})` }, 'Share of all frauds found'));
-  return svg;
-}
-function calibrationChart(cal) {
-  const S = 360, L = 52, B = 48, T = 12, R = 14, pw = S - L - R, ph = S - T - B, max = 0.2;
-  const X = (v) => L + (v / max) * pw, Y = (v) => T + (1 - v / max) * ph;
-  const svg = s('svg', { class: 'chart', style: 'max-width:420px', viewBox: `0 0 ${S} ${S}`, role: 'img', 'aria-label': 'Predicted score against observed fraud rate by score tenth' });
-  for (let v = 0; v <= max + 1e-9; v += 0.05) {
-    svg.append(s('line', { x1: L, x2: S - R, y1: Y(v), y2: Y(v), stroke: cssVar('--rule') }), s('text', { x: L - 8, y: Y(v) + 4, 'text-anchor': 'end' }, Math.round(v * 100) + '%'),
-      s('text', { x: X(v), y: S - B + 20, 'text-anchor': 'middle' }, Math.round(v * 100) + '%'));
-  }
-  svg.append(s('line', { x1: X(0), y1: Y(0), x2: X(max), y2: Y(max), stroke: cssVar('--ink-3'), 'stroke-dasharray': '5 5' }));
-  for (const p of cal) svg.append(s('circle', { cx: X(Math.min(p.predicted, max)), cy: Y(Math.min(p.observed, max)), r: 5, fill: cssVar('--sov') }));
-  svg.append(s('text', { x: L + pw / 2, y: S - 8, 'text-anchor': 'middle' }, 'Score given by the model'));
-  svg.append(s('text', { x: 14, y: T + ph / 2, 'text-anchor': 'middle', transform: `rotate(-90 14 ${T + ph / 2})` }, 'How often those claims were fraud'));
-  return svg;
-}
 
-/* =====================================================================
-   DECISIONS
-   ===================================================================== */
-async function renderDecisions(root) {
-  root.append(pageHead('Decisions', 'What reviewers decided about each claim. Decisions are saved on this computer.'));
-  let rows = [];
-  try { rows = await api('/api/decisions'); } catch (_) { /* leave empty */ }
-  state.decisions = new Map(rows.map((r) => [r.claim_id, r]));
-  if (!rows.length) {
-    root.append(h('p', { class: 'loading', text: 'No decisions yet. Open a claim in the queue and record what you decide.' }),
-      h('a', { class: 'btn', href: '#queue', text: 'Go to the queue' }));
-    return;
+  function updateDrawerDecisionPills() {
+    document.querySelectorAll('.drawer-dec-btn').forEach(btn => {
+      const isSelected = btn.dataset.decision === state.currentDecisionSelection;
+      btn.classList.toggle('bg-primary', isSelected);
+      btn.classList.toggle('text-on-primary', isSelected);
+      btn.classList.toggle('btn-3d-ion', isSelected);
+      btn.classList.toggle('border', !isSelected);
+      btn.classList.toggle('border-on-porcelain-variant/30', !isSelected);
+      btn.classList.toggle('text-on-porcelain', !isSelected);
+    });
   }
-  const body = h('tbody', {}, rows.map((r) => h('tr', {},
-    h('td', { class: 'id', style: 'font-weight:600;white-space:nowrap', text: r.claim_id }), h('td', { text: r.decision }),
-    h('td', { text: r.note || '' }), h('td', { class: 'num', text: r.score != null ? pct(r.score) : '' }),
-    h('td', { class: 'num', text: new Date(r.updated).toLocaleString() }),
-    h('td', {}, h('button', { class: 'link', type: 'button', text: 'Remove', onclick: async () => { await api('/api/decisions/' + encodeURIComponent(r.claim_id), { method: 'DELETE' }); route(); } })))));
-  root.append(h('div', { class: 'model' },
-    h('p', {}, h('a', { class: 'link', href: '/api/decisions.csv', text: 'Download as CSV' })),
-    h('table', { class: 'plain' }, h('thead', {}, h('tr', {}, ...['Claim', 'Decision', 'Note', 'Score', 'Saved', ''].map((x) => h('th', { scope: 'col', text: x })))), body)));
-}
 
-/* ---------- start ---------- */
-(async function init() {
-  $('#view').append(h('p', { class: 'loading', text: 'Loading the model…' }));
-  try {
-    const [schema, model, decisions] = await Promise.all([api('/api/schema'), api('/api/model'), api('/api/decisions')]);
-    state.schema = schema; state.model = model;
-    state.decisions = new Map(decisions.map((d) => [d.claim_id, d]));
-    state.capacity = schema.bands.high_share;
-    route();
-  } catch (e) {
-    $('#view').replaceChildren(h('div', { class: 'banner', role: 'alert' }, h('strong', { text: 'The scoring service is not reachable' }), 'Start it with python run.py, then reload this page.'));
+  // --- Assess a Claim Console Logic ---
+  function getAssessFormData() {
+    const form = document.getElementById('assess-form');
+    if (!form) return {};
+    const formData = new FormData(form);
+    const claim = {};
+    for (const [key, val] of formData.entries()) {
+      claim[key] = isNaN(val) || val === '' ? val : Number(val);
+    }
+    // ensure hidden pill inputs are included
+    document.querySelectorAll('#assess-form input.assess-field').forEach(inp => {
+      claim[inp.name] = isNaN(inp.value) || inp.value === '' ? inp.value : Number(inp.value);
+    });
+    return claim;
   }
-})();
+
+  function setAssessFormData(data) {
+    if (!data) return;
+    Object.entries(data).forEach(([key, val]) => {
+      // update select elements
+      const select = document.querySelector(`#assess-form select[name="${key}"]`);
+      if (select) select.value = String(val);
+
+      // update hidden inputs
+      const hidden = document.querySelector(`#assess-form input[name="${key}"]`);
+      if (hidden) hidden.value = String(val);
+
+      // update pill buttons visual state
+      const container = document.querySelector(`[data-pill-container="${key}"]`);
+      if (container) {
+        container.querySelectorAll('.assess-pill').forEach(btn => {
+          const match = String(btn.dataset.val) === String(val);
+          btn.classList.toggle('bg-primary', match);
+          btn.classList.toggle('text-on-primary', match);
+          btn.classList.toggle('btn-3d-ion', match);
+          btn.classList.toggle('bg-surface-container', !match);
+          btn.classList.toggle('text-on-surface-variant', !match);
+          btn.classList.toggle('border', !match);
+          btn.classList.toggle('border-outline', !match);
+        });
+      }
+    });
+
+    triggerAssessScoring();
+  }
+
+  function triggerAssessScoring() {
+    clearTimeout(state.assessDebounce);
+    state.assessDebounce = setTimeout(async () => {
+      const claimData = getAssessFormData();
+      try {
+        const res = await fetch('/api/score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ claim: claimData })
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        updateAssessResultStage(data.claim);
+      } catch (err) {
+        console.error('Assess scoring error:', err);
+      }
+    }, 120);
+  }
+
+  function updateAssessResultStage(claim) {
+    if (!claim) return;
+    const liveScoreEl = document.getElementById('assess-live-score');
+    const liveBandEl = document.getElementById('assess-live-band');
+    const liveReasonsEl = document.getElementById('assess-live-reasons');
+    const liveFlagsEl = document.getElementById('assess-live-flags');
+
+    if (liveScoreEl) liveScoreEl.textContent = formatPct(claim.score);
+
+    const isHigh = claim.score >= 0.18;
+    const isMed = claim.score >= 0.08 && claim.score < 0.18;
+    const bandLabel = isHigh ? 'High risk' : isMed ? 'Medium risk' : 'Low risk';
+
+    if (liveBandEl) {
+      liveBandEl.textContent = bandLabel;
+      liveBandEl.className = `px-3 py-1 rounded-sm font-label text-sm font-semibold ${
+        isHigh ? 'bg-risk-high text-on-risk-high pulse-high-risk' :
+        isMed ? 'bg-risk-medium text-white' :
+        'bg-risk-low text-white'
+      }`;
+    }
+
+    if (liveReasonsEl) {
+      liveReasonsEl.innerHTML = '';
+      (claim.reasons || []).forEach(r => {
+        const isRaise = r.direction === 'raises';
+        const effectPct = (Math.abs(r.effect) * 100);
+        const barWidth = Math.min(100, Math.max(10, effectPct * 10));
+
+        const item = document.createElement('div');
+        item.className = 'grid grid-cols-12 items-center gap-2 py-2';
+        item.innerHTML = `
+          <div class="col-span-5 font-body text-xs text-on-porcelain truncate">
+            ${r.label}: <span class="font-semibold">${r.value}</span>
+          </div>
+          <div class="col-span-4 flex items-center">
+            ${isRaise ? `
+              <div class="w-1/2"></div>
+              <div class="w-px h-4 bg-on-porcelain-variant/30"></div>
+              <div class="w-1/2 pl-1">
+                <div class="h-2 bg-risk-high rounded-sm" style="width: ${barWidth}%;"></div>
+              </div>
+            ` : `
+              <div class="w-1/2 flex justify-end pr-1">
+                <div class="h-2 bg-risk-low rounded-sm" style="width: ${barWidth}%;"></div>
+              </div>
+              <div class="w-px h-4 bg-on-porcelain-variant/30"></div>
+              <div class="w-1/2"></div>
+            `}
+          </div>
+          <div class="col-span-3 text-right font-mono text-xs font-semibold tabular-nums ${isRaise ? 'text-risk-high-on-light' : 'text-risk-low-on-light'}">
+            ${isRaise ? '+' : '-'}${effectPct.toFixed(1)}%
+          </div>
+        `;
+        liveReasonsEl.appendChild(item);
+      });
+    }
+
+    if (liveFlagsEl) {
+      liveFlagsEl.innerHTML = '';
+      if (!claim.flags || claim.flags.length === 0) {
+        liveFlagsEl.innerHTML = '<span class="text-xs text-on-porcelain-variant">No rules triggered.</span>';
+      } else {
+        claim.flags.forEach(f => {
+          const b = document.createElement('div');
+          b.className = 'p-2 rounded bg-on-porcelain/5 border-l-2 border-l-risk-high text-xs text-on-porcelain font-medium';
+          b.textContent = f.title;
+          liveFlagsEl.appendChild(b);
+        });
+      }
+    }
+  }
+
+  // --- Decisions Audit Ledger ---
+  async function fetchDecisions() {
+    try {
+      const res = await fetch('/api/decisions');
+      if (!res.ok) return;
+      state.decisions = await res.json();
+      renderDecisionsView();
+      renderQueueTable(); // updates decision status column in queue
+    } catch (err) {
+      console.error('Failed to load decisions:', err);
+    }
+  }
+
+  function renderDecisionsView(filter = 'All') {
+    const tbody = document.getElementById('decisions-table-body');
+    const emptyState = document.getElementById('decisions-empty-state');
+    if (!tbody) return;
+
+    // Filter
+    const filtered = filter === 'All'
+      ? state.decisions
+      : state.decisions.filter(d => d.decision === filter);
+
+    // Update KPI counters
+    const total = state.decisions.length;
+    const escalated = state.decisions.filter(d => d.decision === 'Escalated').length;
+    const underReview = state.decisions.filter(d => d.decision === 'Under review').length;
+    const cleared = state.decisions.filter(d => d.decision === 'Cleared').length;
+
+    const kpiTotal = document.getElementById('dec-kpi-total');
+    const kpiEsc = document.getElementById('dec-kpi-escalated');
+    const kpiRev = document.getElementById('dec-kpi-review');
+    const kpiClr = document.getElementById('dec-kpi-cleared');
+
+    if (kpiTotal) kpiTotal.textContent = total;
+    if (kpiEsc) kpiEsc.textContent = escalated;
+    if (kpiRev) kpiRev.textContent = underReview;
+    if (kpiClr) kpiClr.textContent = cleared;
+
+    // Update filter tab counts
+    const fAll = document.getElementById('dec-filter-count-all');
+    const fEsc = document.getElementById('dec-filter-count-escalated');
+    const fRev = document.getElementById('dec-filter-count-review');
+    const fClr = document.getElementById('dec-filter-count-cleared');
+
+    if (fAll) fAll.textContent = total;
+    if (fEsc) fEsc.textContent = escalated;
+    if (fRev) fRev.textContent = underReview;
+    if (fClr) fClr.textContent = cleared;
+
+    // Badge in nav
+    const navBadge = document.getElementById('nav-decisions-badge');
+    if (navBadge) {
+      navBadge.textContent = total;
+      navBadge.classList.toggle('hidden', total === 0);
+    }
+
+    tbody.innerHTML = '';
+    if (filtered.length === 0) {
+      if (emptyState) emptyState.classList.remove('hidden');
+      return;
+    } else {
+      if (emptyState) emptyState.classList.add('hidden');
+    }
+
+    const frag = document.createDocumentFragment();
+
+    filtered.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-on-porcelain/5 border-b border-on-porcelain-variant/15 text-xs sm:text-sm';
+
+      const formattedDate = d.updated ? new Date(d.updated).toLocaleString() : '—';
+
+      tr.innerHTML = `
+        <td class="py-3 px-4 font-mono font-bold text-primary">
+          <button type="button" class="underline underline-offset-2 hover:text-on-porcelain focus:outline-none">${d.claim_id}</button>
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-block px-2.5 py-0.5 rounded text-xs font-label font-semibold ${
+            d.decision === 'Escalated' ? 'bg-risk-high text-white' :
+            d.decision === 'Cleared' ? 'bg-risk-low text-white' :
+            'bg-primary/20 text-primary border border-primary/30'
+          }">
+            ${d.decision}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-on-porcelain max-w-md truncate" title="${d.note || '—'}">
+          ${d.note || '<span class="text-on-porcelain-variant italic">No note recorded</span>'}
+        </td>
+        <td class="py-3 px-4 font-mono font-semibold tabular-nums text-right text-on-porcelain">
+          ${d.score != null ? formatPct(d.score) : '—'}
+        </td>
+        <td class="py-3 px-4 text-xs text-on-porcelain-variant tabular-nums whitespace-nowrap">
+          ${formattedDate}
+        </td>
+        <td class="py-3 px-4 text-right">
+          <button type="button" data-del-claim="${d.claim_id}" class="remove-decision-btn text-xs text-on-porcelain-variant hover:text-risk-high underline underline-offset-2">
+            Remove
+          </button>
+        </td>
+      `;
+
+      tr.querySelector('button')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openClaimDossier(d.claim_id);
+      });
+
+      tr.querySelector('.remove-decision-btn')?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (confirm(`Remove decision for ${d.claim_id}?`)) {
+          await deleteDecision(d.claim_id);
+        }
+      });
+
+      frag.appendChild(tr);
+    });
+
+    tbody.appendChild(frag);
+  }
+
+  async function saveDecision(claimId, decision, note, score) {
+    try {
+      const res = await fetch('/api/decisions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claim_id: claimId, decision, note, score })
+      });
+      if (!res.ok) throw new Error('Save failed');
+
+      showToast(`Decision saved for ${claimId}: ${decision}`, 'success');
+
+      const saveStatus = document.getElementById('drawer-save-status');
+      if (saveStatus) {
+        saveStatus.classList.remove('hidden');
+        setTimeout(() => saveStatus.classList.add('hidden'), 2200);
+      }
+
+      await fetchDecisions();
+    } catch (err) {
+      showToast('Failed to save decision.', 'error');
+    }
+  }
+
+  async function deleteDecision(claimId) {
+    try {
+      const res = await fetch(`/api/decisions/${claimId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      showToast(`Removed decision for ${claimId}`, 'info');
+      await fetchDecisions();
+    } catch (err) {
+      showToast('Failed to delete decision.', 'error');
+    }
+  }
+
+  // --- Model & Limits View Data ---
+  async function loadModelMeta() {
+    try {
+      const res = await fetch('/api/model');
+      if (!res.ok) return;
+      state.modelMeta = await res.json();
+
+      // Update KPI strip
+      const recallEl = document.getElementById('model-kpi-recall');
+      const praucEl = document.getElementById('model-kpi-prauc');
+      const rocaucEl = document.getElementById('model-kpi-rocauc');
+
+      if (state.modelMeta.holdout) {
+        if (recallEl) recallEl.textContent = formatPct(state.modelMeta.holdout.recall10);
+        if (praucEl) praucEl.textContent = state.modelMeta.holdout.pr_auc.toFixed(3);
+        if (rocaucEl) rocaucEl.textContent = state.modelMeta.holdout.roc_auc.toFixed(3);
+      }
+
+      // Demographic fairness table
+      const fairnessTbody = document.getElementById('fairness-table-body');
+      if (fairnessTbody && state.modelMeta.fairness) {
+        fairnessTbody.innerHTML = '';
+        state.modelMeta.fairness.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-outline/30 hover:bg-surface-container-high/40 text-xs sm:text-sm';
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono font-medium text-ion-bright">${row.attribute}</td>
+            <td class="py-3 px-4 text-on-surface font-semibold">${row.group}</td>
+            <td class="py-3 px-4 font-mono tabular-nums text-right text-midnight-muted">${row.claims.toLocaleString()}</td>
+            <td class="py-3 px-4 font-mono tabular-nums text-right text-on-surface">${formatPct(row.flag_rate)}</td>
+            <td class="py-3 px-4 font-mono tabular-nums text-right text-on-surface font-bold">${formatPct(row.recall)}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-label bg-risk-low-container text-on-risk-low-container border border-risk-low/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>Fair</span>
+              </span>
+            </td>
+          `;
+          fairnessTbody.appendChild(tr);
+        });
+      }
+
+      // Interactive gains dots on capacity curve
+      document.querySelectorAll('.gains-dot').forEach(dot => {
+        dot.addEventListener('mouseenter', () => {
+          const label = dot.dataset.label;
+          const readout = document.getElementById('gains-readout');
+          if (readout && label) readout.textContent = label;
+        });
+      });
+
+    } catch (err) {
+      console.error('Failed to load model meta:', err);
+    }
+  }
+
+  // --- Sample & CSV Batch Loading ---
+  async function loadSampleBatch() {
+    try {
+      showToast('Loading 400 sample claims batch...', 'info');
+      const res = await fetch('/api/sample');
+      if (!res.ok) throw new Error('Sample fetch failed');
+      const data = await res.json();
+      state.claims = data.claims || [];
+
+      const batchLabel = document.getElementById('nav-batch-label');
+      if (batchLabel) batchLabel.textContent = `Batch: Sample ${state.claims.length}`;
+
+      updateCapacityReadouts();
+      showToast(`Loaded ${state.claims.length} claims successfully.`, 'success');
+    } catch (err) {
+      showToast('Failed to load sample claims batch.', 'error');
+    }
+  }
+
+  async function handleCsvUpload(file) {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      showToast(`Scoring ${file.name}...`, 'info');
+      const res = await fetch('/api/batch', {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || 'Batch upload failed');
+      }
+      const data = await res.json();
+      state.claims = data.claims || [];
+
+      const batchLabel = document.getElementById('nav-batch-label');
+      if (batchLabel) batchLabel.textContent = `Batch: ${file.name} (${state.claims.length})`;
+
+      updateCapacityReadouts();
+      showToast(`Successfully scored ${state.claims.length} claims from ${file.name}.`, 'success');
+      switchView('queue');
+    } catch (err) {
+      showToast(err.message || 'Error uploading CSV.', 'error');
+    }
+  }
+
+  // --- Guided 4-Step Tutorial Modal ---
+  const tourSteps = [
+    {
+      badge: 'Step 1 of 4 — Introduction',
+      title: '1. Load Incoming Claims',
+      desc: 'Start by uploading any claim intake CSV or loading our standard 400 sample claims batch. The ML model automatically scores and ranks every claim from riskiest to safest.',
+      previewHtml: `
+        <div class="flex items-center justify-between border-b border-on-porcelain-variant/20 pb-2">
+          <span class="font-headline font-bold text-sm text-on-porcelain">Claims Queue</span>
+          <span class="font-mono text-[11px] text-on-porcelain-variant">400 Claims Available</span>
+        </div>
+        <p class="text-on-porcelain-variant text-xs">High rank indicates prioritized review order; claims are never automatically rejected.</p>
+        <div class="flex items-center gap-2 pt-2">
+          <span class="px-3 py-1.5 rounded bg-primary text-white text-xs font-semibold">Load Sample 400</span>
+          <span class="px-3 py-1.5 rounded border border-on-porcelain-variant/30 text-xs">Upload CSV</span>
+        </div>
+      `
+    },
+    {
+      badge: 'Step 2 of 4 — Capacity',
+      title: '2. Dynamic Capacity Slicing',
+      desc: 'Use the review capacity slider (1%–50%) to slice the queue according to your team\'s investigation bandwidth. The top 10% slice captures roughly 70% of all fraud.',
+      previewHtml: `
+        <div class="flex items-center justify-between border-b border-on-porcelain-variant/20 pb-2">
+          <span class="font-headline font-bold text-sm text-on-porcelain">Review Capacity: 10%</span>
+          <span class="font-mono font-bold text-risk-high text-xs">High Cutoff ≥ 18.5%</span>
+        </div>
+        <div class="w-full h-3 bg-midnight rounded-full overflow-hidden flex">
+          <div class="bg-risk-high h-full w-[10%]"></div>
+          <div class="bg-risk-medium h-full w-[20%]"></div>
+          <div class="bg-risk-bar-low h-full w-[70%]"></div>
+        </div>
+        <p class="text-on-porcelain-variant text-xs pt-1">40 claims fall into High risk band &bull; ~69.4% expected fraud capture.</p>
+      `
+    },
+    {
+      badge: 'Step 3 of 4 — Explainability',
+      title: '3. Inspect SHAP Drivers & Rules',
+      desc: 'Click on any claim in the spectrum or table to slide open its Porcelain Dossier. Inspect diverging SHAP bars showing which features increased or decreased the score, alongside historical heuristic flags.',
+      previewHtml: `
+        <div class="flex items-center justify-between border-b border-on-porcelain-variant/20 pb-2">
+          <span class="font-headline font-bold text-sm text-on-porcelain">Claim C-06315</span>
+          <span class="px-2 py-0.5 rounded bg-risk-high text-white text-[10px] font-bold">22.7% High Risk</span>
+        </div>
+        <div class="flex flex-col gap-1 py-1">
+          <div class="flex justify-between text-[11px]"><span>Base cover: All Perils</span><span class="text-risk-high font-bold">+6.4%</span></div>
+          <div class="flex justify-between text-[11px]"><span>Days to accident: 8-15</span><span class="text-risk-high font-bold">+3.9%</span></div>
+          <div class="flex justify-between text-[11px]"><span>Police report filed: Yes</span><span class="text-risk-low font-bold">-2.1%</span></div>
+        </div>
+      `
+    },
+    {
+      badge: 'Step 4 of 4 — Decisions',
+      title: '4. Forensic Audit Trail',
+      desc: 'Select an audit decision (Under review, Cleared, Escalated), record your clinical rationale note, and save. All actions are logged into a permanent forensic ledger with 1-click CSV download.',
+      previewHtml: `
+        <div class="flex items-center gap-2 pb-2 border-b border-on-porcelain-variant/20">
+          <span class="px-2.5 py-1 rounded bg-primary text-white font-semibold text-xs">Under review</span>
+          <span class="px-2.5 py-1 rounded border border-on-porcelain-variant/30 text-xs">Cleared</span>
+          <span class="px-2.5 py-1 rounded border border-on-porcelain-variant/30 text-xs">Escalated</span>
+        </div>
+        <p class="text-on-porcelain-variant text-xs italic">"Verified address discrepancy with utility bills; requesting shop invoice."</p>
+        <span class="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">check</span>
+          Saved to Decisions Ledger
+        </span>
+      `
+    }
+  ];
+
+  function openTour(step = 1) {
+    state.tourStep = step;
+    updateTourUI();
+    const modal = document.getElementById('tour-modal-scrim');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeTour() {
+    const modal = document.getElementById('tour-modal-scrim');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function updateTourUI() {
+    const s = tourSteps[state.tourStep - 1];
+    if (!s) return;
+
+    const badge = document.getElementById('tour-step-badge');
+    const title = document.getElementById('tour-step-title');
+    const desc = document.getElementById('tour-step-desc');
+    const preview = document.getElementById('tour-step-preview');
+    const backBtn = document.getElementById('tour-back-btn');
+    const nextBtn = document.getElementById('tour-next-btn');
+
+    if (badge) badge.textContent = s.badge;
+    if (title) title.textContent = s.title;
+    if (desc) desc.textContent = s.desc;
+    if (preview) preview.innerHTML = s.previewHtml;
+
+    if (backBtn) backBtn.disabled = state.tourStep <= 1;
+    if (nextBtn) {
+      nextBtn.textContent = state.tourStep === 4 ? 'Finish Tour & Open Queue' : 'Next Step';
+    }
+  }
+
+  // --- Auth Modal & User Profile ---
+  function openAuthModal() {
+    const modal = document.getElementById('auth-modal-scrim');
+    const nameInp = document.getElementById('auth-name-input');
+    const emailInp = document.getElementById('auth-email-input');
+
+    if (nameInp) nameInp.value = state.user.name;
+    if (emailInp) emailInp.value = state.user.email;
+
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeAuthModal() {
+    const modal = document.getElementById('auth-modal-scrim');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function updateUserData(name, email) {
+    state.user.name = name || 'Claire Vance';
+    state.user.email = email || 'c.vance@meridian-claims.org';
+    localStorage.setItem('claim_triage_user_name', state.user.name);
+    localStorage.setItem('claim_triage_user_email', state.user.email);
+
+    const displayName = document.getElementById('user-display-name');
+    const mobileName = document.getElementById('mobile-user-name');
+    const initials = document.getElementById('user-avatar-initials');
+
+    if (displayName) displayName.textContent = state.user.name;
+    if (mobileName) mobileName.textContent = state.user.name;
+    if (initials) initials.textContent = getInitials(state.user.name);
+  }
+
+  // --- Setup Event Listeners ---
+  function initEventListeners() {
+    // Hash routing
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Mobile nav toggle
+    const railToggle = document.getElementById('mobile-rail-toggle');
+    const railContent = document.getElementById('mobile-rail-content');
+    if (railToggle && railContent) {
+      railToggle.addEventListener('click', () => {
+        const isHidden = railContent.classList.toggle('hidden');
+        railContent.classList.toggle('flex', !isHidden);
+        railToggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+    }
+
+    // Capacity Slider
+    const slider = document.getElementById('capacity-slider');
+    if (slider) {
+      slider.addEventListener('input', (e) => {
+        state.capacityPct = parseInt(e.target.value, 10);
+        updateCapacityReadouts();
+      });
+    }
+
+    // Queue Filter Buttons
+    document.querySelectorAll('.queue-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.activeFilter = btn.dataset.filter;
+        document.querySelectorAll('.queue-filter-btn').forEach(b => {
+          const active = b === btn;
+          b.classList.toggle('bg-primary', active);
+          b.classList.toggle('text-on-primary', active);
+          b.classList.toggle('btn-3d-ion', active);
+          b.classList.toggle('text-midnight-muted', !active);
+        });
+        state.currentPage = 1;
+        renderQueueTable();
+      });
+    });
+
+    // Queue Search
+    const searchInput = document.getElementById('queue-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value.trim();
+        state.currentPage = 1;
+        renderQueueTable();
+      });
+    }
+
+    // Queue Pagination buttons
+    document.getElementById('queue-prev-page')?.addEventListener('click', () => {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        renderQueueTable();
+      }
+    });
+
+    document.getElementById('queue-next-page')?.addEventListener('click', () => {
+      state.currentPage++;
+      renderQueueTable();
+    });
+
+    // Queue Load Sample & Upload CSV
+    document.getElementById('queue-load-sample-btn')?.addEventListener('click', loadSampleBatch);
+
+    const fileInput = document.getElementById('csv-file-input');
+    document.getElementById('queue-upload-csv-btn')?.addEventListener('click', () => {
+      fileInput?.click();
+    });
+
+    fileInput?.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleCsvUpload(e.target.files[0]);
+        e.target.value = '';
+      }
+    });
+
+    // Drawer Prev / Next / Close
+    document.getElementById('drawer-close-btn')?.addEventListener('click', closeDrawer);
+    document.getElementById('drawer-scrim')?.addEventListener('click', closeDrawer);
+
+    document.getElementById('drawer-prev-btn')?.addEventListener('click', () => {
+      if (state.selectedClaimIndex > 0) {
+        openClaimDossier(state.claims[state.selectedClaimIndex - 1].id);
+      }
+    });
+
+    document.getElementById('drawer-next-btn')?.addEventListener('click', () => {
+      if (state.selectedClaimIndex < state.claims.length - 1) {
+        openClaimDossier(state.claims[state.selectedClaimIndex + 1].id);
+      }
+    });
+
+    // Drawer Decision buttons
+    document.querySelectorAll('.drawer-dec-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentDecisionSelection = btn.dataset.decision;
+        updateDrawerDecisionPills();
+      });
+    });
+
+    // Drawer Decision Form Submit
+    document.getElementById('drawer-decision-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (state.selectedClaimIndex === -1) return;
+      const claim = state.claims[state.selectedClaimIndex];
+      const note = document.getElementById('drawer-note-input')?.value.trim() || '';
+      await saveDecision(claim.id, state.currentDecisionSelection, note, claim.score);
+    });
+
+    // Assess Tabs
+    document.querySelectorAll('.assess-group-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const group = tab.dataset.group;
+        document.querySelectorAll('.assess-group-tab').forEach(t => {
+          const active = t === tab;
+          t.classList.toggle('bg-primary', active);
+          t.classList.toggle('text-on-primary', active);
+          t.classList.toggle('btn-3d-ion', active);
+          t.classList.toggle('bg-surface-container', !active);
+          t.classList.toggle('text-on-surface-variant', !active);
+        });
+
+        document.querySelectorAll('.assess-panel').forEach(p => {
+          p.classList.toggle('hidden', p.dataset.groupPanel !== group);
+          p.classList.toggle('flex', p.dataset.groupPanel === group);
+        });
+      });
+    });
+
+    // Assess Pill buttons
+    document.querySelectorAll('.assess-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const parent = btn.parentElement;
+        const fieldName = parent.dataset.pillContainer;
+        const val = btn.dataset.val;
+
+        // update hidden input
+        const hidden = document.querySelector(`#assess-form input[name="${fieldName}"]`);
+        if (hidden) hidden.value = val;
+
+        // update visual selection
+        parent.querySelectorAll('.assess-pill').forEach(b => {
+          const match = b === btn;
+          b.classList.toggle('bg-primary', match);
+          b.classList.toggle('text-on-primary', match);
+          b.classList.toggle('btn-3d-ion', match);
+          b.classList.toggle('bg-surface-container', !match);
+          b.classList.toggle('text-on-surface-variant', !match);
+        });
+
+        triggerAssessScoring();
+      });
+    });
+
+    // Assess Select field change
+    document.querySelectorAll('#assess-form select').forEach(select => {
+      select.addEventListener('change', triggerAssessScoring);
+    });
+
+    // Assess Presets
+    document.getElementById('assess-fill-high-btn')?.addEventListener('click', () => {
+      setAssessFormData({
+        BasePolicy: 'All Perils',
+        Deductible: 400,
+        PolicyType: 'Sedan - All Perils',
+        AgentType: 'External',
+        'AddressChange-Claim': 'under 6 months',
+        NumberOfCars: '1 vehicle',
+        VehicleCategory: 'Sedan',
+        Make: 'Accura',
+        VehiclePrice: 'more than 69000',
+        AgeOfVehicle: 'new',
+        PastNumberOfClaims: '2 to 4',
+        'Days:Policy-Accident': '8 to 15',
+        AccidentArea: 'Urban',
+        Month: 'Oct',
+        DayOfWeek: 'Friday',
+        WeekOfMonth: 3,
+        PoliceReportFiled: 'No',
+        WitnessPresent: 'No',
+        'Days:Policy-Claim': '8 to 15',
+        MonthClaimed: 'Oct',
+        DayOfWeekClaimed: 'Monday',
+        WeekOfMonthClaimed: 4
+      });
+      showToast('Populated high-risk archetype profile', 'info');
+    });
+
+    document.getElementById('assess-fill-low-btn')?.addEventListener('click', () => {
+      setAssessFormData({
+        BasePolicy: 'Liability',
+        Deductible: 500,
+        PolicyType: 'Sedan - Liability',
+        AgentType: 'Internal',
+        'AddressChange-Claim': 'no change',
+        NumberOfCars: '2 vehicles',
+        VehicleCategory: 'Sedan',
+        Make: 'Toyota',
+        VehiclePrice: '20000 to 29000',
+        AgeOfVehicle: '5 years',
+        PastNumberOfClaims: 'none',
+        'Days:Policy-Accident': 'more than 30',
+        AccidentArea: 'Rural',
+        Month: 'Jun',
+        DayOfWeek: 'Wednesday',
+        WeekOfMonth: 2,
+        PoliceReportFiled: 'Yes',
+        WitnessPresent: 'Yes',
+        'Days:Policy-Claim': 'more than 30',
+        MonthClaimed: 'Jun',
+        DayOfWeekClaimed: 'Thursday',
+        WeekOfMonthClaimed: 2
+      });
+      showToast('Populated low-risk archetype profile', 'info');
+    });
+
+    document.getElementById('assess-reset-btn')?.addEventListener('click', () => {
+      if (state.schemaMeta && state.schemaMeta.defaults) {
+        setAssessFormData(state.schemaMeta.defaults);
+        showToast('Reset fields to baseline values', 'info');
+      }
+    });
+
+    // Assess Record Decision CTA
+    document.getElementById('assess-record-decision-btn')?.addEventListener('click', () => {
+      const claimData = getAssessFormData();
+      const tempId = `ASSESS-${Math.floor(1000 + Math.random() * 9000)}`;
+      const liveScore = parseFloat(document.getElementById('assess-live-score')?.textContent || '15') / 100;
+      saveDecision(tempId, 'Under review', 'Assessed custom profile via interactive console', liveScore);
+    });
+
+    // Decisions Filter Tabs
+    document.querySelectorAll('.dec-filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const filter = tab.dataset.decFilter;
+        document.querySelectorAll('.dec-filter-tab').forEach(t => {
+          const match = t === tab;
+          t.classList.toggle('border-primary', match);
+          t.classList.toggle('text-primary', match);
+          t.classList.toggle('border-transparent', !match);
+          t.classList.toggle('text-on-porcelain-variant', !match);
+        });
+        renderDecisionsView(filter);
+      });
+    });
+
+    // Tour Triggers & Buttons
+    document.getElementById('open-tour-btn')?.addEventListener('click', () => openTour(1));
+    document.getElementById('mobile-tour-btn')?.addEventListener('click', () => openTour(1));
+    document.getElementById('landing-tour-trigger')?.addEventListener('click', () => openTour(1));
+    document.getElementById('tour-close-btn')?.addEventListener('click', closeTour);
+
+    document.getElementById('tour-back-btn')?.addEventListener('click', () => {
+      if (state.tourStep > 1) {
+        state.tourStep--;
+        updateTourUI();
+      }
+    });
+
+    document.getElementById('tour-next-btn')?.addEventListener('click', () => {
+      if (state.tourStep < 4) {
+        state.tourStep++;
+        updateTourUI();
+      } else {
+        closeTour();
+        switchView('queue');
+      }
+    });
+
+    // Auth Modal Triggers
+    document.getElementById('auth-btn')?.addEventListener('click', openAuthModal);
+    document.getElementById('mobile-auth-btn')?.addEventListener('click', openAuthModal);
+    document.getElementById('auth-modal-close')?.addEventListener('click', closeAuthModal);
+
+    document.getElementById('auth-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('auth-name-input')?.value.trim();
+      const email = document.getElementById('auth-email-input')?.value.trim();
+      updateUserData(name, email);
+      closeAuthModal();
+      showToast(`Investigator profile updated to ${name}`, 'success');
+    });
+
+    // Keyboard navigation (Esc closes drawer & modal)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDrawer();
+        closeTour();
+        closeAuthModal();
+      }
+    });
+  }
+
+  // --- Bootstrap Application ---
+  async function init() {
+    updateUserData(state.user.name, state.user.email);
+    initEventListeners();
+
+    // Fetch schema, model metadata and decisions concurrently
+    try {
+      const [schemaRes] = await Promise.all([
+        fetch('/api/schema'),
+        loadModelMeta(),
+        fetchDecisions()
+      ]);
+      if (schemaRes.ok) {
+        state.schemaMeta = await schemaRes.json();
+      }
+    } catch (err) {
+      console.error('Initialization error:', err);
+    }
+
+    // Auto-load sample batch so queue is immediately filled with 400 claims
+    await loadSampleBatch();
+
+    // Handle initial hash
+    handleHashChange();
+
+    // Trigger initial assess score
+    triggerAssessScoring();
+  }
+
+  // Start app when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
 })();

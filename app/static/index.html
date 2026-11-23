@@ -1,46 +1,1202 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claim Triage</title>
-<meta name="description" content="Decision support that ranks insurance claims for human review and explains each ranking.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A1536'/%3E%3Cpath d='M16 5l9 3v8c0 5-4 9-9 11-5-2-9-6-9-11V8z' fill='none' stroke='%23C9A64E' stroke-width='2'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Triage — Decision Support for Auto Claim Investigators</title>
+  <meta name="description" content="Tactile, 3D-layered decision support that ranks incoming auto insurance claims for human review, explains each ranking with SHAP drivers, and logs forensic audit decisions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23080A0E'/%3E%3Cpath d='M16 4l10 4.2v9.3c0 6-4 10.6-10 12.5-6-1.9-10-6.5-10-12.5V8.2z' fill='none' stroke='%233B82F6' stroke-width='2'/%3E%3Cpath d='M16 10v12M10.5 16h11' stroke='%23F4F6FA' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS with Forms and Container Queries -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    globalThis.tailwind = globalThis.tailwind || {};
+    globalThis.tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#1D4ED8',
+            'on-primary': '#FFFFFF',
+            'ion': '#3B82F6',
+            'ion-bright': '#60A5FA',
+            'midnight': '#080A0E',
+            'on-midnight': '#F4F6FA',
+            'midnight-muted': '#9CA3AF',
+            'accent': '#3B82F6',
+            'accent-text': '#60A5FA',
+            'surface': '#0D0F14',
+            'on-surface': '#F4F6FA',
+            'on-surface-variant': '#A8B0C2',
+            'surface-container': '#151922',
+            'surface-container-low': '#10131A',
+            'surface-container-high': '#1E2433',
+            'porcelain': '#F4F6FA',
+            'on-porcelain': '#0D0F14',
+            'on-porcelain-variant': '#475569',
+            'outline': '#2B3245',
+            'outline-variant': '#1F2533',
+            'risk-high': '#E11D48',
+            'risk-high-on-light': '#BE123C',
+            'on-risk-high': '#FFFFFF',
+            'risk-high-container': '#3B0D19',
+            'on-risk-high-container': '#FDA4AF',
+            'risk-medium': '#D97706',
+            'on-risk-medium': '#2A2A2A',
+            'risk-medium-container': '#3A2207',
+            'on-risk-medium-container': '#FCD34D',
+            'risk-low': '#059669',
+            'risk-low-on-light': '#047857',
+            'on-risk-low': '#FFFFFF',
+            'risk-low-container': '#062E22',
+            'on-risk-low-container': '#6EE7B7',
+            'risk-bar-low': '#4B5568',
+            'error': '#E11D48',
+            'on-error': '#FFFFFF',
+            'error-container': '#3B0D19',
+            'on-error-container': '#FDA4AF',
+          },
+          fontFamily: {
+            'display': ['"Plus Jakarta Sans"', 'sans-serif'],
+            'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
+            'title': ['"Inter"', 'sans-serif'],
+            'body': ['"Inter"', 'sans-serif'],
+            'label': ['"Inter"', 'sans-serif'],
+            'mono': ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Typography & Material Symbols Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div class="shell">
-  <nav class="spine" aria-label="Sections">
-    <a class="crest" href="#queue" aria-label="Claim Triage home">
-      <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true">
-        <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <path d="M20 8l9 3.2v8.3c0 5.3-3.6 9.4-9 11.5-5.4-2.1-9-6.2-9-11.5v-8.3z" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <path d="M20 13v14M14.5 19.5h11" stroke="currentColor" stroke-width="1.4"/>
-      </svg>
-    </a>
-    <ul class="spine-nav">
-      <li><a href="#queue" data-page="queue">Queue</a></li>
-      <li><a href="#assess" data-page="assess">Assess</a></li>
-      <li><a href="#model" data-page="model">Model</a></li>
-      <li><a href="#decisions" data-page="decisions">Decisions</a></li>
-    </ul>
-  </nav>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-ion/30 selection:text-white">
 
-  <main class="main" id="main" tabindex="-1">
-    <div id="view"></div>
-    <footer class="notice">
-      Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.
-    </footer>
-  </main>
-</div>
+  <!-- ========================================================================= -->
+  <!-- Floating Obsidian Command Dock (Top Sticky Nav)                           -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-30 bg-midnight/95 backdrop-blur-md border-b border-outline">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 h-16 flex items-center justify-between gap-4">
+      <!-- Brand & Batch indicator -->
+      <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+        <a href="#landing" class="flex items-center gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ion rounded-sm group">
+          <div class="w-9 h-9 rounded-md bg-surface-container-high border border-outline flex items-center justify-center btn-3d-surface group-hover:border-ion transition-colors">
+            <svg class="w-5 h-5 text-ion-bright shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F4F6FA" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <span class="font-headline font-bold text-lg sm:text-xl text-on-midnight whitespace-nowrap tracking-tight">Claim Triage</span>
+        </a>
+        <span id="nav-batch-pill" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container border border-outline font-mono text-xs text-midnight-muted whitespace-nowrap">
+          <span class="w-1.5 h-1.5 rounded-full bg-ion animate-pulse"></span>
+          <span id="nav-batch-label">Batch: Sample 400</span>
+        </span>
+      </div>
 
-<div class="scrim" id="scrim" hidden></div>
-<aside class="case" id="case" role="dialog" aria-modal="true" aria-labelledby="case-title" hidden></aside>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<input type="file" id="file" accept=".csv,text/csv" hidden>
-<script src="app.js"></script>
+      <!-- Desktop Nav Pill Group -->
+      <nav aria-label="Application" class="hidden md:flex items-center gap-1 bg-surface-container border border-outline rounded-full p-1 shadow-inner">
+        <a href="#queue" data-nav="queue" class="nav-pill px-4 py-1.5 rounded-full font-label text-sm flex items-center gap-2 whitespace-nowrap transition-all duration-150">
+          <span class="material-symbols-outlined text-[16px]">format_list_numbered</span>
+          <span>Queue</span>
+        </a>
+        <a href="#assess" data-nav="assess" class="nav-pill px-4 py-1.5 rounded-full font-label text-sm flex items-center gap-2 whitespace-nowrap transition-all duration-150">
+          <span class="material-symbols-outlined text-[16px]">tune</span>
+          <span>Assess</span>
+        </a>
+        <a href="#model" data-nav="model" class="nav-pill px-4 py-1.5 rounded-full font-label text-sm flex items-center gap-2 whitespace-nowrap transition-all duration-150">
+          <span class="material-symbols-outlined text-[16px]">analytics</span>
+          <span>Model</span>
+        </a>
+        <a href="#decisions" data-nav="decisions" class="nav-pill px-4 py-1.5 rounded-full font-label text-sm flex items-center gap-2 whitespace-nowrap transition-all duration-150">
+          <span class="material-symbols-outlined text-[16px]">fact_check</span>
+          <span>Decisions</span>
+          <span id="nav-decisions-badge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-ion text-white font-bold">0</span>
+        </a>
+      </nav>
+
+      <!-- Desktop Right Investigator Controls -->
+      <div class="hidden md:flex items-center gap-4 shrink-0">
+        <button id="open-tour-btn" type="button" class="font-body text-sm text-ion-bright hover:text-on-midnight underline underline-offset-4 decoration-ion/40 whitespace-nowrap flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">help_outline</span>
+          <span>Take the tour</span>
+        </button>
+        <div class="h-4 w-px bg-outline"></div>
+        <button id="auth-btn" type="button" class="flex items-center gap-2 group focus:outline-none" title="Switch or view investigator account">
+          <div class="w-7 h-7 rounded-full bg-primary/20 border border-ion/40 text-ion-bright flex items-center justify-center font-bold text-xs">
+            <span id="user-avatar-initials">CV</span>
+          </div>
+          <span id="user-display-name" class="font-label text-sm text-on-midnight group-hover:text-ion-bright transition-colors">Claire Vance</span>
+        </button>
+      </div>
+
+      <!-- Mobile Rail Toggle Button -->
+      <button type="button" id="mobile-rail-toggle" aria-label="Toggle navigation" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 border border-outline rounded-md text-on-midnight bg-surface-container">
+        <span class="material-symbols-outlined text-[20px]">menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-rail-content" class="hidden md:hidden border-t border-outline bg-midnight px-6 py-4 flex-col gap-4">
+      <nav aria-label="Mobile Navigation" class="grid grid-cols-2 gap-2">
+        <a href="#queue" class="mobile-nav-link px-3 py-2 rounded-md bg-surface-container text-midnight-muted font-label text-sm text-center">Queue</a>
+        <a href="#assess" class="mobile-nav-link px-3 py-2 rounded-md bg-surface-container text-midnight-muted font-label text-sm text-center">Assess</a>
+        <a href="#model" class="mobile-nav-link px-3 py-2 rounded-md bg-surface-container text-midnight-muted font-label text-sm text-center">Model</a>
+        <a href="#decisions" class="mobile-nav-link px-3 py-2 rounded-md bg-surface-container text-midnight-muted font-label text-sm text-center">Decisions</a>
+      </nav>
+      <div class="flex items-center justify-between pt-3 border-t border-outline text-xs">
+        <span id="mobile-user-name" class="text-on-midnight font-medium">Claire Vance</span>
+        <div class="flex items-center gap-4">
+          <button id="mobile-tour-btn" type="button" class="text-ion-bright underline">Take the tour</button>
+          <button id="mobile-auth-btn" type="button" class="text-midnight-muted underline">Switch user</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- Dynamic Single Page Views Container                                       -->
+  <!-- ========================================================================= -->
+  <div id="views-root" class="flex-1 flex flex-col">
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- VIEW 1: LANDING PAGE (#landing)                                       -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="landing-view" class="view-panel hidden flex-1 flex flex-col">
+      <!-- Hero Section -->
+      <div class="relative overflow-hidden border-b border-outline bg-gradient-to-b from-midnight to-surface py-16 md:py-24">
+        <div class="absolute inset-0 bg-[radial-gradient(#1D4ED8_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none"></div>
+        <div class="max-w-6xl mx-auto px-6 md:px-10 relative z-10 flex flex-col items-center text-center gap-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-outline font-label text-xs text-ion-bright">
+            <span class="material-symbols-outlined text-[14px]">verified</span>
+            <span>Decision Support for Auto Claim Investigators</span>
+          </div>
+
+          <h1 class="font-headline font-bold text-4xl sm:text-5xl md:text-6xl text-on-surface tracking-tight max-w-4xl text-balance">
+            Rank incoming claims by fraud risk. Inspect why. Decide with context.
+          </h1>
+
+          <p class="font-body text-lg sm:text-xl text-on-surface-variant max-w-2xl text-pretty">
+            Claim Triage surfaces claims with the highest empirical likelihood of fraud, shows exactly which features drive each score, and records investigator decisions for transparent audit trails.
+          </p>
+
+          <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <a href="#queue" class="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-md font-label text-base font-semibold btn-3d-ion hover:bg-ion">
+              <span class="material-symbols-outlined text-[20px]">format_list_numbered</span>
+              <span>Open Claims Queue</span>
+            </a>
+            <button id="landing-tour-trigger" type="button" class="inline-flex items-center gap-2 px-5 py-3.5 bg-surface-container-high text-on-surface rounded-md border border-outline font-label text-base font-medium btn-3d-surface hover:bg-outline">
+              <span class="material-symbols-outlined text-[20px]">explore</span>
+              <span>Take the 4-step tour</span>
+            </button>
+            <a href="#model" class="inline-flex items-center gap-2 px-4 py-3.5 text-on-surface-variant hover:text-on-surface font-label text-base">
+              <span>View Model & Limits</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+          </div>
+
+          <!-- Quick Stats Strip -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-12 w-full max-w-4xl pt-8 border-t border-outline/70">
+            <div class="flex flex-col items-center gap-1 p-4 rounded-lg bg-surface-container/60 border border-outline/50">
+              <span class="font-headline text-3xl font-bold text-ion-bright">69.4%</span>
+              <span class="font-body text-xs text-midnight-muted">Recall @ Top 10% Review</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-4 rounded-lg bg-surface-container/60 border border-outline/50">
+              <span class="font-headline text-3xl font-bold text-ion-bright">0.909</span>
+              <span class="font-body text-xs text-midnight-muted">Holdout ROC-AUC</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-4 rounded-lg bg-surface-container/60 border border-outline/50">
+              <span class="font-headline text-3xl font-bold text-ion-bright">0.712</span>
+              <span class="font-body text-xs text-midnight-muted">Precision-Recall AUC</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-4 rounded-lg bg-surface-container/60 border border-outline/50">
+              <span class="font-headline text-3xl font-bold text-ion-bright">100%</span>
+              <span class="font-body text-xs text-midnight-muted">Human Investigator In-The-Loop</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Pillars Section -->
+      <div class="max-w-6xl mx-auto px-6 md:px-10 py-16 flex flex-col gap-12 w-full">
+        <div class="flex flex-col items-center text-center gap-2">
+          <h2 class="font-headline text-2xl sm:text-3xl font-bold text-on-surface">Three Foundations of Trustworthy Triage</h2>
+          <p class="font-body text-sm sm:text-base text-on-surface-variant max-w-xl">Designed specifically for human investigators, not black-box automation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-surface-container rounded-xl border border-outline p-6 card-3d-obsidian flex flex-col gap-4">
+            <div class="w-10 h-10 rounded-lg bg-primary/20 border border-ion/40 text-ion-bright flex items-center justify-center">
+              <span class="material-symbols-outlined text-[22px]">tune</span>
+            </div>
+            <h3 class="font-headline text-lg font-semibold text-on-surface">Dynamic Review Capacity</h3>
+            <p class="font-body text-sm text-on-surface-variant leading-relaxed">
+              Adjust your review bandwidth with a responsive capacity slider (1%–50%). The platform dynamically recalculates risk bands and prioritizes the most suspicious claims first.
+            </p>
+          </div>
+
+          <div class="bg-surface-container rounded-xl border border-outline p-6 card-3d-obsidian flex flex-col gap-4">
+            <div class="w-10 h-10 rounded-lg bg-risk-high-container border border-risk-high/40 text-on-risk-high-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-[22px]">waterfall_chart</span>
+            </div>
+            <h3 class="font-headline text-lg font-semibold text-on-surface">SHAP Drivers & Heuristics</h3>
+            <p class="font-body text-sm text-on-surface-variant leading-relaxed">
+              Every score is fully explained with diverging SHAP feature contributions showing exactly why the claim scored high or low, combined with historical heuristic flags.
+            </p>
+          </div>
+
+          <div class="bg-surface-container rounded-xl border border-outline p-6 card-3d-obsidian flex flex-col gap-4">
+            <div class="w-10 h-10 rounded-lg bg-risk-low-container border border-risk-low/40 text-on-risk-low-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-[22px]">fact_check</span>
+            </div>
+            <h3 class="font-headline text-lg font-semibold text-on-surface">Forensic Decision Audit</h3>
+            <p class="font-body text-sm text-on-surface-variant leading-relaxed">
+              Log investigator decisions (Under review, Cleared, Escalated) along with clinical rationale notes into a persistent audit database with 1-click CSV export.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- VIEW 2: CLAIMS QUEUE (#queue)                                         -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="queue-view" class="view-panel hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 w-full flex flex-col gap-8">
+      <!-- Title & Capacity Command Bar -->
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b border-outline pb-5">
+        <div>
+          <h1 class="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface tracking-tight">Claims Queue</h1>
+          <p class="font-body text-sm sm:text-base text-on-surface-variant mt-1">
+            Sorted riskiest first. High rank means review this claim first; this tool never denies claims.
+          </p>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="queue-load-sample-btn" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 bg-surface-container text-on-surface rounded-md border border-outline hover:bg-surface-container-high btn-3d-surface font-label text-xs sm:text-sm">
+            <span class="material-symbols-outlined text-[18px] text-ion-bright">refresh</span>
+            <span>Load 400 Sample Claims</span>
+          </button>
+          <button id="queue-upload-csv-btn" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 bg-primary text-on-primary rounded-md border border-ion hover:bg-ion btn-3d-ion font-label text-xs sm:text-sm">
+            <span class="material-symbols-outlined text-[18px]">upload_file</span>
+            <span>Upload CSV</span>
+          </button>
+          <a href="/api/template.csv" download class="inline-flex items-center gap-2 px-3 py-2 bg-surface-container text-midnight-muted hover:text-on-surface rounded-md border border-outline font-label text-xs sm:text-sm">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            <span>Template</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Capacity Slider & Spectrum Stage Card -->
+      <div class="bg-surface-container border border-outline rounded-xl p-5 sm:p-6 stage-3d-obsidian flex flex-col gap-6">
+        <!-- Capacity Controls Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-ion-bright text-[22px]">tune</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-headline font-semibold text-base sm:text-lg text-on-surface">Investigator Review Capacity</span>
+                <span id="capacity-badge" class="px-2 py-0.5 rounded-full bg-primary/20 border border-ion/50 text-ion-bright font-mono text-xs font-bold">10%</span>
+              </div>
+              <p class="font-body text-xs text-on-surface-variant">Drag slider to allocate investigator hours to the highest-scoring claims</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Telemetry Readout -->
+          <div class="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm font-mono">
+            <div class="flex flex-col items-end">
+              <span class="text-on-surface-variant font-sans text-xs">High Cutoff</span>
+              <span id="capacity-cutoff-val" class="text-risk-high font-bold text-sm sm:text-base">≥ 18.5%</span>
+            </div>
+            <div class="w-px h-8 bg-outline"></div>
+            <div class="flex flex-col items-end">
+              <span class="text-on-surface-variant font-sans text-xs">High Band Count</span>
+              <span id="capacity-high-count" class="text-on-surface font-bold text-sm sm:text-base">40 claims</span>
+            </div>
+            <div class="w-px h-8 bg-outline"></div>
+            <div class="flex flex-col items-end">
+              <span class="text-on-surface-variant font-sans text-xs">Expected Fraud Recall</span>
+              <span id="capacity-recall-val" class="text-ion-bright font-bold text-sm sm:text-base">~69.4%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slider Bar -->
+        <div class="flex flex-col gap-2">
+          <input type="range" id="capacity-slider" min="1" max="50" value="10" step="1" class="triage-slider w-full cursor-ew-resize">
+          <div class="flex justify-between text-[11px] font-mono text-midnight-muted px-1">
+            <span>1% (Top 4 claims)</span>
+            <span>10% (Recommended)</span>
+            <span>20% (Deep review)</span>
+            <span>50% (Max capacity)</span>
+          </div>
+        </div>
+
+        <!-- Sorted 3D Risk Spectrum Visualization -->
+        <div class="flex flex-col gap-2 pt-2 border-t border-outline/60">
+          <div class="flex items-center justify-between text-xs text-on-surface-variant">
+            <span class="font-label font-medium flex items-center gap-1.5">
+              <span>Risk Spectrum (Batch sorted riskiest first)</span>
+              <span class="material-symbols-outlined text-[14px] text-midnight-muted" title="Hover over bars to inspect claim, click to open dossier">info</span>
+            </span>
+            <div class="flex items-center gap-3 font-mono text-[11px]">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-risk-high"></span> High</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-risk-medium"></span> Medium</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-risk-bar-low"></span> Low</span>
+            </div>
+          </div>
+
+          <!-- Spectrum Canvas / SVG Container -->
+          <div id="spectrum-chart-wrapper" class="relative w-full h-24 bg-midnight rounded-md border border-outline overflow-hidden flex items-end px-1 select-none">
+            <!-- Cutoff vertical line -->
+            <div id="spectrum-cutoff-line" class="absolute top-0 bottom-0 border-r-2 border-dashed border-white z-10 pointer-events-none transition-all duration-150" style="left: 10%;">
+              <span class="absolute top-1 -right-1 translate-x-full px-1.5 py-0.5 rounded text-[10px] font-mono bg-midnight/90 border border-outline text-white whitespace-nowrap">Cutoff</span>
+            </div>
+            <!-- Dynamic Bars Container -->
+            <div id="spectrum-bars-container" class="w-full h-full flex items-end gap-px"></div>
+            <!-- Spectrum Hover Tooltip -->
+            <div id="spectrum-tooltip" class="hidden absolute z-20 pointer-events-none px-2.5 py-1.5 rounded bg-midnight border border-ion text-xs font-mono text-white shadow-2xl"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <!-- Filter Tabs -->
+        <div role="tablist" class="flex items-center gap-1 bg-surface-container border border-outline rounded-lg p-1">
+          <button type="button" data-filter="All" class="queue-filter-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-medium transition-all bg-primary text-on-primary btn-3d-ion">
+            All (<span id="filter-count-all">0</span>)
+          </button>
+          <button type="button" data-filter="High" class="queue-filter-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-medium text-midnight-muted hover:text-on-surface transition-all">
+            High (<span id="filter-count-high">0</span>)
+          </button>
+          <button type="button" data-filter="Medium" class="queue-filter-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-medium text-midnight-muted hover:text-on-surface transition-all">
+            Medium (<span id="filter-count-medium">0</span>)
+          </button>
+          <button type="button" data-filter="Low" class="queue-filter-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-medium text-midnight-muted hover:text-on-surface transition-all">
+            Low (<span id="filter-count-low">0</span>)
+          </button>
+        </div>
+
+        <!-- Search Box -->
+        <div class="relative flex items-center min-w-[240px] sm:w-72">
+          <span class="material-symbols-outlined absolute left-3 text-midnight-muted text-[18px]">search</span>
+          <input type="text" id="queue-search-input" placeholder="Search Claim ID, Make, Policy..." class="w-full pl-9 pr-3 py-1.5 bg-midnight text-on-surface border border-outline rounded-lg text-xs sm:text-sm focus:outline-none focus:border-ion focus:ring-1 focus:ring-ion">
+        </div>
+      </div>
+
+      <!-- Ranked Table Container -->
+      <div class="bg-surface-container border border-outline rounded-xl overflow-hidden stage-3d-obsidian">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-outline bg-surface-container-low text-midnight-muted font-label text-xs">
+                <th scope="col" class="py-3 px-4 font-semibold">Rank</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Claim ID</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Fraud Risk</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Risk Band</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Top Influence Factor</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Vehicle</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Audit Status</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="queue-table-body" class="divide-y divide-outline/50 font-body text-sm">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination status -->
+        <div class="px-5 py-3 border-t border-outline bg-surface-container-low flex flex-wrap items-center justify-between text-xs text-midnight-muted">
+          <span id="queue-showing-text">Showing 0 of 0 claims</span>
+          <div class="flex items-center gap-2">
+            <button id="queue-prev-page" type="button" class="px-2.5 py-1 rounded bg-surface-container border border-outline hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed">Previous</button>
+            <span id="queue-page-number" class="font-mono text-on-surface font-medium">Page 1</span>
+            <button id="queue-next-page" type="button" class="px-2.5 py-1 rounded bg-surface-container border border-outline hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- VIEW 3: ASSESS A CLAIM (#assess)                                      -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="assess-view" class="view-panel hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 w-full flex flex-col gap-8">
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b border-outline pb-5">
+        <div>
+          <h1 class="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface tracking-tight">Assess a Claim</h1>
+          <p class="font-body text-sm sm:text-base text-on-surface-variant mt-1">
+            Toggle claim factors across the 4 groups to observe live model score, SHAP drivers, and heuristic rules.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="assess-fill-high-btn" type="button" class="px-3.5 py-2 bg-primary text-on-primary rounded-md border border-ion hover:bg-ion btn-3d-ion font-label text-xs sm:text-sm">
+            Fill with High-Scoring Claim
+          </button>
+          <button id="assess-fill-low-btn" type="button" class="px-3.5 py-2 bg-surface-container-high text-on-surface rounded-md border border-outline hover:bg-outline btn-3d-surface font-label text-xs sm:text-sm">
+            Fill with Low-Risk Claim
+          </button>
+          <button id="assess-reset-btn" type="button" class="px-3 py-2 bg-surface-container text-midnight-muted hover:text-on-surface rounded-md border border-outline font-label text-xs sm:text-sm">
+            Reset to Common Values
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left: 4-Group Interactive Inputs Console -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+          <!-- Group Navigation Pills -->
+          <div role="tablist" class="flex flex-wrap items-center gap-2 border-b border-outline pb-3">
+            <button type="button" role="tab" data-group="policy" class="assess-group-tab px-4 py-1.5 rounded-full font-label text-xs sm:text-sm font-semibold transition-all bg-primary text-on-primary btn-3d-ion">1. Policy</button>
+            <button type="button" role="tab" data-group="vehicle" class="assess-group-tab px-4 py-1.5 rounded-full font-label text-xs sm:text-sm font-semibold transition-all bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline">2. Vehicle</button>
+            <button type="button" role="tab" data-group="accident" class="assess-group-tab px-4 py-1.5 rounded-full font-label text-xs sm:text-sm font-semibold transition-all bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline">3. Accident</button>
+            <button type="button" role="tab" data-group="reporting" class="assess-group-tab px-4 py-1.5 rounded-full font-label text-xs sm:text-sm font-semibold transition-all bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline">4. Reporting</button>
+          </div>
+
+          <form id="assess-form" class="flex flex-col gap-6" onsubmit="return false;">
+            <!-- Group 1: Policy -->
+            <div data-group-panel="policy" class="assess-panel flex flex-col gap-5">
+              <div class="flex flex-col gap-2">
+                <span class="font-label text-xs font-medium text-on-surface-variant">Base Policy Cover</span>
+                <div class="grid grid-cols-3 gap-2" data-pill-container="BasePolicy">
+                  <button type="button" data-val="All Perils" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-primary text-on-primary btn-3d-ion">All Perils</button>
+                  <button type="button" data-val="Collision" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">Collision</button>
+                  <button type="button" data-val="Liability" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">Liability</button>
+                </div>
+                <input type="hidden" name="BasePolicy" value="All Perils" class="assess-field">
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="font-label text-xs font-medium text-on-surface-variant">Deductible ($)</span>
+                <div class="grid grid-cols-4 gap-2" data-pill-container="Deductible">
+                  <button type="button" data-val="300" class="assess-pill px-3 py-2 rounded-md font-mono text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">300</button>
+                  <button type="button" data-val="400" class="assess-pill px-3 py-2 rounded-md font-mono text-xs sm:text-sm text-center bg-primary text-on-primary btn-3d-ion">400</button>
+                  <button type="button" data-val="500" class="assess-pill px-3 py-2 rounded-md font-mono text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">500</button>
+                  <button type="button" data-val="700" class="assess-pill px-3 py-2 rounded-md font-mono text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">700</button>
+                </div>
+                <input type="hidden" name="Deductible" value="400" class="assess-field">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Policy Type</span>
+                  <select name="PolicyType" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Sedan - All Perils">Sedan - All Perils</option>
+                    <option value="Sedan - Collision">Sedan - Collision</option>
+                    <option value="Sedan - Liability">Sedan - Liability</option>
+                    <option value="Sport - All Perils">Sport - All Perils</option>
+                    <option value="Sport - Collision">Sport - Collision</option>
+                    <option value="Sport - Liability">Sport - Liability</option>
+                    <option value="Utility - All Perils">Utility - All Perils</option>
+                    <option value="Utility - Collision">Utility - Collision</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Agent Type</span>
+                  <select name="AgentType" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="External">External</option>
+                    <option value="Internal">Internal</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Address Change Before Claim</span>
+                  <select name="AddressChange-Claim" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="no change">no change</option>
+                    <option value="under 6 months">under 6 months (Flagged)</option>
+                    <option value="1 year">1 year</option>
+                    <option value="2 to 3 years">2 to 3 years</option>
+                    <option value="4 to 8 years">4 to 8 years</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Cars on Policy</span>
+                  <select name="NumberOfCars" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="1 vehicle">1 vehicle</option>
+                    <option value="2 vehicles">2 vehicles</option>
+                    <option value="3 to 4">3 to 4</option>
+                    <option value="5 to 8">5 to 8</option>
+                    <option value="more than 8">more than 8</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <!-- Group 2: Vehicle -->
+            <div data-group-panel="vehicle" class="assess-panel hidden flex-col gap-5">
+              <div class="flex flex-col gap-2">
+                <span class="font-label text-xs font-medium text-on-surface-variant">Vehicle Category</span>
+                <div class="grid grid-cols-3 gap-2" data-pill-container="VehicleCategory">
+                  <button type="button" data-val="Sedan" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-primary text-on-primary btn-3d-ion">Sedan</button>
+                  <button type="button" data-val="Sport" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">Sport</button>
+                  <button type="button" data-val="Utility" class="assess-pill px-3 py-2 rounded-md font-label text-xs sm:text-sm text-center bg-surface-container text-on-surface-variant border border-outline">Utility</button>
+                </div>
+                <input type="hidden" name="VehicleCategory" value="Sedan" class="assess-field">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Vehicle Make</span>
+                  <select name="Make" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Accura">Accura</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Chevrolet">Chevrolet</option>
+                    <option value="Dodge">Dodge</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Mazda">Mazda</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Pontiac">Pontiac</option>
+                    <option value="Saab">Saab</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Vehicle Price</span>
+                  <select name="VehiclePrice" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="less than 20000">less than 20,000</option>
+                    <option value="20000 to 29000">20,000 to 29,000</option>
+                    <option value="30000 to 39000">30,000 to 39,000</option>
+                    <option value="40000 to 59000">40,000 to 59,000</option>
+                    <option value="60000 to 69000">60,000 to 69,000</option>
+                    <option value="more than 69000">more than 69,000</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Vehicle Age</span>
+                  <select name="AgeOfVehicle" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="new">new</option>
+                    <option value="2 years">2 years</option>
+                    <option value="3 years">3 years</option>
+                    <option value="4 years">4 years</option>
+                    <option value="5 years">5 years</option>
+                    <option value="6 years">6 years</option>
+                    <option value="7 years">7 years</option>
+                    <option value="more than 7">more than 7</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Past Number of Claims</span>
+                  <select name="PastNumberOfClaims" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="none">none</option>
+                    <option value="1">1</option>
+                    <option value="2 to 4">2 to 4</option>
+                    <option value="more than 4">more than 4</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <!-- Group 3: Accident -->
+            <div data-group-panel="accident" class="assess-panel hidden flex-col gap-5">
+              <div class="flex flex-col gap-2">
+                <span class="font-label text-xs font-medium text-on-surface-variant">Days from Policy Start to Accident</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" data-pill-container="Days:Policy-Accident">
+                  <button type="button" data-val="1 to 7" class="assess-pill px-3 py-2 rounded-md font-label text-xs text-center bg-surface-container text-on-surface-variant border border-outline">1 to 7 days (Flag)</button>
+                  <button type="button" data-val="8 to 15" class="assess-pill px-3 py-2 rounded-md font-label text-xs text-center bg-primary text-on-primary btn-3d-ion">8 to 15 days (Flag)</button>
+                  <button type="button" data-val="15 to 30" class="assess-pill px-3 py-2 rounded-md font-label text-xs text-center bg-surface-container text-on-surface-variant border border-outline">15 to 30 days</button>
+                  <button type="button" data-val="more than 30" class="assess-pill px-3 py-2 rounded-md font-label text-xs text-center bg-surface-container text-on-surface-variant border border-outline">> 30 days</button>
+                </div>
+                <input type="hidden" name="Days:Policy-Accident" value="8 to 15" class="assess-field">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Accident Area</span>
+                  <select name="AccidentArea" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Urban">Urban</option>
+                    <option value="Rural">Rural</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Month of Accident</span>
+                  <select name="Month" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Jan">Jan</option><option value="Feb">Feb</option><option value="Mar">Mar</option>
+                    <option value="Apr">Apr</option><option value="May">May</option><option value="Jun">Jun</option>
+                    <option value="Jul">Jul</option><option value="Aug">Aug</option><option value="Sep">Sep</option>
+                    <option value="Oct">Oct</option><option value="Nov">Nov</option><option value="Dec">Dec</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Day of Week</span>
+                  <select name="DayOfWeek" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Week of Month</span>
+                  <select name="WeekOfMonth" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <!-- Group 4: Reporting -->
+            <div data-group-panel="reporting" class="assess-panel hidden flex-col gap-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Police Report Filed</span>
+                  <select name="PoliceReportFiled" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="No">No (Common in fraud)</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Witness Present</span>
+                  <select name="WitnessPresent" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Days from Policy Start to Claim</span>
+                  <select name="Days:Policy-Claim" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="8 to 15">8 to 15</option>
+                    <option value="15 to 30">15 to 30</option>
+                    <option value="more than 30">more than 30</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Month Claimed</span>
+                  <select name="MonthClaimed" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Jan">Jan</option><option value="Feb">Feb</option><option value="Mar">Mar</option>
+                    <option value="Apr">Apr</option><option value="May">May</option><option value="Jun">Jun</option>
+                    <option value="Jul">Jul</option><option value="Aug">Aug</option><option value="Sep">Sep</option>
+                    <option value="Oct">Oct</option><option value="Nov">Nov</option><option value="Dec">Dec</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Day Claim Reported</span>
+                  <select name="DayOfWeekClaimed" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5">
+                  <span class="font-label text-xs font-medium text-on-surface-variant">Week of Month Claimed</span>
+                  <select name="WeekOfMonthClaimed" class="assess-field px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Sticky 3D Porcelain Live Result Stage -->
+        <aside class="lg:col-span-5 lg:sticky lg:top-24 bg-porcelain text-on-porcelain rounded-xl border border-porcelain p-6 md:p-7 stage-3d-porcelain flex flex-col gap-6">
+          <div class="flex items-center justify-between border-b border-on-porcelain-variant/20 pb-4">
+            <div class="flex flex-col gap-1">
+              <span class="font-label text-xs font-medium text-on-porcelain-variant uppercase tracking-wider">Live Model Score</span>
+              <span id="assess-live-score" class="font-headline text-4xl sm:text-5xl font-bold text-on-porcelain tabular-nums">22.7%</span>
+            </div>
+            <span id="assess-live-band" class="px-3 py-1 rounded-sm bg-risk-high text-on-risk-high font-label text-sm font-semibold pulse-high-risk">High risk</span>
+          </div>
+
+          <!-- Top Driving Reasons -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-headline text-base font-semibold text-on-porcelain">Top Factors Influencing Score</h3>
+              <span class="text-[11px] text-on-porcelain-variant">SHAP local attribution</span>
+            </div>
+            <div id="assess-live-reasons" class="flex flex-col divide-y divide-on-porcelain-variant/15 text-xs sm:text-sm">
+              <!-- Dynamically populated SHAP factors -->
+            </div>
+          </div>
+
+          <!-- Simple Heuristic Rule Checks -->
+          <div class="border-t border-on-porcelain-variant/20 pt-4 flex flex-col gap-2">
+            <h4 class="font-headline text-sm font-semibold text-on-porcelain">Historical Rule Flags</h4>
+            <div id="assess-live-flags" class="flex flex-col gap-2">
+              <!-- Dynamically populated flags -->
+            </div>
+          </div>
+
+          <!-- Save to Decisions CTA -->
+          <div class="border-t border-on-porcelain-variant/20 pt-4">
+            <button id="assess-record-decision-btn" type="button" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-md border border-ion hover:bg-ion btn-3d-ion font-label text-sm font-semibold">
+              <span class="material-symbols-outlined text-[18px]">post_add</span>
+              <span>Record Decision on this Profile</span>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- VIEW 4: MODEL AND LIMITS (#model)                                     -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="model-view" class="view-panel hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-10 w-full flex flex-col gap-12">
+      <!-- Monumental Headline & 3-Figure Strip -->
+      <section class="flex flex-col gap-8">
+        <div>
+          <span class="font-mono text-xs text-ion-bright font-semibold uppercase tracking-wider">Model Validation & Operational Limits</span>
+          <h1 class="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface max-w-3xl mt-2 tracking-tight text-balance">
+            Trained on 20,000 auto claims. Evaluated with honest holdout testing.
+          </h1>
+          <p class="font-body text-sm sm:text-base text-on-surface-variant mt-2 max-w-2xl">
+            Triage models exist to order human investigator queues, not to replace adjusters. The figures below reflect performance on 4,000 unseen claims.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 border-y border-outline py-6 gap-6 md:gap-0 md:divide-x md:divide-outline">
+          <div class="md:pr-8 flex flex-col gap-1.5">
+            <span id="model-kpi-recall" class="font-headline text-4xl sm:text-5xl font-bold text-ion-bright tabular-nums">69.4%</span>
+            <p class="font-body text-xs sm:text-sm text-on-surface-variant">of all frauds discovered by reviewing just the top 10% highest-scoring claims (95% CI: 65% to 74%).</p>
+          </div>
+          <div class="md:px-8 flex flex-col gap-1.5">
+            <span id="model-kpi-prauc" class="font-headline text-4xl sm:text-5xl font-bold text-ion-bright tabular-nums">0.712</span>
+            <p class="font-body text-xs sm:text-sm text-on-surface-variant">Holdout PR-AUC (vs random baseline of 0.117; 6x improvement over unassisted review).</p>
+          </div>
+          <div class="md:pl-8 flex flex-col gap-1.5">
+            <span id="model-kpi-rocauc" class="font-headline text-4xl sm:text-5xl font-bold text-ion-bright tabular-nums">0.909</span>
+            <p class="font-body text-xs sm:text-sm text-on-surface-variant">Holdout ROC-AUC across 4,000 independent test claims (0.50 with randomized labels).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive 3D Porcelain Analytical Stage -->
+      <section class="bg-porcelain text-on-porcelain rounded-xl border border-porcelain stage-3d-porcelain grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-on-porcelain-variant/20 overflow-hidden">
+        <!-- Review Capacity Curve (Cumulative Gains) -->
+        <div class="p-6 md:p-8 flex flex-col gap-4">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <h2 class="font-headline text-lg sm:text-xl font-bold text-on-porcelain">Frauds Found vs Claims Reviewed</h2>
+              <p class="font-body text-xs sm:text-sm text-on-porcelain-variant">Hover checkpoints to inspect capture rates at different review capacities.</p>
+            </div>
+            <span id="gains-readout" class="px-2.5 py-1 rounded-sm bg-primary/10 font-mono text-xs text-primary font-bold tabular-nums">Top 10% → 69.4% captured</span>
+          </div>
+
+          <!-- Interactive SVG Curve -->
+          <div class="w-full h-auto py-2">
+            <svg viewBox="0 0 420 220" class="w-full h-auto select-none" id="capacity-curve-svg">
+              <!-- Grid lines -->
+              <line x1="44" y1="20" x2="44" y2="184" stroke="#CBD5E1" stroke-width="1"></line>
+              <line x1="44" y1="184" x2="400" y2="184" stroke="#CBD5E1" stroke-width="1"></line>
+              <line x1="44" y1="102" x2="400" y2="102" stroke="#E2E8F0" stroke-width="1"></line>
+              <line x1="44" y1="20" x2="400" y2="20" stroke="#E2E8F0" stroke-width="1"></line>
+              <!-- Random diagonal baseline -->
+              <line x1="44" y1="184" x2="400" y2="20" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"></line>
+              <!-- Shaded confidence interval band -->
+              <polygon points="44,184 80,74 115,48 186,30 258,23 329,21 400,20 400,20 329,23 258,26 186,36 115,58 80,84 44,184" fill="#DBEAFE" opacity="0.8"></polygon>
+              <!-- Model performance polyline -->
+              <polyline points="44,184 80,79 115,53 186,33 258,24 329,22 400,20" fill="none" stroke="#1D4ED8" stroke-width="3"></polyline>
+              <!-- Interactive data dots -->
+              <circle class="gains-dot cursor-pointer" data-label="Top 10% → 69.4% captured" cx="80" cy="79" r="6" fill="#BE123C" stroke="#FFFFFF" stroke-width="2"></circle>
+              <circle class="gains-dot cursor-pointer" data-label="Top 20% → 81.4% captured" cx="115" cy="53" r="5" fill="#1D4ED8" stroke="#FFFFFF" stroke-width="1.5"></circle>
+              <circle class="gains-dot cursor-pointer" data-label="Top 40% → 89.2% captured" cx="186" cy="33" r="5" fill="#1D4ED8" stroke="#FFFFFF" stroke-width="1.5"></circle>
+              <circle class="gains-dot cursor-pointer" data-label="Top 60% → 94.1% captured" cx="258" cy="24" r="5" fill="#1D4ED8" stroke="#FFFFFF" stroke-width="1.5"></circle>
+              <circle class="gains-dot cursor-pointer" data-label="Top 80% → 98.0% captured" cx="329" cy="22" r="5" fill="#1D4ED8" stroke="#FFFFFF" stroke-width="1.5"></circle>
+              <!-- Axis labels -->
+              <text x="12" y="188" font-size="11" fill="#475569" font-family="Inter, sans-serif">0%</text>
+              <text x="8" y="106" font-size="11" fill="#475569" font-family="Inter, sans-serif">50%</text>
+              <text x="4" y="24" font-size="11" fill="#475569" font-family="Inter, sans-serif">100%</text>
+              <text x="44" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">0%</text>
+              <text x="72" y="204" font-size="11" fill="#BE123C" font-family="Inter, sans-serif" font-weight="600">10%</text>
+              <text x="210" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">50% reviewed</text>
+              <text x="372" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">100%</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Calibration Chart -->
+        <div class="p-6 md:p-8 flex flex-col gap-4">
+          <div>
+            <h2 class="font-headline text-lg sm:text-xl font-bold text-on-porcelain">Probability Calibration</h2>
+            <p class="font-body text-xs sm:text-sm text-on-porcelain-variant">Predicted fraud score vs observed empirical fraud frequency in test deciles.</p>
+          </div>
+
+          <div class="w-full h-auto py-2">
+            <svg viewBox="0 0 420 220" class="w-full h-auto select-none">
+              <line x1="44" y1="20" x2="44" y2="184" stroke="#CBD5E1" stroke-width="1"></line>
+              <line x1="44" y1="184" x2="400" y2="184" stroke="#CBD5E1" stroke-width="1"></line>
+              <!-- Perfect calibration diagonal -->
+              <line x1="44" y1="184" x2="400" y2="20" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"></line>
+              <!-- Calibrated curve -->
+              <polyline points="44,184 76,176 112,174 150,172 190,170 230,168 270,165 310,140 350,110 390,35" fill="none" stroke="#1D4ED8" stroke-width="3"></polyline>
+              <circle cx="76" cy="176" r="4" fill="#1D4ED8"></circle>
+              <circle cx="112" cy="174" r="4" fill="#1D4ED8"></circle>
+              <circle cx="150" cy="172" r="4" fill="#1D4ED8"></circle>
+              <circle cx="190" cy="170" r="4" fill="#1D4ED8"></circle>
+              <circle cx="230" cy="168" r="4" fill="#1D4ED8"></circle>
+              <circle cx="270" cy="165" r="4" fill="#1D4ED8"></circle>
+              <circle cx="310" cy="140" r="4" fill="#1D4ED8"></circle>
+              <circle cx="350" cy="110" r="4" fill="#1D4ED8"></circle>
+              <circle cx="390" cy="35" r="5" fill="#BE123C"></circle>
+              <!-- Axis labels -->
+              <text x="12" y="188" font-size="11" fill="#475569" font-family="Inter, sans-serif">0%</text>
+              <text x="8" y="106" font-size="11" fill="#475569" font-family="Inter, sans-serif">50%</text>
+              <text x="4" y="24" font-size="11" fill="#475569" font-family="Inter, sans-serif">100%</text>
+              <text x="44" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">0%</text>
+              <text x="210" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">Predicted Score</text>
+              <text x="372" y="204" font-size="11" fill="#475569" font-family="Inter, sans-serif">100%</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Demographic Parity & Fairness Table -->
+      <section class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <h2 class="font-headline text-xl sm:text-2xl font-bold text-on-surface">Demographic Fairness Checks</h2>
+          <p class="font-body text-sm text-on-surface-variant">
+            To prevent disparate impact, protected attributes are strictly excluded from training. The model is audited across demographic slices to verify equal triage flag rates.
+          </p>
+        </div>
+
+        <div class="bg-surface-container border border-outline rounded-xl overflow-hidden stage-3d-obsidian">
+          <table class="w-full text-left border-collapse font-body text-sm">
+            <thead>
+              <tr class="border-b border-outline bg-surface-container-low text-midnight-muted font-label text-xs">
+                <th scope="col" class="py-3 px-4 font-semibold">Protected Slice</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Subgroup</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Holdout Claims</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Top 10% Flag Rate</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Recall @ Top 10%</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="fairness-table-body" class="divide-y divide-outline/50">
+              <!-- Dynamically populated rows from /api/model -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Excluded Features & Guardrails -->
+      <section class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <h2 class="font-headline text-xl sm:text-2xl font-bold text-on-surface">Excluded Columns & Operational Boundaries</h2>
+          <p class="font-body text-sm text-on-surface-variant">The following features were intentionally withheld from model features to protect fairness and intake timing integrity.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-lg bg-surface-container border border-outline flex flex-col gap-1">
+            <span class="font-mono text-xs text-risk-high font-semibold">Sex & Age / AgeOfPolicyHolder</span>
+            <p class="font-body text-xs text-on-surface-variant">Protected demographic classes. Omitted to avoid proxy discrimination and comply with fair insurance lending/handling standards.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-surface-container border border-outline flex flex-col gap-1">
+            <span class="font-mono text-xs text-risk-high font-semibold">Fault & NumberOfSuppliments</span>
+            <p class="font-body text-xs text-on-surface-variant">Post-intake operational flags. Not available at claim intake time; including them would cause target leakage.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-surface-container border border-outline flex flex-col gap-1">
+            <span class="font-mono text-xs text-risk-high font-semibold">PolicyNumber & RepNumber</span>
+            <p class="font-body text-xs text-on-surface-variant">Arbitrary row counters and internal adjuster IDs that have zero causal relation to fraud risk.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-surface-container border border-outline flex flex-col gap-1">
+            <span class="font-mono text-xs text-risk-high font-semibold">Claim Year</span>
+            <p class="font-body text-xs text-on-surface-variant">Excludes annual macro drifts and policy changes from being memorized as static fraud markers.</p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- VIEW 5: DECISIONS AUDIT LEDGER (#decisions)                           -->
+    <!-- --------------------------------------------------------------------- -->
+    <section id="decisions-view" class="view-panel hidden flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 w-full flex flex-col gap-8">
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b border-outline pb-5">
+        <div>
+          <h1 class="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface tracking-tight">Decisions Audit Ledger</h1>
+          <p class="font-body text-sm sm:text-base text-on-surface-variant mt-1">
+            Persistent forensic log of all investigator reviews, escalation actions, and rationale notes.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="/api/decisions.csv" download class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface rounded-md border border-outline hover:bg-outline btn-3d-surface font-label text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            <span>Download Audit CSV</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-surface-container border border-outline rounded-xl p-4 card-3d-obsidian flex flex-col gap-1">
+          <span class="text-midnight-muted text-xs font-label">Total Decisions</span>
+          <span id="dec-kpi-total" class="font-headline text-2xl sm:text-3xl font-bold text-on-surface tabular-nums">0</span>
+        </div>
+        <div class="bg-surface-container border border-outline rounded-xl p-4 card-3d-obsidian flex flex-col gap-1">
+          <span class="text-risk-high text-xs font-label">Escalated</span>
+          <span id="dec-kpi-escalated" class="font-headline text-2xl sm:text-3xl font-bold text-risk-high tabular-nums">0</span>
+        </div>
+        <div class="bg-surface-container border border-outline rounded-xl p-4 card-3d-obsidian flex flex-col gap-1">
+          <span class="text-ion-bright text-xs font-label">Under Review</span>
+          <span id="dec-kpi-review" class="font-headline text-2xl sm:text-3xl font-bold text-ion-bright tabular-nums">0</span>
+        </div>
+        <div class="bg-surface-container border border-outline rounded-xl p-4 card-3d-obsidian flex flex-col gap-1">
+          <span class="text-risk-low text-xs font-label">Cleared</span>
+          <span id="dec-kpi-cleared" class="font-headline text-2xl sm:text-3xl font-bold text-risk-low tabular-nums">0</span>
+        </div>
+      </div>
+
+      <!-- Audit Ledger Table in Porcelain High-Contrast Container -->
+      <div class="bg-porcelain text-on-porcelain border border-porcelain rounded-xl stage-3d-porcelain overflow-hidden flex flex-col">
+        <!-- Table Filter Tabs -->
+        <div class="px-6 pt-5 pb-3 border-b border-on-porcelain-variant/20 flex flex-wrap items-center justify-between gap-4">
+          <div role="tablist" class="flex flex-wrap items-center gap-6">
+            <button type="button" data-dec-filter="All" class="dec-filter-tab pb-2 border-b-2 border-primary text-primary font-label text-sm font-semibold">
+              All (<span id="dec-filter-count-all">0</span>)
+            </button>
+            <button type="button" data-dec-filter="Escalated" class="dec-filter-tab pb-2 border-b-2 border-transparent text-on-porcelain-variant hover:text-on-porcelain font-label text-sm font-semibold">
+              Escalated (<span id="dec-filter-count-escalated">0</span>)
+            </button>
+            <button type="button" data-dec-filter="Under review" class="dec-filter-tab pb-2 border-b-2 border-transparent text-on-porcelain-variant hover:text-on-porcelain font-label text-sm font-semibold">
+              Under review (<span id="dec-filter-count-review">0</span>)
+            </button>
+            <button type="button" data-dec-filter="Cleared" class="dec-filter-tab pb-2 border-b-2 border-transparent text-on-porcelain-variant hover:text-on-porcelain font-label text-sm font-semibold">
+              Cleared (<span id="dec-filter-count-cleared">0</span>)
+            </button>
+          </div>
+          <span class="font-mono text-xs text-on-porcelain-variant flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>SQLite Audit Synced</span>
+          </span>
+        </div>
+
+        <!-- Table Data -->
+        <div class="w-full overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-on-porcelain-variant/20 bg-on-porcelain/5 text-on-porcelain font-label text-xs">
+                <th scope="col" class="py-3 px-4 font-semibold">Claim ID</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Decision</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Investigator Rationale Note</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Score</th>
+                <th scope="col" class="py-3 px-4 font-semibold">Timestamp</th>
+                <th scope="col" class="py-3 px-4 font-semibold text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="decisions-table-body" class="divide-y divide-on-porcelain-variant/15 font-body text-sm">
+              <!-- Dynamically populated decision rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="decisions-empty-state" class="hidden py-12 px-6 flex flex-col items-center text-center gap-3">
+          <span class="material-symbols-outlined text-4xl text-on-porcelain-variant">fact_check</span>
+          <p class="font-headline font-semibold text-base text-on-porcelain">No decisions logged yet.</p>
+          <p class="font-body text-xs text-on-porcelain-variant max-w-sm">Open any claim from the Claims Queue or Assess console to record your clinical rationale.</p>
+          <a href="#queue" class="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-md font-label text-xs font-semibold btn-3d-ion">
+            Open Claims Queue
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Slide-out Porcelain Claim Detail Panel (#claim-detail-drawer)              -->
+  <!-- ========================================================================= -->
+  <div id="drawer-scrim" class="drawer-scrim fixed inset-0 bg-midnight/80 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity"></div>
+
+  <aside id="claim-detail-drawer" class="drawer-panel closed fixed top-0 right-0 bottom-0 w-full max-w-2xl bg-porcelain text-on-porcelain z-50 overflow-y-auto shadow-2xl border-l border-porcelain p-6 sm:p-8 flex flex-col gap-6" aria-label="Claim Detail Dossier" aria-hidden="true">
+    <!-- Drawer Header -->
+    <div class="flex items-center justify-between border-b border-on-porcelain-variant/20 pb-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 id="drawer-claim-id" class="font-headline text-2xl sm:text-3xl font-bold text-on-porcelain tracking-tight">Claim C-00000</h2>
+          <span id="drawer-rank-badge" class="px-2.5 py-0.5 rounded-full bg-on-porcelain/10 font-mono text-xs font-semibold text-on-porcelain">Rank 1 of 400</span>
+        </div>
+        <p id="drawer-top-share" class="font-body text-xs text-on-porcelain-variant mt-0.5">Top 1% of comparable historical auto claims</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="drawer-prev-btn" type="button" class="p-1.5 rounded-md border border-on-porcelain-variant/30 text-on-porcelain hover:bg-on-porcelain/5" title="Previous claim">
+          <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+        </button>
+        <button id="drawer-next-btn" type="button" class="p-1.5 rounded-md border border-on-porcelain-variant/30 text-on-porcelain hover:bg-on-porcelain/5" title="Next claim">
+          <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+        </button>
+        <button id="drawer-close-btn" type="button" class="p-1.5 rounded-md border border-on-porcelain-variant/30 text-on-porcelain hover:bg-on-porcelain/5 ml-2" title="Close dossier">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Risk Score + Semi-Circle Arc Gauge -->
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center border-b border-on-porcelain-variant/20 pb-6">
+      <div class="sm:col-span-5 flex items-center gap-4">
+        <svg viewBox="0 0 120 74" class="w-28 h-20 shrink-0" aria-hidden="true">
+          <!-- Background arc -->
+          <path d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round"></path>
+          <!-- Animated foreground risk arc -->
+          <path id="drawer-gauge-arc" class="gauge-arc" d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#BE123C" stroke-width="10" stroke-linecap="round" stroke-dasharray="150" stroke-dashoffset="50"></path>
+        </svg>
+        <div class="flex flex-col">
+          <span id="drawer-score-val" class="font-headline text-3xl sm:text-4xl font-bold text-on-porcelain tabular-nums">22.7%</span>
+          <span id="drawer-band-pill" class="px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-xs font-semibold w-fit mt-1">High risk</span>
+        </div>
+      </div>
+
+      <div class="sm:col-span-7 flex flex-col gap-1 text-xs sm:text-sm text-on-porcelain-variant">
+        <p>In past training data, roughly <strong id="drawer-compare-count" class="text-on-porcelain">23 in 100</strong> claims scoring this high were confirmed fraud.</p>
+        <div class="flex justify-between font-mono text-[11px] pt-1">
+          <span>0%</span>
+          <span class="text-primary font-bold">Base Rate: 11.7%</span>
+          <span>100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diverging SHAP Driver Bars -->
+    <div class="flex flex-col gap-3 border-b border-on-porcelain-variant/20 pb-6">
+      <div class="flex items-baseline justify-between">
+        <h3 class="font-headline text-base font-bold text-on-porcelain">What Drives this Score</h3>
+        <span class="text-[11px] text-on-porcelain-variant">Left lowers score · Right raises score</span>
+      </div>
+
+      <div id="drawer-reasons-list" class="flex flex-col divide-y divide-on-porcelain-variant/15 text-xs sm:text-sm">
+        <!-- Dynamically populated diverging bars -->
+      </div>
+    </div>
+
+    <!-- Heuristic Rules / Simple Checks -->
+    <div class="flex flex-col gap-3 border-b border-on-porcelain-variant/20 pb-6">
+      <h3 class="font-headline text-base font-bold text-on-porcelain">Historical Rule Flags</h3>
+      <div id="drawer-flags-list" class="flex flex-col gap-2">
+        <!-- Dynamically populated rule badges -->
+      </div>
+    </div>
+
+    <!-- Your Decision Rocker Switch & Form -->
+    <div class="flex flex-col gap-4 border-b border-on-porcelain-variant/20 pb-6">
+      <h3 class="font-headline text-base font-bold text-on-porcelain">Investigator Audit Decision</h3>
+      <form id="drawer-decision-form" class="flex flex-col gap-3">
+        <!-- Decision Pills -->
+        <div class="flex flex-wrap gap-2" role="radiogroup">
+          <button type="button" data-decision="Under review" class="drawer-dec-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-semibold bg-primary text-on-primary btn-3d-ion">Under review</button>
+          <button type="button" data-decision="Cleared" class="drawer-dec-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-semibold border border-on-porcelain-variant/30 text-on-porcelain hover:bg-on-porcelain/5">Cleared</button>
+          <button type="button" data-decision="Escalated" class="drawer-dec-btn px-3.5 py-1.5 rounded-md font-label text-xs sm:text-sm font-semibold border border-on-porcelain-variant/30 text-on-porcelain hover:bg-on-porcelain/5">Escalated</button>
+        </div>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-xs font-medium text-on-porcelain">Investigator Note / Rationale</span>
+          <textarea id="drawer-note-input" rows="2" placeholder="Record what was checked, witness calls made, or referral reasons..." class="w-full px-3 py-2 bg-white text-on-porcelain border border-on-porcelain-variant/30 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"></textarea>
+        </label>
+
+        <div class="flex items-center gap-3 pt-1">
+          <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-2 bg-primary text-on-primary rounded-md border border-ion hover:bg-ion btn-3d-ion font-label text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px]">save</span>
+            <span>Save Decision</span>
+          </button>
+          <span id="drawer-save-status" class="hidden text-xs text-risk-low-on-light font-medium font-mono">Saved!</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Complete 22-Field Record Details Accordion -->
+    <details class="group pt-1 pb-4">
+      <summary class="cursor-pointer font-label text-xs sm:text-sm font-semibold text-primary flex items-center justify-between select-none">
+        <span>View Complete Claim Record (All 22 Fields)</span>
+        <span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span>
+      </summary>
+      <div id="drawer-fields-grid" class="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 font-body text-xs">
+        <!-- Dynamically populated 22 key-value pairs -->
+      </div>
+    </details>
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CREATE ACCOUNT / LOG IN                                            -->
+  <!-- ========================================================================= -->
+  <div id="auth-modal-scrim" class="fixed inset-0 bg-midnight/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-surface-container border border-outline rounded-xl max-w-md w-full p-6 stage-3d-obsidian flex flex-col gap-5">
+      <div class="flex items-center justify-between border-b border-outline pb-3">
+        <h3 class="font-headline text-lg font-bold text-on-surface">Investigator Account</h3>
+        <button id="auth-modal-close" type="button" class="text-midnight-muted hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form id="auth-form" class="flex flex-col gap-4">
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-xs text-on-surface-variant font-medium">Investigator Full Name</span>
+          <input type="text" id="auth-name-input" value="Claire Vance" class="px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-xs text-on-surface-variant font-medium">Work Email</span>
+          <input type="email" id="auth-email-input" value="c.vance@meridian-claims.org" class="px-3 py-2 bg-midnight text-on-surface border border-outline rounded-md text-sm focus:border-ion focus:ring-1 focus:ring-ion">
+        </label>
+        <button type="submit" class="mt-2 w-full py-2.5 bg-primary text-on-primary rounded-md font-label text-sm font-semibold btn-3d-ion hover:bg-ion">
+          Save Investigator Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: FIRST-RUN 4-STEP TUTORIAL                                          -->
+  <!-- ========================================================================= -->
+  <div id="tour-modal-scrim" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden items-center justify-center p-4 sm:p-6">
+    <div class="bg-surface-container border border-outline rounded-2xl max-w-3xl w-full p-6 sm:p-8 stage-3d-obsidian flex flex-col gap-6 relative">
+      <div class="flex items-center justify-between border-b border-outline pb-4">
+        <span id="tour-step-badge" class="font-mono text-xs text-ion-bright font-bold uppercase tracking-wider">Step 1 of 4 — Introduction</span>
+        <button id="tour-close-btn" type="button" class="text-midnight-muted hover:text-on-surface">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-5 flex flex-col gap-3">
+          <h2 id="tour-step-title" class="font-headline text-2xl font-bold text-on-surface">1. Load Claims Queue</h2>
+          <p id="tour-step-desc" class="font-body text-sm text-on-surface-variant leading-relaxed">
+            Upload any new intake CSV or load our standard 400 sample batch. The ML model instantly ranks every claim from highest risk to safest.
+          </p>
+        </div>
+
+        <div class="md:col-span-7 bg-porcelain text-on-porcelain rounded-xl p-5 border border-porcelain stage-3d-porcelain flex flex-col gap-3 text-xs">
+          <div id="tour-step-preview" class="flex flex-col gap-2">
+            <!-- Dynamic step preview UI -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between border-t border-outline pt-4">
+        <button id="tour-back-btn" type="button" disabled class="px-4 py-2 bg-surface-container-low text-midnight-muted rounded-md border border-outline disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm font-label">
+          Back
+        </button>
+        <button id="tour-next-btn" type="button" class="px-5 py-2 bg-primary text-on-primary rounded-md font-label text-xs sm:text-sm font-semibold btn-3d-ion hover:bg-ion">
+          Next Step
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden File Input for CSV Upload -->
+  <input type="file" id="csv-file-input" accept=".csv,text/csv" class="hidden">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Persistent Bottom Notice -->
+  <footer class="border-t border-outline bg-midnight mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-4 flex flex-wrap items-center justify-between gap-4 text-xs text-midnight-muted">
+      <p>Decision support only. A high rank means look at this claim first. It does not show fraud occurred, and this tool never auto-denies claims.</p>
+      <div class="flex items-center gap-4">
+        <span>FastAPI & LightGBM Backend</span>
+        <span>•</span>
+        <a href="#model" class="text-ion-bright hover:underline">Model Limitations</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
 </body>
 </html>
