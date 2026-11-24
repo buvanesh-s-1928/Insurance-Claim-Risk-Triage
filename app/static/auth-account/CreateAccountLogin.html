@@ -195,6 +195,12 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <button id="auth-submit" type="submit" class="mt-2 w-full py-3 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold cursor-pointer">
             Sign In &amp; Open Queue
           </button>
+
+          <div class="pt-2 text-center">
+            <button id="btn-quick-demo" type="button" class="text-xs text-on-surface-variant hover:text-emerald-text underline cursor-pointer">
+              Quick demo sign-in as Elena Rostova (Lead Adjuster)
+            </button>
+          </div>
         </form>
 
         <div class="border-t border-outline pt-4 flex flex-wrap items-center justify-between gap-3 text-body-sm text-on-surface-variant">
@@ -257,27 +263,66 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
 
         heading.textContent = create ? 'Create investigator account' : 'Welcome back';
         subtext.textContent = create
-          ? 'Register your official investigator profile to begin auditing claims.'
+          ? 'Register your official investigator profile to begin auditing claims. A 4-step system walkthrough is required before accessing the queue.'
           : 'Sign in with your organization credentials to open your triage queue.';
-        submitBtn.textContent = create ? 'Create Account & Start' : 'Sign In & Open Queue';
+        submitBtn.textContent = create ? 'Create Account & Start Walkthrough' : 'Sign In & Open Queue';
       }
 
       tabLogin.addEventListener('click', () => setMode(false));
       tabCreate.addEventListener('click', () => setMode(true));
+
+      // Quick demo button
+      document.getElementById('btn-quick-demo').addEventListener('click', () => {
+        ClaimTriageAuth.setUser({
+          name: 'Elena Rostova',
+          email: 'elena.rostova@claimtriage.internal',
+          role: 'Lead Fraud Strategist',
+          signedInAt: new Date().toISOString(),
+          hasCompletedTour: true
+        });
+        const ret = sessionStorage.getItem('claim_triage_return_url');
+        if (ret) {
+          sessionStorage.removeItem('claim_triage_return_url');
+          window.location.href = ret;
+        } else {
+          window.location.href = '../claims-queue/ClaimsQueue.html';
+        }
+      });
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = emailInput.value.trim();
         const name = (nameInput.value.trim()) || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Investigator';
 
-        ClaimTriageAuth.setUser({
-          name: name,
-          email: email,
-          role: 'Fraud Risk Specialist',
-          signedInAt: new Date().toISOString()
-        });
+        if (isCreateMode) {
+          // Brand new user: MANDATORY walkthrough before queue access
+          ClaimTriageAuth.setUser({
+            name: name,
+            email: email,
+            role: 'Fraud Risk Specialist',
+            signedInAt: new Date().toISOString(),
+            hasCompletedTour: false
+          });
 
-        window.location.href = '../claims-queue/ClaimsQueue.html';
+          window.location.href = '../first-run-tutorial/FirstRunTutorial.html?mandatory=1';
+        } else {
+          // Existing user login
+          ClaimTriageAuth.setUser({
+            name: name || 'Elena Rostova',
+            email: email,
+            role: 'Lead Fraud Strategist',
+            signedInAt: new Date().toISOString(),
+            hasCompletedTour: true
+          });
+
+          const ret = sessionStorage.getItem('claim_triage_return_url');
+          if (ret) {
+            sessionStorage.removeItem('claim_triage_return_url');
+            window.location.href = ret;
+          } else {
+            window.location.href = '../claims-queue/ClaimsQueue.html';
+          }
+        }
       });
     })();
   </script>

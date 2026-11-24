@@ -112,7 +112,8 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
 
       <div class="flex items-center gap-4 min-w-0">
         <span id="step-counter" class="px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark font-mono text-mono-sm text-emerald-bright tabular-nums font-semibold whitespace-nowrap">Step 01 / 04</span>
-        <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-md text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Enter Queue</a>
+        <span id="mandatory-badge" class="hidden px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono text-xs font-semibold">● Mandatory Onboarding</span>
+        <a id="link-enter-queue" href="../claims-queue/ClaimsQueue.html" class="font-label text-label-md text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Enter Queue</a>
       </div>
     </div>
 
@@ -231,7 +232,22 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      // Check auth (allow if signed in, even if tour incomplete)
+      if (!ClaimTriageAuth.requireAuth({ requireTour: false })) {
+        return;
+      }
+
+      const user = ClaimTriageAuth.getUser();
+      const isMandatory = !user || user.hasCompletedTour === false;
+
+      if (isMandatory) {
+        document.getElementById('mandatory-badge').classList.remove('hidden');
+        document.getElementById('link-enter-queue').classList.add('hidden');
+      }
+
       let currentStep = 1;
+      let maxReachedStep = 1;
+
       const steps = [
         {
           num: '01 / 04',
@@ -259,12 +275,13 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           eyebrow: 'PILLAR 04 · GOVERNANCE',
           title: 'Human investigator sign-off & audit log',
           desc: 'Record decisions as Under review, Cleared, or Escalated with investigator review notes. Every action is signed under your credentials and exportable to CSV.',
-          btnText: 'Open Live Queue'
+          btnText: 'Complete Walkthrough & Enter Queue'
         }
       ];
 
       function updateStep(step) {
         currentStep = step;
+        if (step > maxReachedStep) maxReachedStep = step;
         const s = steps[step - 1];
 
         document.getElementById('step-counter').textContent = `Step ${s.num}`;
@@ -297,13 +314,20 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         if (currentStep < 4) {
           updateStep(currentStep + 1);
         } else {
+          // Mandatory tour is complete!
+          ClaimTriageAuth.completeTour();
           window.location.href = '../claims-queue/ClaimsQueue.html';
         }
       });
 
       document.querySelectorAll('.step-bar').forEach(b => {
         b.addEventListener('click', () => {
-          updateStep(Number(b.dataset.jump));
+          const targetStep = Number(b.dataset.jump);
+          // If mandatory, only allow going backwards or to already reached steps
+          if (isMandatory && targetStep > maxReachedStep + 1) {
+            return;
+          }
+          updateStep(targetStep);
         });
       });
 

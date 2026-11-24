@@ -359,6 +359,9 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      // Enforce authentication & onboarding completion
+      if (!ClaimTriageAuth.requireAuth()) return;
+
       // Mobile drawer
       const railBtn = document.getElementById('rail-toggle');
       const railContent = document.getElementById('rail-content');
