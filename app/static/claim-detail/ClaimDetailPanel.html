@@ -119,6 +119,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
           <span>Assess</span>
         </a>
+        <a href="../analytics/AnalyticsCharts.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">insights</span>
+          <span>Analytics</span>
+        </a>
         <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">analytics</span>
           <span>Model</span>
@@ -148,6 +152,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       <nav aria-label="Mobile Application" class="grid grid-cols-2 gap-2">
         <a href="../claims-queue/ClaimsQueue.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Queue</a>
         <a href="../assess-claim/AssessAClaim.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Assess</a>
+        <a href="../analytics/AnalyticsCharts.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Analytics</a>
         <a href="../model-limits/ModelAndLimits.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Model</a>
         <a href="../decisions/Decisions.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Decisions</a>
       </nav>
@@ -205,8 +210,8 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <div class="sm:col-span-5 flex items-center gap-5">
             <svg viewBox="0 0 120 74" class="w-28 h-20 shrink-0" aria-hidden="true">
               <path d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round"></path>
-              <path id="gauge-arc" d="M12 62 A48 48 0 0 1 92 24" fill="none" stroke="#BE123C" stroke-width="10" stroke-linecap="round"></path>
-              <circle id="gauge-dot" cx="92" cy="24" r="4" fill="#0F172A"></circle>
+              <path id="gauge-arc" d="M12 62 A48 48 0 0 1 108 62" fill="none" stroke="#BE123C" stroke-width="10" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8" style="transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;"></path>
+              <circle id="gauge-dot" cx="12" cy="62" r="4.5" fill="#BE123C" stroke="#FFFFFF" stroke-width="1.5" style="transition: cx 0.6s cubic-bezier(0.4, 0, 0.2, 1), cy 0.6s cubic-bezier(0.4, 0, 0.2, 1), fill 0.4s ease;"></circle>
             </svg>
             <div class="flex flex-col gap-1 min-w-0">
               <span id="detail-score-pct" class="font-headline text-display-lg text-on-surface tabular-nums font-bold">22.7%</span>
@@ -402,6 +407,28 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           : band === 'Medium' 
           ? 'px-2.5 py-0.5 rounded-sm bg-risk-medium text-on-risk-medium font-label text-label-sm w-fit font-semibold' 
           : 'px-2.5 py-0.5 rounded-sm bg-risk-low text-on-risk-low font-label text-label-sm w-fit font-semibold';
+
+        // Update Gauge Arc & Pointer Dot dynamically
+        const clampedScore = Math.min(1, Math.max(0, Number(scoreVal) || 0));
+        const arcLength = 150.8;
+        const dashOffset = arcLength * (1 - clampedScore);
+        const gaugeArc = document.getElementById('gauge-arc');
+        const gaugeDot = document.getElementById('gauge-dot');
+        const bandColor = band === 'High' ? '#BE123C' : band === 'Medium' ? '#B45309' : '#10B981';
+
+        if (gaugeArc) {
+          gaugeArc.style.strokeDashoffset = dashOffset.toFixed(2);
+          gaugeArc.setAttribute('stroke', bandColor);
+        }
+
+        if (gaugeDot) {
+          const dotAngle = Math.PI * clampedScore;
+          const dotX = 60 - 48 * Math.cos(dotAngle);
+          const dotY = 62 - 48 * Math.sin(dotAngle);
+          gaugeDot.setAttribute('cx', dotX.toFixed(2));
+          gaugeDot.setAttribute('cy', dotY.toFixed(2));
+          gaugeDot.setAttribute('fill', bandColor);
+        }
 
         // Render SHAP Driver Bars
         const driversEl = document.getElementById('detail-drivers-container');

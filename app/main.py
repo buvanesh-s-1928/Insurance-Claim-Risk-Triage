@@ -201,6 +201,118 @@ def sample():
     return run_batch(pd.read_csv(MODELS / "sample_batch.csv"))
 
 
+@app.get("/api/analytics")
+def get_analytics(
+    make: str = "All",
+    policy_type: str = "All",
+    accident_area: str = "All",
+    fault: str = "All",
+    base_policy: str = "All"
+):
+    """Aggregate claims intelligence data with multidimensional filtering."""
+    df = _raw
+    filtered = df
+    if make != "All":
+        filtered = filtered[filtered["Make"] == make]
+    if policy_type != "All":
+        filtered = filtered[filtered["PolicyType"] == policy_type]
+    if accident_area != "All":
+        filtered = filtered[filtered["AccidentArea"] == accident_area]
+    if fault != "All":
+        filtered = filtered[filtered["Fault"] == fault]
+    if base_policy != "All":
+        filtered = filtered[filtered["BasePolicy"] == base_policy]
+
+    total_records = len(filtered)
+    if total_records == 0:
+        return {
+            "total": 0,
+            "kpis": {"total_claims": 0, "total_fraud": 0, "fraud_rate": 0.0, "baseline_fraud_rate": BASE_RATE},
+            "by_make": [],
+            "by_policy_type": [],
+            "by_month": [],
+            "by_vehicle_category": [],
+            "by_age_group": [],
+            "filter_options": {}
+        }
+
+    fraud_mask = (filtered["FraudFound"] == "Yes")
+    total_fraud = int(fraud_mask.sum())
+    fraud_rate = round(total_fraud / total_records, 4) if total_records > 0 else 0.0
+
+    # 1. By Make
+    make_grp = filtered.groupby("Make")["FraudFound"].agg(
+        total="count",
+        fraud=lambda s: (s == "Yes").sum()
+    ).reset_index()
+    make_grp["fraud_rate"] = (make_grp["fraud"] / make_grp["total"]).round(4)
+    make_grp = make_grp.sort_values(by="total", ascending=False)
+
+    # 2. By Policy Type
+    pt_grp = filtered.groupby("PolicyType")["FraudFound"].agg(
+        total="count",
+        fraud=lambda s: (s == "Yes").sum()
+    ).reset_index()
+    pt_grp["fraud_rate"] = (pt_grp["fraud"] / pt_grp["total"]).round(4)
+    pt_grp = pt_grp.sort_values(by="total", ascending=False)
+
+    # 3. By Month (ordered chronologically)
+    month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    m_grp = filtered.groupby("Month")["FraudFound"].agg(
+        total="count",
+        fraud=lambda s: (s == "Yes").sum()
+    ).reindex(month_order).fillna(0).reset_index()
+    m_grp["total"] = m_grp["total"].astype(int)
+    m_grp["fraud"] = m_grp["fraud"].astype(int)
+    m_grp["fraud_rate"] = np.where(m_grp["total"] > 0, (m_grp["fraud"] / m_grp["total"]).round(4), 0.0)
+
+    # 4. By Vehicle Category & Base Policy
+    vc_grp = filtered.groupby(["VehicleCategory", "BasePolicy"])["FraudFound"].agg(
+        total="count",
+        fraud=lambda s: (s == "Yes").sum()
+    ).reset_index()
+    vc_grp["fraud_rate"] = (vc_grp["fraud"] / vc_grp["total"]).round(4)
+
+    # 5. By Age Group
+    age_bins = [0, 25, 35, 50, 65, 120]
+    age_labels = ["16-25", "26-35", "36-50", "51-65", "65+"]
+    filtered_age = filtered.copy()
+    filtered_age["AgeGroup"] = pd.cut(filtered_age["Age"], bins=age_bins, labels=age_labels, right=False)
+    age_grp = filtered_age.groupby("AgeGroup", observed=False)["FraudFound"].agg(
+        total="count",
+        fraud=lambda s: (s == "Yes").sum()
+    ).reset_index()
+    age_grp["fraud_rate"] = np.where(age_grp["total"] > 0, (age_grp["fraud"] / age_grp["total"]).round(4), 0.0)
+
+    # Filter options for the UI
+    filter_options = {
+        "makes": ["All"] + sorted(_raw["Make"].dropna().unique().tolist()),
+        "policy_types": ["All"] + sorted(_raw["PolicyType"].dropna().unique().tolist()),
+        "accident_areas": ["All"] + sorted(_raw["AccidentArea"].dropna().unique().tolist()),
+        "faults": ["All"] + sorted(_raw["Fault"].dropna().unique().tolist()),
+        "base_policies": ["All"] + sorted(_raw["BasePolicy"].dropna().unique().tolist())
+    }
+
+    return {
+        "kpis": {
+            "total_claims": total_records,
+            "total_fraud": total_fraud,
+            "fraud_rate": fraud_rate,
+            "baseline_fraud_rate": BASE_RATE,
+            "filtered_share": round(total_records / len(_raw), 4),
+            "rural_count": int((filtered["AccidentArea"] == "Rural").sum()),
+            "urban_count": int((filtered["AccidentArea"] == "Urban").sum())
+        },
+        "by_make": make_grp.to_dict(orient="records"),
+        "by_policy_type": pt_grp.to_dict(orient="records"),
+        "by_month": m_grp.to_dict(orient="records"),
+        "by_vehicle_category": vc_grp.to_dict(orient="records"),
+        "by_age_group": age_grp.to_dict(orient="records"),
+        "capacity_curve": meta.get("capacity_curve", []),
+        "filter_options": filter_options
+    }
+
+
 @app.get("/api/template.csv")
 def template():
     return FileResponse(MODELS / "template.csv", media_type="text/csv", filename="claims_template.csv")
