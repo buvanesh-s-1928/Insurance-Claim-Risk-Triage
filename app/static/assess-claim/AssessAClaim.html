@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assess a claim — Claim Triage</title>
+  <title>Assess a Claim — Claim Triage</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
 globalThis.tailwind = globalThis.tailwind || {};
@@ -60,15 +61,6 @@ globalThis.tailwind.config = {
         'lg': '16px',
         'full': '9999px',
       },
-      spacing: {
-        'gutter-xs': '4px',
-        'gutter-sm': '8px',
-        'gutter-md': '16px',
-        'gutter-lg': '24px',
-        'gutter-xl': '32px',
-        'section': '48px',
-        'page-margin': '32px',
-      },
       fontFamily: {
         'display': ['"Plus Jakarta Sans"', 'sans-serif'],
         'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -91,18 +83,6 @@ globalThis.tailwind.config = {
         'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
         'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
       },
-      transitionDuration: {
-        'state-change': '120ms',
-        'panel-enter': '200ms',
-      },
-      transitionDelay: {
-        'state-change': '0ms',
-        'panel-enter': '0ms',
-      },
-      transitionTimingFunction: {
-        'state-change': 'ease-out',
-        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
-      },
     },
   },
 };
@@ -116,29 +96,23 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
     .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
     .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
     .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
-    @media (prefers-reduced-motion: reduce) { .btn-emerald-lively:hover { transform: none; } }
   </style>
 </head>
-<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-screen flex flex-col justify-between">
 
   <!-- Deep Midnight Navy Command Dock -->
   <header class="sticky top-0 z-30 bg-midnight text-on-midnight border-b border-outline-dark">
     <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-4 min-w-0">
-        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0">
-          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
-            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
-            </svg>
-          </div>
-          <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-3 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm group">
+          <img src="../assets/logo-clean.png" alt="Claim Triage Logo" class="h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+          <span class="font-headline text-headline-md text-on-midnight font-bold tracking-tight whitespace-nowrap">Claim Triage</span>
         </a>
-        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-midnight-muted whitespace-nowrap">Batch: Sample 400</span>
+        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-emerald-bright whitespace-nowrap">Live Single Claim Assessment</span>
       </div>
 
       <nav aria-label="Application" class="hidden md:flex items-center gap-1 bg-midnight-surface border border-outline-dark rounded-full p-1">
-        <a href="../claims-queue/ClaimsQueue.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../claims-queue/ClaimsQueue.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">format_list_numbered</span>
           <span>Queue</span>
         </a>
@@ -146,20 +120,23 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
           <span>Assess</span>
         </a>
-        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">analytics</span>
           <span>Model</span>
         </a>
-        <a href="../decisions/Decisions.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../decisions/Decisions.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">fact_check</span>
           <span>Decisions</span>
         </a>
       </nav>
 
       <div class="hidden md:flex items-center gap-4 shrink-0">
-        <span class="font-label text-label-lg text-on-midnight whitespace-nowrap">Claire Vance</span>
-        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Take the tour</a>
-        <a href="../auth-account/CreateAccountLogin.html" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark">
+          <div class="w-6 h-6 rounded-full bg-primary text-on-primary font-bold text-xs flex items-center justify-center font-mono investigator-initials">LA</div>
+          <span class="font-label text-label-sm text-on-midnight font-medium investigator-name">Lead Adjuster</span>
+        </div>
+        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Guide</a>
+        <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
       </div>
 
       <button type="button" id="rail-toggle" aria-label="Toggle navigation" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 border border-outline-dark rounded-DEFAULT text-on-midnight">
@@ -167,6 +144,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       </button>
     </div>
 
+    <!-- Mobile Drawer -->
     <div id="rail-content" class="hidden md:hidden border-t border-outline-dark bg-midnight px-6 py-4 flex-col gap-4">
       <nav aria-label="Mobile Application" class="grid grid-cols-2 gap-2">
         <a href="../claims-queue/ClaimsQueue.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Queue</a>
@@ -175,10 +153,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         <a href="../decisions/Decisions.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Decisions</a>
       </nav>
       <div class="flex items-center justify-between pt-2 border-t border-outline-dark text-body-sm">
-        <span class="text-on-midnight font-medium">Claire Vance</span>
+        <span class="text-on-midnight font-medium investigator-name">Lead Adjuster</span>
         <div class="flex items-center gap-4">
-          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Take the tour</a>
-          <a href="../auth-account/CreateAccountLogin.html" class="text-midnight-muted underline">Log out</a>
+          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Guide</a>
+          <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="text-midnight-muted underline">Log out</a>
         </div>
       </div>
     </div>
@@ -187,74 +165,74 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <main class="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-8 w-full flex flex-col gap-10">
     <div class="flex flex-wrap items-end justify-between gap-4 border-b border-outline pb-5">
       <div>
-        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface">Assess a claim</h1>
-        <p class="font-body text-body-md text-on-surface-variant mt-1">Toggle claim factors across the four groups to see how the score, band, and reasons respond.</p>
+        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface font-bold">Interactive claim assessment</h1>
+        <p class="font-body text-body-md text-on-surface-variant mt-1">Adjust policy, vehicle, and accident parameters to receive real-time gradient boosted risk scoring and SHAP factor attributions.</p>
       </div>
       <div class="flex flex-wrap items-center gap-3">
-        <button id="fill-highest-btn" type="button" class="px-4 py-2 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold">Fill with the highest-scoring sample claim</button>
-        <button id="reset-common-btn" type="button" class="px-4 py-2 bg-surface-container text-on-surface border border-outline hover:bg-surface-container-low rounded-DEFAULT font-label text-label-lg">Reset to the most common values</button>
+        <button id="fill-highest-btn" type="button" class="px-4 py-2 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold cursor-pointer">Simulate High-Risk Claim</button>
+        <button id="reset-common-btn" type="button" class="px-4 py-2 bg-surface-container text-on-surface border border-outline hover:bg-surface-container-low rounded-DEFAULT font-label text-label-lg cursor-pointer">Reset to Typical Baseline</button>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-      <!-- Switchable 4-Group Crisp Porcelain Console -->
+      <!-- Switchable 4-Group Console -->
       <div class="lg:col-span-7 flex flex-col gap-6">
         <div role="tablist" aria-label="Claim field groups" class="flex flex-wrap items-center gap-2 border-b border-outline pb-3">
-          <button type="button" role="tab" aria-selected="true" data-group-tab="policy" class="group-tab px-4 py-1.5 rounded-full bg-midnight text-on-midnight font-label text-label-lg font-semibold">1. Policy</button>
-          <button type="button" role="tab" aria-selected="false" data-group-tab="vehicle" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg">2. Vehicle</button>
-          <button type="button" role="tab" aria-selected="false" data-group-tab="accident" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg">3. Accident</button>
-          <button type="button" role="tab" aria-selected="false" data-group-tab="reporting" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg">4. Reporting</button>
+          <button type="button" role="tab" aria-selected="true" data-group-tab="policy" class="group-tab px-4 py-1.5 rounded-full bg-midnight text-on-midnight font-label text-label-lg font-semibold cursor-pointer">1. Policy</button>
+          <button type="button" role="tab" aria-selected="false" data-group-tab="vehicle" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg cursor-pointer">2. Vehicle</button>
+          <button type="button" role="tab" aria-selected="false" data-group-tab="accident" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg cursor-pointer">3. Accident</button>
+          <button type="button" role="tab" aria-selected="false" data-group-tab="reporting" class="group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg cursor-pointer">4. Reporting</button>
         </div>
 
         <form id="assess-form" class="flex flex-col gap-6">
           <!-- Policy Group -->
           <section data-group-panel="policy" class="group-panel flex flex-col gap-6">
             <div class="flex flex-col gap-2">
-              <span class="font-label text-label-sm text-on-surface-variant">Base policy</span>
+              <span class="font-label text-label-sm text-on-surface-variant font-medium">Base policy cover</span>
               <div class="grid grid-cols-3 gap-2" data-pill-field="basePolicy">
-                <button type="button" data-val="All Perils" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">All Perils</button>
-                <button type="button" data-val="Collision" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Collision</button>
-                <button type="button" data-val="Liability" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Liability</button>
+                <button type="button" data-val="All Perils" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">All Perils</button>
+                <button type="button" data-val="Collision" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Collision</button>
+                <button type="button" data-val="Liability" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Liability</button>
               </div>
               <input type="hidden" data-field="basePolicy" value="All Perils" class="assess-input">
             </div>
 
             <div class="flex flex-col gap-2">
-              <span class="font-label text-label-sm text-on-surface-variant">Deductible</span>
+              <span class="font-label text-label-sm text-on-surface-variant font-medium">Deductible ($)</span>
               <div class="grid grid-cols-4 gap-2" data-pill-field="deductible">
-                <button type="button" data-val="400" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-mono text-mono-sm font-semibold text-center">400</button>
-                <button type="button" data-val="300" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center">300</button>
-                <button type="button" data-val="500" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center">500</button>
-                <button type="button" data-val="700" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center">700</button>
+                <button type="button" data-val="400" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-mono text-mono-sm font-semibold text-center cursor-pointer">400</button>
+                <button type="button" data-val="300" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center cursor-pointer">300</button>
+                <button type="button" data-val="500" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center cursor-pointer">500</button>
+                <button type="button" data-val="700" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-mono text-mono-sm text-center cursor-pointer">700</button>
               </div>
               <input type="hidden" data-field="deductible" value="400" class="assess-input">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Policy type</span><select data-field="policyType" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Sedan - All Perils</option><option>Sedan - Collision</option><option>Sedan - Liability</option><option>Sport - Collision</option><option>Utility - All Perils</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Agent type</span><select data-field="agentType" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>External</option><option>Internal</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Address change–claim</span><select data-field="addressChange" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>no change</option><option>under 6 months</option><option>1 year</option><option>2 to 3 years</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Number of supplements</span><select data-field="supplements" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>none</option><option>1 to 2</option><option>3 to 5</option><option>more than 5</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Policy type</span><select data-field="policyType" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Sedan - All Perils</option><option>Sedan - Collision</option><option>Sedan - Liability</option><option>Sport - Collision</option><option>Utility - All Perils</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Agent channel</span><select data-field="agentType" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>External</option><option>Internal</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Address change before claim</span><select data-field="addressChange" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>no change</option><option>under 6 months</option><option>1 year</option><option>2 to 3 years</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Number of past claims</span><select data-field="pastClaims" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>none</option><option>1</option><option>2 to 4</option><option>more than 4</option></select></label>
             </div>
           </section>
 
           <!-- Vehicle Group -->
           <section data-group-panel="vehicle" class="group-panel hidden flex-col gap-6">
             <div class="flex flex-col gap-2">
-              <span class="font-label text-label-sm text-on-surface-variant">Vehicle category</span>
+              <span class="font-label text-label-sm text-on-surface-variant font-medium">Vehicle category</span>
               <div class="grid grid-cols-3 gap-2" data-pill-field="vehicleCat">
-                <button type="button" data-val="Sedan" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">Sedan</button>
-                <button type="button" data-val="Sport" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Sport</button>
-                <button type="button" data-val="Utility" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Utility</button>
+                <button type="button" data-val="Sedan" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">Sedan</button>
+                <button type="button" data-val="Sport" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Sport</button>
+                <button type="button" data-val="Utility" class="pill-opt px-3 py-2.5 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Utility</button>
               </div>
               <input type="hidden" data-field="vehicleCat" value="Sedan" class="assess-input">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Make</span><select data-field="make" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Accura</option><option>Honda</option><option>Toyota</option><option>Pontiac</option><option>Mazda</option><option>Chevrolet</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Vehicle price</span><select data-field="vehiclePrice" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>30,000 to 39,000</option><option>20,000 to 29,000</option><option>40,000 to 59,000</option><option>more than 69,000</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Age of vehicle</span><select data-field="vehicleAge" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>6 years</option><option>new</option><option>3 years</option><option>more than 7</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Number of cars</span><select data-field="numCars" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>1 vehicle</option><option>2 vehicles</option><option>3 to 4</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Vehicle make</span><select data-field="make" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Accura</option><option>Honda</option><option>Toyota</option><option>Pontiac</option><option>Mazda</option><option>Chevrolet</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Vehicle price bracket</span><select data-field="vehiclePrice" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>30,000 to 39,000</option><option>20,000 to 29,000</option><option>40,000 to 59,000</option><option>more than 69,000</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Age of vehicle</span><select data-field="vehicleAge" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>6 years</option><option>new</option><option>3 years</option><option>more than 7</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Number of cars</span><select data-field="numCars" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>1 vehicle</option><option>2 vehicles</option><option>3 to 4</option></select></label>
             </div>
           </section>
 
@@ -262,29 +240,29 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <section data-group-panel="accident" class="group-panel hidden flex-col gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <span class="font-label text-label-sm text-on-surface-variant">Fault</span>
+                <span class="font-label text-label-sm text-on-surface-variant font-medium">Fault determination</span>
                 <div class="grid grid-cols-2 gap-2" data-pill-field="fault">
-                  <button type="button" data-val="Policy Holder" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">Policy Holder</button>
-                  <button type="button" data-val="Third Party" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Third Party</button>
+                  <button type="button" data-val="Policy Holder" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">Policy Holder</button>
+                  <button type="button" data-val="Third Party" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Third Party</button>
                 </div>
                 <input type="hidden" data-field="fault" value="Policy Holder" class="assess-input">
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="font-label text-label-sm text-on-surface-variant">Accident area</span>
+                <span class="font-label text-label-sm text-on-surface-variant font-medium">Accident area</span>
                 <div class="grid grid-cols-2 gap-2" data-pill-field="area">
-                  <button type="button" data-val="Urban" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">Urban</button>
-                  <button type="button" data-val="Rural" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Rural</button>
+                  <button type="button" data-val="Urban" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">Urban</button>
+                  <button type="button" data-val="Rural" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Rural</button>
                 </div>
                 <input type="hidden" data-field="area" value="Urban" class="assess-input">
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Month</span><select data-field="month" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Oct</option><option>Jan</option><option>Mar</option><option>Jul</option><option>Dec</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Week of month</span><select data-field="week" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>2</option><option>1</option><option>3</option><option>4</option><option>5</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Day of week</span><select data-field="day" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Tuesday</option><option>Monday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Driver rating</span><select data-field="driverRating" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>2</option><option>1</option><option>3</option><option>4</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Month of accident</span><select data-field="month" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Oct</option><option>Jan</option><option>Mar</option><option>Jul</option><option>Dec</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Week of month</span><select data-field="week" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>2</option><option>1</option><option>3</option><option>4</option><option>5</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Day of week</span><select data-field="day" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Tuesday</option><option>Monday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Driver safety rating</span><select data-field="driverRating" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>2</option><option>1</option><option>3</option><option>4</option></select></label>
             </div>
           </section>
 
@@ -292,74 +270,91 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <section data-group-panel="reporting" class="group-panel hidden flex-col gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="flex flex-col gap-2">
-                <span class="font-label text-label-sm text-on-surface-variant">Police report filed</span>
+                <span class="font-label text-label-sm text-on-surface-variant font-medium">Police report filed</span>
                 <div class="grid grid-cols-2 gap-2" data-pill-field="policeReport">
-                  <button type="button" data-val="Yes" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">Yes</button>
-                  <button type="button" data-val="No" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">No</button>
+                  <button type="button" data-val="Yes" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">Yes</button>
+                  <button type="button" data-val="No" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">No</button>
                 </div>
                 <input type="hidden" data-field="policeReport" value="Yes" class="assess-input">
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="font-label text-label-sm text-on-surface-variant">Witness present</span>
+                <span class="font-label text-label-sm text-on-surface-variant font-medium">Independent witness present</span>
                 <div class="grid grid-cols-2 gap-2" data-pill-field="witness">
-                  <button type="button" data-val="No" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">No</button>
-                  <button type="button" data-val="Yes" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">Yes</button>
+                  <button type="button" data-val="No" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">No</button>
+                  <button type="button" data-val="Yes" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">Yes</button>
                 </div>
                 <input type="hidden" data-field="witness" value="No" class="assess-input">
               </div>
             </div>
 
             <div class="flex flex-col gap-2">
-              <span class="font-label text-label-sm text-on-surface-variant">Days policy–accident</span>
+              <span class="font-label text-label-sm text-on-surface-variant font-medium">Days from policy start to accident</span>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" data-pill-field="daysAccident">
-                <button type="button" data-val="8 to 15" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center">8 to 15</button>
-                <button type="button" data-val="1 to 7" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">1 to 7</button>
-                <button type="button" data-val="15 to 30" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">15 to 30</button>
-                <button type="button" data-val="more than 30" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center">more than 30</button>
+                <button type="button" data-val="8 to 15" class="pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-sm font-semibold text-center cursor-pointer">8 to 15</button>
+                <button type="button" data-val="1 to 7" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">1 to 7</button>
+                <button type="button" data-val="15 to 30" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">15 to 30</button>
+                <button type="button" data-val="more than 30" class="pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface font-label text-label-sm text-center cursor-pointer">more than 30</button>
               </div>
               <input type="hidden" data-field="daysAccident" value="8 to 15" class="assess-input">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Days policy–claim</span><select data-field="daysClaim" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>8 to 15</option><option>15 to 30</option><option>more than 30</option></select></label>
-              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant">Past number of claims</span><select data-field="pastClaims" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>1</option><option>none</option><option>2 to 4</option><option>more than 4</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Days from policy start to claim</span><select data-field="daysClaim" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>8 to 15</option><option>15 to 30</option><option>more than 30</option></select></label>
+              <label class="flex flex-col gap-1.5"><span class="font-label text-label-sm text-on-surface-variant font-medium">Accident reporting timeline</span><select data-field="reportingSpeed" class="assess-input px-3 py-2 bg-surface-container text-on-surface border border-outline rounded-DEFAULT font-body text-body-sm focus:border-midnight focus:ring-1 focus:ring-primary"><option>Same week</option><option>Within 1 month</option><option>Delayed &gt; 1 month</option></select></label>
             </div>
           </section>
         </form>
       </div>
 
       <!-- Sticky Midnight Navy Live Result Stage -->
-      <aside class="lg:col-span-5 lg:sticky lg:top-24 bg-midnight bg-midnight-mesh text-on-midnight rounded-lg border border-outline-dark p-7 shadow-xl flex flex-col gap-6" aria-live="polite">
+      <aside class="lg:col-span-5 lg:sticky lg:top-24 bg-midnight bg-midnight-mesh text-on-midnight rounded-xl border border-outline-dark p-7 shadow-2xl flex flex-col gap-6" aria-live="polite">
         <div class="flex items-center justify-between border-b border-outline-dark pb-4">
           <div class="flex flex-col gap-1">
-            <span class="font-label text-label-sm text-midnight-muted">Live score</span>
-            <span id="live-score" class="font-headline text-display-lg text-on-midnight tabular-nums">22.7%</span>
+            <span class="font-label text-label-sm text-midnight-muted">Production Model Score</span>
+            <span id="live-score" class="font-headline text-display-lg text-on-midnight tabular-nums font-bold">--%</span>
           </div>
-          <span id="live-band" class="px-2.5 py-1 rounded-sm bg-risk-high text-on-risk-high font-label text-label-lg">High risk</span>
+          <span id="live-band" class="px-3 py-1 rounded-sm bg-risk-high text-on-risk-high font-label text-label-lg font-semibold">High risk</span>
         </div>
 
         <div class="flex flex-col gap-3">
-          <h2 class="font-headline text-headline-md text-on-midnight">Top reasons</h2>
-          <div id="live-reasons" class="flex flex-col gap-2 text-body-sm"></div>
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-headline-md text-on-midnight font-bold">Top AI Risk Factors</h2>
+            <span class="text-xs text-midnight-muted">SHAP value contribution</span>
+          </div>
+          <div id="live-reasons" class="flex flex-col gap-2.5 text-body-sm">
+            <!-- Dynamically populated from /api/score -->
+          </div>
         </div>
 
         <div class="border-t border-outline-dark pt-4 flex flex-col gap-2">
-          <h3 class="font-label text-label-lg text-on-midnight">Simple checks</h3>
-          <p id="live-check" class="font-body text-body-sm text-midnight-muted">Accident within 15 days of the policy starting (18.4% fraud rate in past data).</p>
+          <h3 class="font-label text-label-lg text-on-midnight font-bold">Heuristic Policy Rules</h3>
+          <div id="live-check-box" class="flex flex-col gap-2">
+            <!-- Dynamically populated from /api/score -->
+          </div>
+        </div>
+
+        <div class="border-t border-outline-dark pt-4 flex flex-col gap-3">
+          <button id="save-assessment-decision" type="button" class="w-full py-2.5 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-md font-semibold cursor-pointer">
+            Save This Assessment to Decisions
+          </button>
+          <span id="assess-save-status" class="hidden text-xs text-emerald-bright text-center font-medium">Logged under investigator profile.</span>
         </div>
       </aside>
     </div>
   </main>
 
   <footer class="border-t border-outline bg-surface">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
-      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means inspect first; it does not constitute a finding of fraud.</p>
+      <span class="font-mono text-mono-sm text-on-surface-variant">Claim Triage System v2.1</span>
     </div>
   </footer>
 
+  <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      // Mobile drawer
       const railBtn = document.getElementById('rail-toggle');
       const railContent = document.getElementById('rail-content');
       if (railBtn && railContent) {
@@ -370,6 +365,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         });
       }
 
+      // Group tabs
       document.querySelectorAll('.group-tab').forEach((tab) => {
         tab.addEventListener('click', () => {
           const target = tab.dataset.groupTab;
@@ -377,8 +373,8 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
             const active = t === tab;
             t.setAttribute('aria-selected', String(active));
             t.className = active
-              ? 'group-tab px-4 py-1.5 rounded-full bg-midnight text-on-midnight font-label text-label-lg font-semibold'
-              : 'group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg';
+              ? 'group-tab px-4 py-1.5 rounded-full bg-midnight text-on-midnight font-label text-label-lg font-semibold cursor-pointer'
+              : 'group-tab px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface border border-outline font-label text-label-lg cursor-pointer';
           });
           document.querySelectorAll('.group-panel').forEach((panel) => {
             const match = panel.dataset.groupPanel === target;
@@ -391,10 +387,12 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       const scoreEl = document.getElementById('live-score');
       const bandEl = document.getElementById('live-band');
       const reasonsEl = document.getElementById('live-reasons');
-      const checkEl = document.getElementById('live-check');
+      const checkBox = document.getElementById('live-check-box');
+      let currentResult = null;
 
       function getVal(field) {
-        return document.querySelector(`[data-field="${field}"]`).value;
+        const el = document.querySelector(`[data-field="${field}"]`);
+        return el ? el.value : '';
       }
 
       function setPillValue(field, val) {
@@ -403,14 +401,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         const container = document.querySelector(`[data-pill-field="${field}"]`);
         if (!container) return;
         container.querySelectorAll('.pill-opt').forEach((btn) => {
-          const active = btn.dataset.val === val;
-          btn.classList.toggle('bg-primary', active);
-          btn.classList.toggle('text-on-primary', active);
-          btn.classList.toggle('font-semibold', active);
-          btn.classList.toggle('bg-surface-container', !active);
-          btn.classList.toggle('text-on-surface-variant', !active);
-          btn.classList.toggle('border', !active);
-          btn.classList.toggle('border-outline', !active);
+          const active = btn.dataset.val === String(val);
+          btn.className = active
+            ? 'pill-opt px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-semibold text-center cursor-pointer text-sm'
+            : 'pill-opt px-3 py-2 rounded-DEFAULT bg-surface-container text-on-surface-variant border border-outline hover:text-on-surface text-center cursor-pointer text-sm';
         });
       }
 
@@ -424,87 +418,164 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         });
       });
 
-      function computeScore() {
-        let s = 5.5;
-        const reasons = [];
+      document.querySelectorAll('select.assess-input').forEach(sel => {
+        sel.addEventListener('change', computeScore);
+      });
 
-        const base = getVal('basePolicy');
-        if (base === 'All Perils') { s += 6.4; reasons.push(['Base policy: All Perils', +6.4]); }
-        else if (base === 'Collision') { s += 3.2; reasons.push(['Base policy: Collision', +3.2]); }
-        else { s -= 3.8; reasons.push(['Base policy: Liability', -3.8]); }
+      async function computeScore() {
+        const payload = {
+          BasePolicy: getVal('basePolicy'),
+          Deductible: Number(getVal('deductible')) || 400,
+          PolicyType: getVal('policyType'),
+          AgentType: getVal('agentType'),
+          'AddressChange-Claim': getVal('addressChange'),
+          PastNumberOfClaims: getVal('pastClaims'),
+          VehicleCategory: getVal('vehicleCat'),
+          Make: getVal('make'),
+          VehiclePrice: getVal('vehiclePrice'),
+          AgeOfVehicle: getVal('vehicleAge'),
+          NumberOfCars: getVal('numCars'),
+          Fault: getVal('fault'),
+          AccidentArea: getVal('area'),
+          Month: getVal('month'),
+          WeekOfMonth: Number(getVal('week')) || 2,
+          DayOfWeek: getVal('day'),
+          DriverRating: Number(getVal('driverRating')) || 2,
+          PoliceReportFiled: getVal('policeReport'),
+          WitnessPresent: getVal('witness'),
+          'Days:Policy-Accident': getVal('daysAccident'),
+          'Days:Policy-Claim': getVal('daysClaim')
+        };
 
-        const make = getVal('make');
-        if (make === 'Accura') { s += 3.9; reasons.push(['Make: Accura', +3.9]); }
-        else if (make === 'Honda') { s += 0.4; reasons.push(['Make: Honda', +0.4]); }
-        else { s -= 1.2; reasons.push([`Make: ${make}`, -1.2]); }
+        try {
+          const res = await fetch('/api/score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claim: payload })
+          });
 
-        const fault = getVal('fault');
-        if (fault === 'Policy Holder') { s += 3.1; reasons.push(['Fault: Policy Holder', +3.1]); }
-        else { s -= 2.4; reasons.push(['Fault: Third Party', -2.4]); }
+          if (!res.ok) throw new Error('Failed to score claim');
+          const data = await res.json();
+          const c = data.claim;
+          currentResult = c;
 
-        const days = getVal('daysAccident');
-        if (days === '1 to 7' || days === '8 to 15') {
-          s += 3.8;
-          reasons.push([`Days policy–accident: ${days}`, +3.8]);
-          checkEl.textContent = 'Accident within 15 days of the policy starting (18.4% fraud rate in past data).';
-        } else {
-          s -= 1.1;
-          reasons.push([`Days policy–accident: ${days}`, -1.1]);
-          checkEl.textContent = 'No simple rule flags triggered for this combination.';
+          const scorePct = (c.score * 100).toFixed(1) + '%';
+          scoreEl.textContent = scorePct;
+
+          const isHigh = c.score >= 0.20;
+          const isMed = c.score >= 0.10 && c.score < 0.20;
+          const bandName = isHigh ? 'High risk' : isMed ? 'Medium risk' : 'Low risk';
+          bandEl.textContent = bandName;
+          bandEl.className = isHigh
+            ? 'px-3 py-1 rounded-sm bg-risk-high text-on-risk-high font-label text-label-lg font-semibold'
+            : isMed
+            ? 'px-3 py-1 rounded-sm bg-risk-medium text-on-risk-medium font-label text-label-lg font-semibold'
+            : 'px-3 py-1 rounded-sm bg-primary text-on-primary font-label text-label-lg font-semibold';
+
+          // Render SHAP factors
+          const reasons = c.reasons || [];
+          if (reasons.length) {
+            reasonsEl.innerHTML = reasons.slice(0, 4).map(r => {
+              const isRaise = r.direction === 'raises';
+              const col = isRaise ? 'text-risk-high' : 'text-emerald-bright';
+              const sign = isRaise ? '+' : '-';
+              const effVal = (Math.abs(r.effect || 0) * 3.5).toFixed(1);
+              return `
+                <div class="flex items-center justify-between">
+                  <span class="text-on-midnight font-medium">${r.label}: <span class="text-midnight-muted">${r.value}</span></span>
+                  <span class="font-mono text-mono-sm font-semibold ${col} tabular-nums">${sign}${effVal}%</span>
+                </div>
+              `;
+            }).join('');
+          } else {
+            reasonsEl.innerHTML = `<span class="text-midnight-muted text-xs">Standard baseline characteristics.</span>`;
+          }
+
+          // Render Heuristic Flags
+          const flags = c.flags || [];
+          if (flags.length) {
+            checkBox.innerHTML = flags.map(f => `
+              <div class="flex items-center gap-2 p-2 rounded bg-midnight-surface border border-outline-dark text-xs">
+                <span class="material-symbols-outlined text-risk-medium text-[16px]">flag</span>
+                <span class="text-on-midnight font-medium">${f.title}</span>
+              </div>
+            `).join('');
+          } else {
+            checkBox.innerHTML = `
+              <div class="flex items-center gap-2 p-2 rounded bg-midnight-surface border border-outline-dark text-xs text-emerald-bright">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                <span>No rule flags triggered.</span>
+              </div>
+            `;
+          }
+        } catch (err) {
+          console.error(err);
         }
-
-        const police = getVal('policeReport');
-        if (police === 'Yes') { s -= 1.4; } else { s += 2.6; reasons.push(['Police report: No', +2.6]); }
-
-        s = Math.max(1.2, Math.min(28.5, Number(s.toFixed(1))));
-        scoreEl.textContent = s.toFixed(1) + '%';
-
-        bandEl.className = 'px-2.5 py-1 rounded-sm font-label text-label-lg';
-        if (s >= 14.0) {
-          bandEl.textContent = 'High risk';
-          bandEl.classList.add('bg-risk-high', 'text-on-risk-high');
-        } else if (s >= 8.0) {
-          bandEl.textContent = 'Medium risk';
-          bandEl.classList.add('bg-risk-medium', 'text-on-risk-medium');
-        } else {
-          bandEl.textContent = 'Low risk';
-          bandEl.classList.add('bg-risk-low', 'text-on-risk-low');
-        }
-
-        reasonsEl.innerHTML = reasons.slice(0, 4).map(([label, val]) => {
-          const pos = val >= 0;
-          const sign = pos ? `+${val.toFixed(1)}%` : `${val.toFixed(1)}%`;
-          const color = pos ? 'text-risk-high-container' : 'text-emerald-bright';
-          return `<div class="flex items-center justify-between py-1.5 border-b border-outline-dark">
-            <span class="text-on-midnight">${label}</span>
-            <span class="font-mono text-mono-sm ${color} tabular-nums">${sign}</span>
-          </div>`;
-        }).join('');
       }
 
-      document.querySelectorAll('select.assess-input').forEach((sel) => sel.addEventListener('change', computeScore));
-
+      // Presets
       document.getElementById('fill-highest-btn').addEventListener('click', () => {
         setPillValue('basePolicy', 'All Perils');
-        document.querySelector('[data-field="make"]').value = 'Accura';
+        setPillValue('deductible', '700');
+        setPillValue('vehicleCat', 'Sedan');
         setPillValue('fault', 'Policy Holder');
+        setPillValue('area', 'Urban');
+        setPillValue('policeReport', 'No');
+        setPillValue('witness', 'No');
         setPillValue('daysAccident', '8 to 15');
-        setPillValue('policeReport', 'Yes');
+
+        const mk = document.querySelector('[data-field="make"]'); if (mk) mk.value = 'Accura';
+        const ac = document.querySelector('[data-field="addressChange"]'); if (ac) ac.value = 'under 6 months';
+        const vp = document.querySelector('[data-field="vehiclePrice"]'); if (vp) vp.value = 'more than 69,000';
         computeScore();
       });
 
       document.getElementById('reset-common-btn').addEventListener('click', () => {
         setPillValue('basePolicy', 'Collision');
-        document.querySelector('[data-field="make"]').value = 'Honda';
-        setPillValue('fault', 'Third Party');
-        setPillValue('daysAccident', 'more than 30');
+        setPillValue('deductible', '400');
+        setPillValue('vehicleCat', 'Sedan');
+        setPillValue('fault', 'Policy Holder');
+        setPillValue('area', 'Urban');
         setPillValue('policeReport', 'Yes');
+        setPillValue('witness', 'No');
+        setPillValue('daysAccident', 'more than 30');
+
+        const mk = document.querySelector('[data-field="make"]'); if (mk) mk.value = 'Honda';
+        const ac = document.querySelector('[data-field="addressChange"]'); if (ac) ac.value = 'no change';
+        const vp = document.querySelector('[data-field="vehiclePrice"]'); if (vp) vp.value = '20,000 to 29,000';
         computeScore();
+      });
+
+      // Save to decisions
+      document.getElementById('save-assessment-decision').addEventListener('click', async () => {
+        if (!currentResult) return;
+        const user = ClaimTriageAuth.getUser();
+        const testId = `TEST-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        try {
+          const res = await fetch('/api/decisions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              claim_id: testId,
+              decision: currentResult.score >= 0.2 ? 'Escalated' : currentResult.score >= 0.1 ? 'Under review' : 'Cleared',
+              note: `Ad-hoc scenario assessment recorded by ${user.name}.`,
+              score: currentResult.score
+            })
+          });
+
+          if (res.ok) {
+            const status = document.getElementById('assess-save-status');
+            status.textContent = `Saved as ${testId} under ${user.name}!`;
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 4000);
+          }
+        } catch (e) {
+          alert('Could not save scenario: ' + e.message);
+        }
       });
 
       computeScore();
     })();
   </script>
-
-
 </body></html>

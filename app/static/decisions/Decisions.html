@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Decisions — Claim Triage</title>
+  <title>Decisions Audit Log — Claim Triage</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
 globalThis.tailwind = globalThis.tailwind || {};
@@ -60,15 +61,6 @@ globalThis.tailwind.config = {
         'lg': '16px',
         'full': '9999px',
       },
-      spacing: {
-        'gutter-xs': '4px',
-        'gutter-sm': '8px',
-        'gutter-md': '16px',
-        'gutter-lg': '24px',
-        'gutter-xl': '32px',
-        'section': '48px',
-        'page-margin': '32px',
-      },
       fontFamily: {
         'display': ['"Plus Jakarta Sans"', 'sans-serif'],
         'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -91,18 +83,6 @@ globalThis.tailwind.config = {
         'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
         'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
       },
-      transitionDuration: {
-        'state-change': '120ms',
-        'panel-enter': '200ms',
-      },
-      transitionDelay: {
-        'state-change': '0ms',
-        'panel-enter': '0ms',
-      },
-      transitionTimingFunction: {
-        'state-change': 'ease-out',
-        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
-      },
     },
   },
 };
@@ -113,39 +93,35 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <style>
     .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
     .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
+    .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
+    .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
     .pulse-live { animation: pulseGlow 2.4s infinite; }
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.65); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
-    @media (prefers-reduced-motion: reduce) { .pulse-live { animation: none; } }
   </style>
 </head>
-<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-screen flex flex-col justify-between">
 
   <!-- Deep Midnight Navy Command Dock -->
   <header class="sticky top-0 z-30 bg-midnight text-on-midnight border-b border-outline-dark">
     <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-4 min-w-0">
-        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0">
-          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
-            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
-            </svg>
-          </div>
-          <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-3 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm group">
+          <img src="../assets/logo-clean.png" alt="Claim Triage Logo" class="h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+          <span class="font-headline text-headline-md text-on-midnight font-bold tracking-tight whitespace-nowrap">Claim Triage</span>
         </a>
-        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-midnight-muted whitespace-nowrap">Batch: Sample 400</span>
+        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-emerald-bright whitespace-nowrap">Audit Log Repository</span>
       </div>
 
       <nav aria-label="Application" class="hidden md:flex items-center gap-1 bg-midnight-surface border border-outline-dark rounded-full p-1">
-        <a href="../claims-queue/ClaimsQueue.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../claims-queue/ClaimsQueue.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">format_list_numbered</span>
           <span>Queue</span>
         </a>
-        <a href="../assess-claim/AssessAClaim.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../assess-claim/AssessAClaim.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
           <span>Assess</span>
         </a>
-        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">analytics</span>
           <span>Model</span>
         </a>
@@ -156,9 +132,12 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       </nav>
 
       <div class="hidden md:flex items-center gap-4 shrink-0">
-        <span class="font-label text-label-lg text-on-midnight whitespace-nowrap">Claire Vance</span>
-        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Take the tour</a>
-        <a href="../auth-account/CreateAccountLogin.html" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark">
+          <div class="w-6 h-6 rounded-full bg-primary text-on-primary font-bold text-xs flex items-center justify-center font-mono investigator-initials">LA</div>
+          <span class="font-label text-label-sm text-on-midnight font-medium investigator-name">Lead Adjuster</span>
+        </div>
+        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Guide</a>
+        <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
       </div>
 
       <button type="button" id="rail-toggle" aria-label="Toggle navigation" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 border border-outline-dark rounded-DEFAULT text-on-midnight">
@@ -166,6 +145,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       </button>
     </div>
 
+    <!-- Mobile Drawer -->
     <div id="rail-content" class="hidden md:hidden border-t border-outline-dark bg-midnight px-6 py-4 flex-col gap-4">
       <nav aria-label="Mobile Application" class="grid grid-cols-2 gap-2">
         <a href="../claims-queue/ClaimsQueue.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Queue</a>
@@ -174,10 +154,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         <a href="../decisions/Decisions.html" aria-current="page" class="px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-lg font-semibold text-center">Decisions</a>
       </nav>
       <div class="flex items-center justify-between pt-2 border-t border-outline-dark text-body-sm">
-        <span class="text-on-midnight font-medium">Claire Vance</span>
+        <span class="text-on-midnight font-medium investigator-name">Lead Adjuster</span>
         <div class="flex items-center gap-4">
-          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Take the tour</a>
-          <a href="../auth-account/CreateAccountLogin.html" class="text-midnight-muted underline">Log out</a>
+          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Guide</a>
+          <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="text-midnight-muted underline">Log out</a>
         </div>
       </div>
     </div>
@@ -186,81 +166,53 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <main class="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-8 w-full flex flex-col gap-8">
     <div class="flex flex-wrap items-end justify-between gap-4 border-b border-outline pb-5">
       <div>
-        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface">Decisions</h1>
-        <p class="font-body text-body-md text-on-surface-variant mt-1">Saved under Claire Vance. Nothing here triggers an automatic rejection.</p>
+        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface font-bold">Investigator decisions log</h1>
+        <p class="font-body text-body-md text-on-surface-variant mt-1">Audit log persisted in local SQLite storage. Every entry records the signed investigator identity, timestamp, and review rationale.</p>
       </div>
-      <div class="flex items-center gap-4">
-        <button id="toggle-empty-dec" type="button" class="font-body text-body-sm text-emerald-text underline underline-offset-4 hover:text-on-surface whitespace-nowrap">Preview empty state</button>
-        <button id="download-csv-btn" type="button" class="inline-flex items-center gap-2 px-4 py-2 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold">
+      <div class="flex items-center gap-3">
+        <a href="/api/decisions.csv" download="investigator_decisions_audit.csv" class="inline-flex items-center gap-2 px-4 py-2 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold cursor-pointer">
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
-          <span>Download as CSV</span>
-        </button>
+          <span>Export Audit Log (CSV)</span>
+        </a>
       </div>
     </div>
 
     <!-- Empty State -->
-    <section id="decisions-empty" class="hidden py-10 max-w-xl flex flex-col gap-5">
-      <p class="font-body text-body-md text-on-surface">No decisions yet. Open a claim in the queue and record what you decide.</p>
-      <div>
-        <a href="../claims-queue/ClaimsQueue.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-primary text-on-primary hover:bg-emerald-bright rounded-DEFAULT font-label text-label-lg font-semibold">Open claims queue</a>
+    <section id="decisions-empty" class="hidden py-16 text-center max-w-md mx-auto flex flex-col items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline flex items-center justify-center text-on-surface-variant">
+        <span class="material-symbols-outlined text-[28px]">fact_check</span>
       </div>
+      <h2 class="font-headline text-headline-md text-on-surface font-bold">No decisions recorded yet</h2>
+      <p class="font-body text-body-sm text-on-surface-variant">Review cases in the Claims Queue or inspect a Claim Dossier to record your first triage determination.</p>
+      <a href="../claims-queue/ClaimsQueue.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-primary text-on-primary hover:bg-emerald-bright rounded-DEFAULT font-label text-label-lg font-semibold mt-2">Open Claims Queue</a>
     </section>
 
     <!-- Elevated Porcelain Audit Ledger -->
-    <section id="decisions-loaded" class="bg-surface-container text-on-surface border border-outline rounded-lg shadow-sm overflow-hidden flex flex-col">
+    <section id="decisions-loaded" class="bg-surface-container text-on-surface border border-outline rounded-xl shadow-sm overflow-hidden flex flex-col">
       <div class="px-6 pt-5 pb-3 border-b border-outline flex flex-wrap items-center justify-between gap-4">
         <div role="tablist" aria-label="Filter decisions" class="flex flex-wrap items-center gap-6">
-          <button type="button" role="tab" aria-selected="true" data-dec-filter="All" class="dec-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold">All (3)</button>
-          <button type="button" role="tab" aria-selected="false" data-dec-filter="Escalated" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">Escalated (1)</button>
-          <button type="button" role="tab" aria-selected="false" data-dec-filter="Under review" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">Under review (1)</button>
-          <button type="button" role="tab" aria-selected="false" data-dec-filter="Cleared" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">Cleared (1)</button>
+          <button type="button" role="tab" aria-selected="true" data-dec-filter="All" class="dec-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold cursor-pointer">All (<span id="cnt-all">0</span>)</button>
+          <button type="button" role="tab" aria-selected="false" data-dec-filter="Escalated" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">Escalated (<span id="cnt-escalated">0</span>)</button>
+          <button type="button" role="tab" aria-selected="false" data-dec-filter="Under review" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">Under review (<span id="cnt-review">0</span>)</button>
+          <button type="button" role="tab" aria-selected="false" data-dec-filter="Cleared" class="dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">Cleared (<span id="cnt-cleared">0</span>)</button>
         </div>
-        <span class="inline-flex items-center gap-1.5 font-body text-body-sm text-emerald-text"><span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>Audit log synced</span>
+        <span class="inline-flex items-center gap-1.5 font-body text-body-sm text-emerald-text font-medium"><span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>Database synchronized</span>
       </div>
 
       <div class="w-full overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-outline bg-surface-container-low">
-              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Claim</th>
-              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Decision</th>
-              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Note</th>
+              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Claim ID</th>
+              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Determination</th>
+              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Investigator Review Note</th>
               <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface text-right">Score</th>
-              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Saved</th>
-              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface text-right">Remove</th>
+              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface">Recorded Timestamp</th>
+              <th scope="col" class="py-3.5 px-4 font-label text-label-lg text-on-surface text-right">Action</th>
             </tr>
           </thead>
           <tbody id="decisions-tbody" class="divide-y divide-outline">
-            <tr class="hover:bg-surface-container-low" data-status="Escalated">
-              <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-01924</a></td>
-              <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm">Escalated</span></td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface max-w-md">Address changed 4 months before claim; requesting utility verification and repair shop invoice.</td>
-              <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right">19.8%</td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant tabular-nums whitespace-nowrap">22 Nov 2026, 14:18</td>
-              <td class="py-3.5 px-4 text-right">
-                <button type="button" class="remove-dec-btn font-body text-body-sm text-on-surface-variant hover:text-risk-high underline underline-offset-2">Remove</button>
-              </td>
-            </tr>
-            <tr class="hover:bg-surface-container-low" data-status="Under review">
-              <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-04892</a></td>
-              <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-midnight text-on-midnight font-label text-label-sm">Under review</span></td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface max-w-md">Waiting for adjuster photos from body shop before closing file.</td>
-              <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right">21.4%</td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant tabular-nums whitespace-nowrap">22 Nov 2026, 13:42</td>
-              <td class="py-3.5 px-4 text-right">
-                <button type="button" class="remove-dec-btn font-body text-body-sm text-on-surface-variant hover:text-risk-high underline underline-offset-2">Remove</button>
-              </td>
-            </tr>
-            <tr class="hover:bg-surface-container-low" data-status="Cleared">
-              <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-03110</a></td>
-              <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-low text-on-risk-low font-label text-label-sm">Cleared</span></td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface max-w-md">Police report and independent witness statement match repair estimate.</td>
-              <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right">11.2%</td>
-              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant tabular-nums whitespace-nowrap">22 Nov 2026, 11:05</td>
-              <td class="py-3.5 px-4 text-right">
-                <button type="button" class="remove-dec-btn font-body text-body-sm text-on-surface-variant hover:text-risk-high underline underline-offset-2">Remove</button>
-              </td>
-            </tr>
+            <!-- Dynamically populated from /api/decisions -->
           </tbody>
         </table>
       </div>
@@ -268,13 +220,16 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   </main>
 
   <footer class="border-t border-outline bg-surface">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
-      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means inspect first; it does not constitute a finding of fraud.</p>
+      <span class="font-mono text-mono-sm text-on-surface-variant">Claim Triage System v2.1</span>
     </div>
   </footer>
 
+  <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      // Mobile drawer
       const railBtn = document.getElementById('rail-toggle');
       const railContent = document.getElementById('rail-content');
       if (railBtn && railContent) {
@@ -285,51 +240,111 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         });
       }
 
+      let allDecisions = [];
+      let activeFilter = 'All';
+
       const emptySec = document.getElementById('decisions-empty');
       const loadedSec = document.getElementById('decisions-loaded');
-      const toggleBtn = document.getElementById('toggle-empty-dec');
       const tbody = document.getElementById('decisions-tbody');
-      let showEmpty = false;
 
-      function syncView() {
-        const hasRows = tbody.querySelectorAll('tr').length > 0;
-        const isEmpty = showEmpty || !hasRows;
-        emptySec.classList.toggle('hidden', !isEmpty);
-        loadedSec.classList.toggle('hidden', isEmpty);
-        toggleBtn.textContent = isEmpty ? 'Show saved decisions' : 'Preview empty state';
+      async function loadDecisions() {
+        try {
+          const res = await fetch('/api/decisions');
+          if (!res.ok) throw new Error('Failed to fetch decisions');
+          allDecisions = await res.json();
+          renderDecisions();
+        } catch (e) {
+          console.error(e);
+          tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-risk-high">Error loading decisions.</td></tr>`;
+        }
       }
 
-      toggleBtn.addEventListener('click', () => {
-        showEmpty = !showEmpty;
-        syncView();
-      });
+      function renderDecisions() {
+        const total = allDecisions.length;
+        const escCnt = allDecisions.filter(d => d.decision === 'Escalated').length;
+        const revCnt = allDecisions.filter(d => d.decision === 'Under review').length;
+        const clrCnt = allDecisions.filter(d => d.decision === 'Cleared').length;
 
-      document.querySelectorAll('.remove-dec-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          btn.closest('tr').remove();
-          syncView();
-        });
-      });
+        document.getElementById('cnt-all').textContent = total;
+        document.getElementById('cnt-escalated').textContent = escCnt;
+        document.getElementById('cnt-review').textContent = revCnt;
+        document.getElementById('cnt-cleared').textContent = clrCnt;
 
-      document.querySelectorAll('.dec-tab').forEach((tab) => {
+        if (total === 0) {
+          emptySec.classList.remove('hidden');
+          loadedSec.classList.add('hidden');
+          return;
+        }
+
+        emptySec.classList.add('hidden');
+        loadedSec.classList.remove('hidden');
+
+        const filtered = allDecisions.filter(d => activeFilter === 'All' || d.decision === activeFilter);
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-on-surface-variant">No decisions recorded under "${activeFilter}".</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(d => {
+          const decCol = d.decision === 'Escalated' 
+            ? 'bg-risk-high text-on-risk-high' 
+            : d.decision === 'Cleared' 
+            ? 'bg-risk-low text-on-risk-low' 
+            : 'bg-midnight text-on-midnight';
+
+          const scoreVal = d.score != null ? (d.score * 100).toFixed(1) + '%' : '--%';
+          const timeStr = d.updated ? new Date(d.updated).toLocaleString() : 'Recent';
+
+          return `
+            <tr class="hover:bg-surface-container-low transition-colors">
+              <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-bold">
+                <a href="../claim-detail/ClaimDetailPanel.html?id=${d.claim_id}" class="underline underline-offset-2">${d.claim_id}</a>
+              </td>
+              <td class="py-3.5 px-4">
+                <span class="inline-block px-2 py-0.5 rounded-sm ${decCol} font-label text-label-sm font-semibold">${d.decision}</span>
+              </td>
+              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface max-w-md">${d.note || '<span class="text-on-surface-variant italic">No note provided</span>'}</td>
+              <td class="py-3.5 px-4 font-mono text-mono-sm tabular-nums text-right font-bold">${scoreVal}</td>
+              <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant tabular-nums whitespace-nowrap">${timeStr}</td>
+              <td class="py-3.5 px-4 text-right">
+                <button type="button" onclick="window.removeDecision('${d.claim_id}')" class="font-body text-body-sm text-on-surface-variant hover:text-risk-high underline underline-offset-2 cursor-pointer">Remove</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      window.removeDecision = async function(claimId) {
+        if (!confirm(`Are you sure you want to remove the decision for claim ${claimId}?`)) return;
+        try {
+          const res = await fetch(`/api/decisions/${encodeURIComponent(claimId)}`, { method: 'DELETE' });
+          if (res.ok) {
+            allDecisions = allDecisions.filter(d => d.claim_id !== claimId);
+            renderDecisions();
+          } else {
+            alert('Failed to delete decision.');
+          }
+        } catch (e) {
+          alert('Error: ' + e.message);
+        }
+      };
+
+      document.querySelectorAll('.dec-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-          const filter = tab.dataset.decFilter;
-          document.querySelectorAll('.dec-tab').forEach((t) => {
-            const active = t === tab;
-            t.setAttribute('aria-selected', String(active));
-            t.classList.toggle('border-primary', active);
-            t.classList.toggle('text-on-surface', active);
-            t.classList.toggle('font-semibold', active);
-            t.classList.toggle('border-transparent', !active);
-            t.classList.toggle('text-on-surface-variant', !active);
+          activeFilter = tab.dataset.decFilter;
+          document.querySelectorAll('.dec-tab').forEach(t => {
+            const isMatch = t === tab;
+            t.setAttribute('aria-selected', String(isMatch));
+            t.className = isMatch
+              ? 'dec-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold cursor-pointer'
+              : 'dec-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer';
           });
-          tbody.querySelectorAll('tr').forEach((row) => {
-            row.classList.toggle('hidden', filter !== 'All' && row.dataset.status !== filter);
-          });
+          renderDecisions();
         });
       });
+
+      loadDecisions();
     })();
   </script>
-
-
 </body></html>

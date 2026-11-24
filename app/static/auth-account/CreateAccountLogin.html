@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create account or log in — Claim Triage</title>
+  <title>Investigator Sign-in — Claim Triage</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
 globalThis.tailwind = globalThis.tailwind || {};
@@ -60,15 +61,6 @@ globalThis.tailwind.config = {
         'lg': '16px',
         'full': '9999px',
       },
-      spacing: {
-        'gutter-xs': '4px',
-        'gutter-sm': '8px',
-        'gutter-md': '16px',
-        'gutter-lg': '24px',
-        'gutter-xl': '32px',
-        'section': '48px',
-        'page-margin': '32px',
-      },
       fontFamily: {
         'display': ['"Plus Jakarta Sans"', 'sans-serif'],
         'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -91,18 +83,6 @@ globalThis.tailwind.config = {
         'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
         'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
       },
-      transitionDuration: {
-        'state-change': '120ms',
-        'panel-enter': '200ms',
-      },
-      transitionDelay: {
-        'state-change': '0ms',
-        'panel-enter': '0ms',
-      },
-      transitionTimingFunction: {
-        'state-change': 'ease-out',
-        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
-      },
     },
   },
 };
@@ -117,143 +97,188 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
     .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
     .pulse-live { animation: pulseGlow 2.4s infinite; }
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.65); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
-    @media (prefers-reduced-motion: reduce) { .pulse-live { animation: none; } .btn-emerald-lively:hover { transform: none; } }
   </style>
 </head>
-<body class="bg-surface text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col justify-between">
 
-  <div class="flex-1 grid grid-cols-1 lg:grid-cols-12">
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-60px)]">
     <!-- Deep Midnight Navy Editorial Column (30%) -->
-    <aside class="lg:col-span-5 bg-midnight bg-midnight-mesh text-on-midnight px-8 py-12 lg:px-12 lg:py-14 flex flex-col justify-center gap-8 border-b lg:border-b-0 lg:border-r border-outline-dark">
-      <div class="flex flex-col gap-6">
-        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 w-fit">
-          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
-            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
-            </svg>
+    <aside class="lg:col-span-5 xl:col-span-4 bg-midnight bg-midnight-mesh text-on-midnight px-8 py-10 lg:px-12 lg:py-16 flex flex-col justify-between gap-10 border-b lg:border-b-0 lg:border-r border-outline-dark">
+      <div class="flex flex-col gap-8">
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-3 w-fit group">
+          <img src="../assets/logo-clean.png" alt="Claim Triage Logo" class="h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+          <div class="flex flex-col">
+            <span class="font-headline text-headline-md text-on-midnight font-bold tracking-tight">Claim Triage</span>
+            <span class="text-[11px] font-sans text-emerald-bright">AI Decision Support Platform</span>
           </div>
-          <span class="font-headline text-headline-md text-on-midnight">Claim Triage</span>
         </a>
 
         <div class="flex flex-col gap-3">
-          <span class="font-label text-label-sm text-emerald-bright uppercase tracking-wider">Investigator workspace</span>
-          <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-midnight text-balance">
-            Every decision stays under your name.
+          <span class="font-label text-label-sm text-emerald-bright uppercase tracking-wider">Investigator Workspace</span>
+          <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-midnight text-balance font-bold">
+            Every decision signed under your authority.
           </h1>
           <p class="font-body text-body-md text-midnight-muted">
-            Sign in to load your claims queue, inspect plain-language risk drivers, and record review notes.
+            Sign in to inspect incoming claim risk rankings, evaluate SHAP factor attributions, and record legally auditable triage determinations.
           </p>
         </div>
-      </div>
 
-      <!-- Live Batch Snapshot Card -->
-      <div class="bg-midnight-surface/90 backdrop-blur-sm border border-outline-dark rounded-lg p-5 flex flex-col gap-4 shadow-lg">
-        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
-          <span class="font-label text-label-sm text-on-midnight">Sample batch ready</span>
-          <span class="inline-flex items-center gap-1.5 font-mono text-mono-sm text-emerald-bright">
-            <span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>400 claims
-          </span>
-        </div>
-        <div class="grid grid-cols-3 gap-3 text-left">
-          <div>
-            <span class="font-label text-label-sm text-midnight-muted">High band</span>
-            <div class="font-headline text-headline-md text-on-midnight tabular-nums">35</div>
+        <!-- Live Engine Specification Card -->
+        <div class="bg-midnight-surface/90 backdrop-blur-sm border border-outline-dark rounded-lg p-5 flex flex-col gap-4 shadow-lg">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-sm text-on-midnight font-semibold">Production Model v2.1</span>
+            <span class="inline-flex items-center gap-1.5 font-mono text-mono-sm text-emerald-bright">
+              <span class="w-2 h-2 rounded-full bg-primary pulse-live"></span>Active
+            </span>
           </div>
-          <div>
-            <span class="font-label text-label-sm text-midnight-muted">Baseline rate</span>
-            <div class="font-headline text-headline-md text-on-midnight tabular-nums">6.0%</div>
+          <div class="grid grid-cols-3 gap-3 text-left">
+            <div>
+              <span class="font-label text-label-sm text-midnight-muted">ROC-AUC</span>
+              <div class="font-headline text-headline-md text-on-midnight tabular-nums font-bold">0.909</div>
+            </div>
+            <div>
+              <span class="font-label text-label-sm text-midnight-muted">Recall@10%</span>
+              <div class="font-headline text-headline-md text-emerald-bright tabular-nums font-bold">69.4%</div>
+            </div>
+            <div>
+              <span class="font-label text-label-sm text-midnight-muted">PR-AUC</span>
+              <div class="font-headline text-headline-md text-on-midnight tabular-nums font-bold">0.712</div>
+            </div>
           </div>
-          <div>
-            <span class="font-label text-label-sm text-midnight-muted">Top score</span>
-            <div class="font-headline text-headline-md text-emerald-bright tabular-nums">22.7%</div>
+          <div class="flex items-center justify-between pt-3 border-t border-outline-dark text-body-sm">
+            <span class="font-mono text-mono-sm text-emerald-bright">Holdout: 4,000 verified claims</span>
+            <span class="text-midnight-muted">10-Fold CV validated</span>
           </div>
-        </div>
-        <div class="flex items-center justify-between pt-3 border-t border-outline-dark text-body-sm">
-          <span class="font-mono text-mono-sm text-emerald-bright">C-06315 · Rank 1</span>
-          <span class="text-midnight-muted">Base cover: All Perils</span>
         </div>
       </div>
 
       <ul class="flex flex-col gap-3.5 border-t border-outline-dark pt-6 text-body-sm text-midnight-muted">
-        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Decisions are saved locally under your investigator profile.</span></li>
-        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Nothing here automatically approves or rejects a claim.</span></li>
-        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Includes a 400-claim sample batch and 4-step walkthrough.</span></li>
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Determinations recorded with immutable investigator timestamps.</span></li>
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Advisory only: algorithm never automatically rejects or denies claims.</span></li>
+        <li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span><span>Demographic fairness verified across age, gender, and marital status.</span></li>
       </ul>
     </aside>
 
-    <!-- Crisp Porcelain Sign-in Stage (60%) -->
-    <main class="lg:col-span-7 bg-surface px-6 py-12 md:px-14 flex items-center justify-center">
-      <div class="w-full max-w-md bg-surface-container border border-outline rounded-lg p-7 md:p-9 shadow-sm flex flex-col gap-6">
+    <!-- Crisp Porcelain Sign-in Stage (Centered, Production Aligned) -->
+    <main class="lg:col-span-7 xl:col-span-8 bg-surface px-6 py-12 md:px-16 flex items-center justify-center">
+      <div class="w-full max-w-lg bg-surface-container border border-outline rounded-xl p-8 md:p-10 shadow-md flex flex-col gap-6">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <img src="../assets/logo-icon.png" alt="Claim Triage" class="h-6 w-auto object-contain">
+            <span class="font-mono text-mono-sm text-emerald-text font-semibold uppercase tracking-wider">Investigator Access</span>
+          </div>
+          <h2 id="auth-heading" class="font-headline text-headline-lg text-on-surface font-bold">Welcome back</h2>
+          <p id="auth-subtext" class="font-body text-body-sm text-on-surface-variant">Sign in with your organization credentials to open your triage queue.</p>
+        </div>
+
         <div class="grid grid-cols-2 bg-surface-container-low p-1 rounded-DEFAULT border border-outline" role="tablist" aria-label="Account mode">
-          <button type="button" role="tab" aria-selected="true" id="tab-create" class="py-2 rounded-sm bg-midnight text-on-midnight font-label text-label-lg">Create account</button>
-          <button type="button" role="tab" aria-selected="false" id="tab-login" class="py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg">Log in</button>
+          <button type="button" role="tab" aria-selected="true" id="tab-login" class="py-2 rounded-sm bg-midnight text-on-midnight font-label text-label-lg font-semibold transition-colors">Log in</button>
+          <button type="button" role="tab" aria-selected="false" id="tab-create" class="py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg font-medium transition-colors">Create account</button>
         </div>
 
         <form id="auth-form" class="flex flex-col gap-4">
-          <label id="field-name" class="flex flex-col gap-1.5">
-            <span class="font-label text-label-lg text-on-surface">Full name</span>
-            <input type="text" value="Claire Vance" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+          <label id="field-name-wrap" class="hidden flex-col gap-1.5">
+            <span class="font-label text-label-lg text-on-surface font-medium">Full legal name</span>
+            <input type="text" id="auth-name" placeholder="e.g. Senior Adjuster" class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
           </label>
 
           <label class="flex flex-col gap-1.5">
-            <span class="font-label text-label-lg text-on-surface">Work email</span>
-            <input type="email" value="claire.vance@claimtriage.local" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+            <span class="font-label text-label-lg text-on-surface font-medium">Work email</span>
+            <input type="email" id="auth-email" required placeholder="name@insurer.com" class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
           </label>
 
           <label class="flex flex-col gap-1.5">
-            <span class="font-label text-label-lg text-on-surface">Password</span>
-            <input type="password" value="••••••••••••" required class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
+            <span class="font-label text-label-lg text-on-surface font-medium">Password</span>
+            <input type="password" id="auth-password" required placeholder="Enter your credentials" class="px-3.5 py-2.5 bg-surface text-on-surface border border-outline rounded-DEFAULT font-body text-body-md focus:border-midnight focus:ring-2 focus:ring-primary">
           </label>
 
-          <button id="auth-submit" type="submit" class="mt-2 w-full py-3 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold">
-            Create account &amp; start tour
+          <button id="auth-submit" type="submit" class="mt-2 w-full py-3 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold cursor-pointer">
+            Sign In &amp; Open Queue
           </button>
         </form>
 
-        <div class="border-t border-outline pt-4 flex flex-wrap items-center justify-between gap-2 text-body-sm text-on-surface-variant">
-          <span>Demo investigator ready</span>
-          <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-sm text-emerald-text underline underline-offset-4">Skip straight to queue</a>
+        <div class="border-t border-outline pt-4 flex flex-wrap items-center justify-between gap-3 text-body-sm text-on-surface-variant">
+          <span class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-emerald-text" aria-hidden="true">lock</span>
+            <span>Enterprise Triage Session</span>
+          </span>
+          <a href="../landing-page/LandingPage.html" class="font-label text-label-sm text-midnight-muted hover:text-on-surface underline underline-offset-4">Back to home</a>
         </div>
       </div>
     </main>
   </div>
 
   <footer class="bg-surface border-t border-outline">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
-      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means prioritize this claim for inspection; it does not constitute a finding of fraud.</p>
+      <span class="font-mono text-mono-sm text-on-surface-variant">Claim Triage System v2.1</span>
     </div>
   </footer>
 
+  <script src="../assets/auth.js"></script>
   <script>
     (function () {
-      const tabCreate = document.getElementById('tab-create');
       const tabLogin = document.getElementById('tab-login');
-      const nameField = document.getElementById('field-name');
+      const tabCreate = document.getElementById('tab-create');
+      const nameWrap = document.getElementById('field-name-wrap');
+      const nameInput = document.getElementById('auth-name');
+      const emailInput = document.getElementById('auth-email');
+      const passInput = document.getElementById('auth-password');
       const submitBtn = document.getElementById('auth-submit');
+      const heading = document.getElementById('auth-heading');
+      const subtext = document.getElementById('auth-subtext');
+      const form = document.getElementById('auth-form');
 
-      function setMode(isCreate) {
-        tabCreate.setAttribute('aria-selected', String(isCreate));
-        tabLogin.setAttribute('aria-selected', String(!isCreate));
-        tabCreate.classList.toggle('bg-midnight', isCreate);
-        tabCreate.classList.toggle('text-on-midnight', isCreate);
-        tabCreate.classList.toggle('text-on-surface-variant', !isCreate);
-        tabLogin.classList.toggle('bg-midnight', !isCreate);
-        tabLogin.classList.toggle('text-on-midnight', !isCreate);
-        tabLogin.classList.toggle('text-on-surface-variant', isCreate);
-        nameField.classList.toggle('hidden', !isCreate);
-        submitBtn.textContent = isCreate ? 'Create account & start tour' : 'Log in to claims queue';
+      let isCreateMode = false;
+
+      // Populate current user if one exists in session
+      const existingUser = ClaimTriageAuth.getUser();
+      if (existingUser && existingUser.email) {
+        emailInput.value = existingUser.email;
+        if (existingUser.name) nameInput.value = existingUser.name;
       }
 
-      tabCreate.addEventListener('click', () => setMode(true));
+      function setMode(create) {
+        isCreateMode = create;
+        tabCreate.setAttribute('aria-selected', String(create));
+        tabLogin.setAttribute('aria-selected', String(!create));
+        
+        tabCreate.className = create
+          ? 'py-2 rounded-sm bg-midnight text-on-midnight font-label text-label-lg font-semibold'
+          : 'py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg font-medium';
+        tabLogin.className = !create
+          ? 'py-2 rounded-sm bg-midnight text-on-midnight font-label text-label-lg font-semibold'
+          : 'py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg font-medium';
+
+        nameWrap.classList.toggle('hidden', !create);
+        nameWrap.classList.toggle('flex', create);
+        if (create) nameInput.setAttribute('required', '');
+        else nameInput.removeAttribute('required');
+
+        heading.textContent = create ? 'Create investigator account' : 'Welcome back';
+        subtext.textContent = create
+          ? 'Register your official investigator profile to begin auditing claims.'
+          : 'Sign in with your organization credentials to open your triage queue.';
+        submitBtn.textContent = create ? 'Create Account & Start' : 'Sign In & Open Queue';
+      }
+
       tabLogin.addEventListener('click', () => setMode(false));
-      document.getElementById('auth-form').addEventListener('submit', (e) => {
+      tabCreate.addEventListener('click', () => setMode(true));
+
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const isCreate = tabCreate.getAttribute('aria-selected') === 'true';
-        window.location.href = isCreate ? '../first-run-tutorial/FirstRunTutorial.html' : '../claims-queue/ClaimsQueue.html';
+        const email = emailInput.value.trim();
+        const name = (nameInput.value.trim()) || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Investigator';
+
+        ClaimTriageAuth.setUser({
+          name: name,
+          email: email,
+          role: 'Fraud Risk Specialist',
+          signedInAt: new Date().toISOString()
+        });
+
+        window.location.href = '../claims-queue/ClaimsQueue.html';
       });
     })();
   </script>
-
-
 </body></html>

@@ -171,7 +171,8 @@ class SingleClaim(BaseModel):
 
 @app.post("/api/score")
 def score_one(body: SingleClaim):
-    df = pd.DataFrame([body.claim])
+    merged = {**DEFAULTS, **body.claim}
+    df = pd.DataFrame([merged])
     out = run_batch(df)
     if "error" in out:
         raise HTTPException(422, out)

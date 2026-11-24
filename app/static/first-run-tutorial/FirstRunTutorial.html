@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>First-run tutorial — Claim Triage</title>
+  <title>Investigator System Guide — Claim Triage</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
 globalThis.tailwind = globalThis.tailwind || {};
@@ -60,15 +61,6 @@ globalThis.tailwind.config = {
         'lg': '16px',
         'full': '9999px',
       },
-      spacing: {
-        'gutter-xs': '4px',
-        'gutter-sm': '8px',
-        'gutter-md': '16px',
-        'gutter-lg': '24px',
-        'gutter-xl': '32px',
-        'section': '48px',
-        'page-margin': '32px',
-      },
       fontFamily: {
         'display': ['"Plus Jakarta Sans"', 'sans-serif'],
         'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -91,18 +83,6 @@ globalThis.tailwind.config = {
         'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
         'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
       },
-      transitionDuration: {
-        'state-change': '120ms',
-        'panel-enter': '200ms',
-      },
-      transitionDelay: {
-        'state-change': '0ms',
-        'panel-enter': '0ms',
-      },
-      transitionTimingFunction: {
-        'state-change': 'ease-out',
-        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
-      },
     },
   },
 };
@@ -116,180 +96,227 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
     .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
     .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
     .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
-    @media (prefers-reduced-motion: reduce) { .btn-emerald-lively:hover { transform: none; } }
     input[type="range"].emerald-slider { -webkit-appearance: none; appearance: none; height: 6px; background: #334155; border-radius: 9999px; outline: none; }
     input[type="range"].emerald-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #10B981; border: 2px solid #F8FAFC; border-radius: 9999px; cursor: ew-resize; }
   </style>
 </head>
-<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-screen flex flex-col justify-between">
 
-  <!-- Deep Midnight Navy Header & Emerald Step Progress -->
+  <!-- Deep Midnight Navy Header & Step Progress -->
   <header class="sticky top-0 z-30 bg-midnight text-on-midnight border-b border-outline-dark">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-3">
-      <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0">
-        <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
-          <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
-            <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
-          </svg>
-        </div>
-        <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+    <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
+      <a href="../landing-page/LandingPage.html" class="flex items-center gap-3 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm group">
+        <img src="../assets/logo-clean.png" alt="Claim Triage Logo" class="h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+        <span class="font-headline text-headline-md text-on-midnight font-bold tracking-tight whitespace-nowrap">Claim Triage</span>
       </a>
 
-      <div class="flex items-center gap-3 min-w-0">
-        <span id="step-counter" class="px-2.5 py-1 rounded-full bg-midnight-surface border border-outline-dark font-mono text-mono-sm text-emerald-bright tabular-nums whitespace-nowrap">01 / 04</span>
-        <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-lg text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Skip tour</a>
+      <div class="flex items-center gap-4 min-w-0">
+        <span id="step-counter" class="px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark font-mono text-mono-sm text-emerald-bright tabular-nums font-semibold whitespace-nowrap">Step 01 / 04</span>
+        <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-md text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Enter Queue</a>
       </div>
     </div>
 
     <div class="max-w-7xl mx-auto px-6 md:px-10 pb-3 pt-1">
       <div class="grid grid-cols-4 gap-2" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" id="tour-progress">
-        <button type="button" data-jump="1" aria-label="Step 1" class="step-bar h-1.5 rounded-full bg-primary"></button>
-        <button type="button" data-jump="2" aria-label="Step 2" class="step-bar h-1.5 rounded-full bg-midnight-surface"></button>
-        <button type="button" data-jump="3" aria-label="Step 3" class="step-bar h-1.5 rounded-full bg-midnight-surface"></button>
-        <button type="button" data-jump="4" aria-label="Step 4" class="step-bar h-1.5 rounded-full bg-midnight-surface"></button>
+        <button type="button" data-jump="1" aria-label="Step 1" class="step-bar h-1.5 rounded-full bg-primary cursor-pointer transition-colors"></button>
+        <button type="button" data-jump="2" aria-label="Step 2" class="step-bar h-1.5 rounded-full bg-midnight-surface hover:bg-outline-dark cursor-pointer transition-colors"></button>
+        <button type="button" data-jump="3" aria-label="Step 3" class="step-bar h-1.5 rounded-full bg-midnight-surface hover:bg-outline-dark cursor-pointer transition-colors"></button>
+        <button type="button" data-jump="4" aria-label="Step 4" class="step-bar h-1.5 rounded-full bg-midnight-surface hover:bg-outline-dark cursor-pointer transition-colors"></button>
       </div>
     </div>
   </header>
 
-  <!-- Crisp Porcelain Workspace -->
-  <main class="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-    <section class="lg:col-span-5 flex flex-col gap-6">
-      <span id="step-eyebrow" class="font-mono text-mono-sm text-emerald-text font-semibold">STEP 01 · LOAD DATA</span>
-      <h1 id="step-title" class="font-headline text-display-md-mobile md:text-display-md text-on-surface text-balance">
-        Start with a batch of claims
-      </h1>
-      <p id="step-desc" class="font-body text-body-md text-on-surface-variant">
-        Upload your own claims CSV or load the 400-claim sample batch. Every claim is scored using 22 policy, vehicle, and reporting fields—never personal identifiers.
-      </p>
-
-      <div class="flex flex-wrap items-center gap-3 pt-2">
-        <button id="prev-btn" type="button" disabled class="px-4 py-2.5 rounded-DEFAULT border border-outline bg-surface-container text-on-surface-variant font-label text-label-lg cursor-not-allowed">Back</button>
-        <button id="next-btn" type="button" class="px-5 py-2.5 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold">Next: Set capacity</button>
-      </div>
-    </section>
-
-    <!-- Interactive Midnight Navy Stage -->
-    <section class="lg:col-span-7 bg-midnight bg-midnight-mesh text-on-midnight rounded-lg border border-outline-dark p-6 md:p-8 shadow-xl flex flex-col gap-6">
-      <!-- Step 1 Interactive -->
-      <div id="stage-1" class="tour-stage flex flex-col gap-5">
-        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
-          <span class="font-label text-label-lg">Batch loader</span>
-          <span class="font-mono text-mono-sm text-emerald-bright">Ready</span>
+  <!-- Clean, Perfectly Centered Workspace -->
+  <main class="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-10 w-full flex items-center justify-center">
+    <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <!-- Step Guidance Column -->
+      <section class="lg:col-span-5 flex flex-col gap-6">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          <span id="step-eyebrow" class="font-mono text-mono-sm text-emerald-text font-bold uppercase tracking-wider">PILLAR 01 · DATA INGESTION</span>
         </div>
-        <div class="bg-midnight-surface border border-outline-dark rounded-md p-5 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <span class="font-label text-label-lg">sample_auto_claims_400.csv</span>
-            <span class="px-2 py-0.5 rounded-sm bg-primary text-on-primary font-label text-label-sm font-semibold">400 rows</span>
+        <h1 id="step-title" class="font-headline text-display-md-mobile md:text-display-md text-on-surface text-balance font-bold">
+          Ingest &amp; validate incoming claim batches
+        </h1>
+        <p id="step-desc" class="font-body text-body-md text-on-surface-variant leading-relaxed">
+          Upload claims via standard CSV batches or stream directly into the intake API. The model scores every file across 22 policy, vehicle, and accident factors while strictly omitting protected demographic attributes.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <button id="prev-btn" type="button" disabled class="px-4 py-2.5 rounded-DEFAULT border border-outline bg-surface-container text-on-surface-variant font-label text-label-lg cursor-not-allowed transition-colors">Previous</button>
+          <button id="next-btn" type="button" class="px-5 py-2.5 rounded-DEFAULT btn-emerald-lively text-on-primary font-label text-label-lg font-semibold cursor-pointer">Next: Capacity Slicing</button>
+          <a href="../claims-queue/ClaimsQueue.html" class="font-label text-label-md text-on-surface-variant hover:text-on-surface underline underline-offset-4 ml-2">Skip directly to Queue</a>
+        </div>
+      </section>
+
+      <!-- Interactive Stage Column -->
+      <section class="lg:col-span-7 bg-midnight bg-midnight-mesh text-on-midnight rounded-xl border border-outline-dark p-6 md:p-8 shadow-2xl flex flex-col gap-6">
+        <!-- Stage 1 -->
+        <div id="stage-1" class="tour-stage flex flex-col gap-5">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-lg font-semibold text-on-midnight">Automated Feature Preprocessor</span>
+            <span class="font-mono text-mono-sm text-emerald-bright font-medium">Ready</span>
           </div>
-          <p class="font-body text-body-sm text-midnight-muted">22 scoring columns · PolicyNumber and RepNumber automatically excluded.</p>
+          <div class="bg-midnight-surface border border-outline-dark rounded-lg p-5 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-mono-sm text-on-midnight font-bold">Standard 22-Feature Claim Schema</span>
+              <span class="px-2.5 py-0.5 rounded-sm bg-primary text-on-primary font-label text-label-sm font-semibold">Verified</span>
+            </div>
+            <p class="font-body text-body-sm text-midnight-muted">
+              Policy parameters, vehicle attributes, and accident timelines are encoded. Row identifiers and protected attributes (Age, Sex, Marital status) are automatically bypassed.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- Step 2 Interactive -->
-      <div id="stage-2" class="tour-stage hidden flex-col gap-5">
-        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
-          <span class="font-label text-label-lg">Try the capacity slider</span>
-          <span id="tour-cap-lbl" class="font-mono text-mono-sm text-emerald-bright tabular-nums">10% (35 High claims)</span>
+        <!-- Stage 2 -->
+        <div id="stage-2" class="tour-stage hidden flex-col gap-5">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-lg font-semibold text-on-midnight">Review Capacity Calibration</span>
+            <span id="tour-cap-lbl" class="font-mono text-mono-sm text-emerald-bright tabular-nums font-semibold">10% Capacity (69.4% Recall)</span>
+          </div>
+          <input id="tour-slider" type="range" min="5" max="25" value="10" step="1" class="emerald-slider w-full cursor-pointer">
+          <p class="font-body text-body-sm text-midnight-muted">
+            Move the slider to see how adjusting weekly inspection workload isolates the highest risk band. Top 10% inspection yields ~7x the fraud detection rate of random audits.
+          </p>
         </div>
-        <input id="tour-slider" type="range" min="5" max="25" value="10" step="1" class="emerald-slider w-full">
-        <p id="tour-cap-note" class="font-body text-body-sm text-midnight-muted">At 10% capacity, your team inspects the top 35 claims and catches about 24% of frauds.</p>
-      </div>
 
-      <!-- Step 3 Interactive -->
-      <div id="stage-3" class="tour-stage hidden flex-col gap-5">
-        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
-          <span class="font-label text-label-lg">Claim C-06315 · Plain-language drivers</span>
-          <span class="font-mono text-mono-sm text-emerald-bright tabular-nums">22.7%</span>
+        <!-- Stage 3 -->
+        <div id="stage-3" class="tour-stage hidden flex-col gap-5">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-lg font-semibold text-on-midnight">SHAP Explainability &amp; Heuristic Flags</span>
+            <span class="font-mono text-mono-sm text-emerald-bright font-medium">TreeExplainer Active</span>
+          </div>
+          <div class="flex flex-col gap-2 text-xs">
+            <div class="flex items-center justify-between p-2 rounded bg-midnight-surface border border-outline-dark">
+              <span>Days policy–accident: 8 to 15</span>
+              <span class="font-mono text-risk-high font-bold">+15.0% risk</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded bg-midnight-surface border border-outline-dark">
+              <span>Address change: &lt;6 months</span>
+              <span class="font-mono text-risk-high font-bold">+11.1% risk</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded bg-midnight-surface border border-outline-dark">
+              <span>Police report filed: Yes</span>
+              <span class="font-mono text-emerald-bright font-bold">-2.1% risk</span>
+            </div>
+          </div>
         </div>
-        <div class="flex flex-col gap-2.5 text-body-sm">
-          <div class="flex items-center justify-between bg-midnight-surface px-4 py-2.5 rounded-sm"><span>Base cover: All Perils</span><span class="font-mono text-risk-high-container">+6.4%</span></div>
-          <div class="flex items-center justify-between bg-midnight-surface px-4 py-2.5 rounded-sm"><span>Vehicle make: Accura</span><span class="font-mono text-risk-high-container">+3.9%</span></div>
-          <div class="flex items-center justify-between bg-midnight-surface px-4 py-2.5 rounded-sm"><span>Police report filed: Yes</span><span class="font-mono text-emerald-bright">-2.1%</span></div>
-        </div>
-      </div>
 
-      <!-- Step 4 Interactive -->
-      <div id="stage-4" class="tour-stage hidden flex-col gap-5">
-        <div class="flex items-center justify-between border-b border-outline-dark pb-3">
-          <span class="font-label text-label-lg">Record a human decision</span>
-          <span id="tour-dec-status" class="font-mono text-mono-sm text-emerald-bright">Under review</span>
+        <!-- Stage 4 -->
+        <div id="stage-4" class="tour-stage hidden flex-col gap-5">
+          <div class="flex items-center justify-between border-b border-outline-dark pb-3">
+            <span class="font-label text-label-lg font-semibold text-on-midnight">Human Determination &amp; Audit Trail</span>
+            <span class="font-mono text-mono-sm text-emerald-bright font-medium">SQLite Storage</span>
+          </div>
+          <div class="flex gap-2">
+            <span class="px-3 py-1.5 rounded bg-midnight-surface border border-outline-dark text-xs font-semibold">Under review</span>
+            <span class="px-3 py-1.5 rounded bg-risk-low text-on-risk-low text-xs font-semibold">Cleared</span>
+            <span class="px-3 py-1.5 rounded bg-risk-high text-on-risk-high text-xs font-semibold">Escalated</span>
+          </div>
+          <p class="font-body text-body-sm text-midnight-muted">
+            The machine provides ranking and diagnostic attribution. Final claims decisions are made exclusively by authorized investigators and permanently logged.
+          </p>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" class="tour-dec-btn px-4 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-lg font-semibold">Under review</button>
-          <button type="button" class="tour-dec-btn px-4 py-2 rounded-DEFAULT bg-midnight-surface border border-outline-dark text-on-midnight font-label text-label-lg">Cleared</button>
-          <button type="button" class="tour-dec-btn px-4 py-2 rounded-DEFAULT bg-midnight-surface border border-outline-dark text-on-midnight font-label text-label-lg">Escalated</button>
-        </div>
-        <p class="font-body text-body-sm text-midnight-muted">Decisions are saved under Claire Vance and never trigger an automatic denial.</p>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
-  <footer class="bg-surface border-t border-outline">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
-      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+  <footer class="border-t border-outline bg-surface">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank signifies inspection priority and does not constitute a finding of fraud.</p>
+      <span class="font-mono text-mono-sm text-on-surface-variant">Claim Triage System v2.1</span>
     </div>
   </footer>
 
+  <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      let currentStep = 1;
       const steps = [
-        { eyebrow: 'STEP 01 · LOAD DATA', title: 'Start with a batch of claims', desc: 'Upload your own claims CSV or load the 400-claim sample batch. Every claim is scored using 22 policy, vehicle, and reporting fields—never personal identifiers.', next: 'Next: Set capacity' },
-        { eyebrow: 'STEP 02 · CAPACITY', title: 'Match the queue to your team', desc: 'Drag the capacity slider to reflect how many claims your investigators can review. The High band boundary moves live.', next: 'Next: Read reasons' },
-        { eyebrow: 'STEP 03 · EXPLAIN', title: 'See why a claim ranks high', desc: 'Every score is broken down into plain-language factors that pushed the rank up or down relative to the 6.0% overall baseline.', next: 'Next: Record decision' },
-        { eyebrow: 'STEP 04 · DECIDE', title: 'You make the final call', desc: 'Mark any claim Under review, Cleared, or Escalated with your note. Nothing is ever decided automatically.', next: 'Open claims queue' }
+        {
+          num: '01 / 04',
+          eyebrow: 'PILLAR 01 · DATA INGESTION',
+          title: 'Ingest & validate incoming claim batches',
+          desc: 'Upload claims via standard CSV batches or stream directly into the intake API. The model scores every file across 22 policy, vehicle, and accident factors while strictly omitting protected demographic attributes.',
+          btnText: 'Next: Capacity Slicing'
+        },
+        {
+          num: '02 / 04',
+          eyebrow: 'PILLAR 02 · CAPACITY SLICING',
+          title: 'Tune team review capacity to maximize fraud capture',
+          desc: 'Calibrate your team review threshold from 5% to 25%. Our empirical gradient-boosted model captures up to 69.4% of fraudulent claims within the top 10% high-risk tier.',
+          btnText: 'Next: Explainable AI'
+        },
+        {
+          num: '03 / 04',
+          eyebrow: 'PILLAR 03 · EXPLAINABLE AI',
+          title: 'Inspect additive SHAP feature attributions',
+          desc: 'Never guess why a claim was flagged. Tree-based SHAP values pinpoint the specific policy attributes that elevated suspicion alongside deterministic rule checks.',
+          btnText: 'Next: Investigator Sign-Off'
+        },
+        {
+          num: '04 / 04',
+          eyebrow: 'PILLAR 04 · GOVERNANCE',
+          title: 'Human investigator sign-off & audit log',
+          desc: 'Record decisions as Under review, Cleared, or Escalated with investigator review notes. Every action is signed under your credentials and exportable to CSV.',
+          btnText: 'Open Live Queue'
+        }
       ];
-      let cur = 1;
-      const prevBtn = document.getElementById('prev-btn');
-      const nextBtn = document.getElementById('next-btn');
 
-      function renderStep(n) {
-        cur = n;
-        const s = steps[n - 1];
-        document.getElementById('step-counter').textContent = `0${n} / 04`;
+      function updateStep(step) {
+        currentStep = step;
+        const s = steps[step - 1];
+
+        document.getElementById('step-counter').textContent = `Step ${s.num}`;
         document.getElementById('step-eyebrow').textContent = s.eyebrow;
         document.getElementById('step-title').textContent = s.title;
         document.getElementById('step-desc').textContent = s.desc;
-        nextBtn.textContent = s.next;
-        prevBtn.disabled = n === 1;
-        prevBtn.classList.toggle('cursor-not-allowed', n === 1);
+        document.getElementById('next-btn').textContent = s.btnText;
+        document.getElementById('prev-btn').disabled = step === 1;
+        document.getElementById('prev-btn').className = step === 1
+          ? 'px-4 py-2.5 rounded-DEFAULT border border-outline bg-surface-container text-on-surface-variant font-label text-label-lg cursor-not-allowed'
+          : 'px-4 py-2.5 rounded-DEFAULT border border-outline bg-surface text-on-surface hover:bg-surface-container-low font-label text-label-lg cursor-pointer';
+
         document.querySelectorAll('.step-bar').forEach((b, i) => {
-          b.classList.toggle('bg-primary', i < n);
-          b.classList.toggle('bg-midnight-surface', i >= n);
+          b.className = (i + 1 <= step)
+            ? 'step-bar h-1.5 rounded-full bg-primary cursor-pointer transition-colors'
+            : 'step-bar h-1.5 rounded-full bg-midnight-surface hover:bg-outline-dark cursor-pointer transition-colors';
         });
+
         document.querySelectorAll('.tour-stage').forEach((st, i) => {
-          const match = i + 1 === n;
-          st.classList.toggle('hidden', !match);
-          st.classList.toggle('flex', match);
+          st.classList.toggle('hidden', i + 1 !== step);
+          st.classList.toggle('flex', i + 1 === step);
         });
       }
 
-      prevBtn.addEventListener('click', () => { if (cur > 1) renderStep(cur - 1); });
-      nextBtn.addEventListener('click', () => {
-        if (cur < 4) renderStep(cur + 1);
-        else window.location.href = '../claims-queue/ClaimsQueue.html';
-      });
-      document.querySelectorAll('.step-bar').forEach((b) => b.addEventListener('click', () => renderStep(Number(b.dataset.jump))));
-
-      document.getElementById('tour-slider').addEventListener('input', (e) => {
-        const pct = Number(e.target.value);
-        const cnt = pct === 10 ? 35 : pct * 4;
-        const caught = Math.min(54, Math.round(11 + pct * 1.3));
-        document.getElementById('tour-cap-lbl').textContent = `${pct}% (${cnt} High claims)`;
-        document.getElementById('tour-cap-note').textContent = `At ${pct}% capacity, your team inspects the top ${cnt} claims and catches about ${caught}% of frauds.`;
+      document.getElementById('prev-btn').addEventListener('click', () => {
+        if (currentStep > 1) updateStep(currentStep - 1);
       });
 
-      document.querySelectorAll('.tour-dec-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tour-dec-btn').forEach((b) => {
-            b.className = 'tour-dec-btn px-4 py-2 rounded-DEFAULT bg-midnight-surface border border-outline-dark text-on-midnight font-label text-label-lg';
-          });
-          btn.className = 'tour-dec-btn px-4 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-lg font-semibold';
-          document.getElementById('tour-dec-status').textContent = btn.textContent;
+      document.getElementById('next-btn').addEventListener('click', () => {
+        if (currentStep < 4) {
+          updateStep(currentStep + 1);
+        } else {
+          window.location.href = '../claims-queue/ClaimsQueue.html';
+        }
+      });
+
+      document.querySelectorAll('.step-bar').forEach(b => {
+        b.addEventListener('click', () => {
+          updateStep(Number(b.dataset.jump));
         });
       });
+
+      const tourSlider = document.getElementById('tour-slider');
+      if (tourSlider) {
+        tourSlider.addEventListener('input', (e) => {
+          const val = Number(e.target.value);
+          const rec = val <= 10 ? (34.3 + (val - 5) * 7).toFixed(1) : (69.4 + (val - 10) * 1.5).toFixed(1);
+          document.getElementById('tour-cap-lbl').textContent = `${val}% Capacity (~${rec}% Recall)`;
+        });
+      }
+
+      updateStep(1);
     })();
   </script>
-
-
 </body></html>

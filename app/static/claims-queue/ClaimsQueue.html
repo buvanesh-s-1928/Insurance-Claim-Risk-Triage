@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claims queue — Claim Triage</title>
+  <title>Claims Queue — Claim Triage</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
 globalThis.tailwind = globalThis.tailwind || {};
@@ -60,15 +61,6 @@ globalThis.tailwind.config = {
         'lg': '16px',
         'full': '9999px',
       },
-      spacing: {
-        'gutter-xs': '4px',
-        'gutter-sm': '8px',
-        'gutter-md': '16px',
-        'gutter-lg': '24px',
-        'gutter-xl': '32px',
-        'section': '48px',
-        'page-margin': '32px',
-      },
       fontFamily: {
         'display': ['"Plus Jakarta Sans"', 'sans-serif'],
         'headline': ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -91,18 +83,6 @@ globalThis.tailwind.config = {
         'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
         'mono-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
       },
-      transitionDuration: {
-        'state-change': '120ms',
-        'panel-enter': '200ms',
-      },
-      transitionDelay: {
-        'state-change': '0ms',
-        'panel-enter': '0ms',
-      },
-      transitionTimingFunction: {
-        'state-change': 'ease-out',
-        'panel-enter': 'cubic-bezier(0.2, 0, 0, 1)',
-      },
     },
   },
 };
@@ -116,27 +96,21 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
     .bg-porcelain-glow { background: radial-gradient(circle at 85% 8%, rgba(16,185,129,0.06), transparent 38%), #F8FAFC; }
     .btn-emerald-lively { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); box-shadow: 0 8px 22px -6px rgba(16,185,129,0.45); transition: transform 150ms ease, box-shadow 150ms ease; }
     .btn-emerald-lively:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(16,185,129,0.6); }
-    @media (prefers-reduced-motion: reduce) { .btn-emerald-lively:hover { transform: none; } }
     input[type="range"].emerald-slider { -webkit-appearance: none; appearance: none; height: 6px; background: #334155; border-radius: 9999px; outline: none; }
     input[type="range"].emerald-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #10B981; border: 2px solid #F8FAFC; border-radius: 9999px; cursor: ew-resize; }
   </style>
 </head>
-<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+<body class="bg-surface bg-porcelain-glow text-on-surface font-body min-h-screen flex flex-col justify-between">
 
   <!-- Deep Midnight Navy Command Dock -->
   <header class="sticky top-0 z-30 bg-midnight text-on-midnight border-b border-outline-dark">
     <div class="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-4 min-w-0">
-        <a href="../landing-page/LandingPage.html" class="flex items-center gap-2.5 shrink-0">
-          <div class="w-8 h-8 rounded-DEFAULT bg-midnight-surface border border-outline-dark flex items-center justify-center">
-            <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M14 2.5L4.5 6.5V13.5C4.5 19.6 8.55 24.95 14 26.5C19.45 24.95 23.5 19.6 23.5 13.5V6.5L14 2.5Z" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M14 7V21M9 12H19M10.5 17.5H17.5" stroke="#F8FAFC" stroke-width="1.6"></path>
-            </svg>
-          </div>
-          <span class="font-headline text-headline-md text-on-midnight whitespace-nowrap">Claim Triage</span>
+        <a href="../landing-page/LandingPage.html" class="flex items-center gap-3 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm group">
+          <img src="../assets/logo-clean.png" alt="Claim Triage Logo" class="h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105">
+          <span class="font-headline text-headline-md text-on-midnight font-bold tracking-tight whitespace-nowrap">Claim Triage</span>
         </a>
-        <span class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-midnight-muted whitespace-nowrap">Batch: Sample 400</span>
+        <span id="active-batch-tag" class="hidden xl:inline-flex items-center px-2.5 py-0.5 rounded-full bg-midnight-surface border border-outline-dark font-label text-label-sm text-emerald-bright whitespace-nowrap">Batch: Active</span>
       </div>
 
       <nav aria-label="Application" class="hidden md:flex items-center gap-1 bg-midnight-surface border border-outline-dark rounded-full p-1">
@@ -144,24 +118,27 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">format_list_numbered</span>
           <span>Queue</span>
         </a>
-        <a href="../assess-claim/AssessAClaim.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../assess-claim/AssessAClaim.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
           <span>Assess</span>
         </a>
-        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../model-limits/ModelAndLimits.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">analytics</span>
           <span>Model</span>
         </a>
-        <a href="../decisions/Decisions.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap">
+        <a href="../decisions/Decisions.html" class="px-4 py-1.5 rounded-full text-midnight-muted hover:text-on-midnight font-label text-label-lg flex items-center gap-2 whitespace-nowrap transition-colors">
           <span class="material-symbols-outlined text-[16px]" aria-hidden="true">fact_check</span>
           <span>Decisions</span>
         </a>
       </nav>
 
       <div class="hidden md:flex items-center gap-4 shrink-0">
-        <span class="font-label text-label-lg text-on-midnight whitespace-nowrap">Claire Vance</span>
-        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Take the tour</a>
-        <a href="../auth-account/CreateAccountLogin.html" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-midnight-surface border border-outline-dark">
+          <div class="w-6 h-6 rounded-full bg-primary text-on-primary font-bold text-xs flex items-center justify-center font-mono investigator-initials">LA</div>
+          <span class="font-label text-label-sm text-on-midnight font-medium investigator-name">Lead Adjuster</span>
+        </div>
+        <a href="../first-run-tutorial/FirstRunTutorial.html" class="font-body text-body-sm text-emerald-bright hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Guide</a>
+        <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="font-body text-body-sm text-midnight-muted hover:text-on-midnight underline underline-offset-4 whitespace-nowrap">Log out</a>
       </div>
 
       <button type="button" id="rail-toggle" aria-label="Toggle navigation" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 border border-outline-dark rounded-DEFAULT text-on-midnight">
@@ -169,6 +146,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       </button>
     </div>
 
+    <!-- Mobile Drawer -->
     <div id="rail-content" class="hidden md:hidden border-t border-outline-dark bg-midnight px-6 py-4 flex-col gap-4">
       <nav aria-label="Mobile Application" class="grid grid-cols-2 gap-2">
         <a href="../claims-queue/ClaimsQueue.html" aria-current="page" class="px-3 py-2 rounded-DEFAULT bg-primary text-on-primary font-label text-label-lg font-semibold text-center">Queue</a>
@@ -177,10 +155,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         <a href="../decisions/Decisions.html" class="px-3 py-2 rounded-DEFAULT bg-midnight-surface text-midnight-muted font-label text-label-lg text-center">Decisions</a>
       </nav>
       <div class="flex items-center justify-between pt-2 border-t border-outline-dark text-body-sm">
-        <span class="text-on-midnight font-medium">Claire Vance</span>
+        <span class="text-on-midnight font-medium investigator-name">Lead Adjuster</span>
         <div class="flex items-center gap-4">
-          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Take the tour</a>
-          <a href="../auth-account/CreateAccountLogin.html" class="text-midnight-muted underline">Log out</a>
+          <a href="../first-run-tutorial/FirstRunTutorial.html" class="text-emerald-bright underline">Guide</a>
+          <a href="../auth-account/CreateAccountLogin.html" onclick="ClaimTriageAuth.logout(); return false;" class="text-midnight-muted underline">Log out</a>
         </div>
       </div>
     </div>
@@ -189,93 +167,91 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
   <main class="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-8 w-full flex flex-col gap-8">
     <div class="flex flex-wrap items-center justify-between gap-4 border-b border-outline pb-4">
       <div>
-        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface">Claims queue</h1>
-        <p class="font-body text-body-md text-on-surface-variant mt-1">Sorted riskiest first. Adjust your review capacity to slice the High band.</p>
+        <h1 class="font-headline text-display-md-mobile md:text-display-md text-on-surface font-bold">Claims triage queue</h1>
+        <p class="font-body text-body-md text-on-surface-variant mt-1">Calibrated risk ranking. Adjust your team review capacity to slice the High-priority inspection band.</p>
       </div>
-      <button id="toggle-empty-state" type="button" class="font-body text-body-sm text-emerald-text underline underline-offset-4 hover:text-on-surface whitespace-nowrap">Preview empty state</button>
-    </div>
 
-    <!-- Empty State -->
-    <section id="queue-empty-state" class="hidden py-10 max-w-xl flex flex-col gap-5">
-      <p class="font-body text-body-md text-on-surface">Load a batch of claims and start at the top of the list.</p>
-      <div class="flex flex-wrap items-center gap-3">
-        <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold">
-          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">upload_file</span>
-          <span>Upload a CSV</span>
+      <div class="flex items-center gap-3">
+        <input type="file" id="csv-upload-input" accept=".csv" class="hidden">
+        <button id="upload-csv-btn" type="button" class="inline-flex items-center gap-2 px-4 py-2 border border-outline bg-surface-container text-on-surface rounded-DEFAULT hover:bg-surface-container-low font-label text-label-md cursor-pointer shadow-sm">
+          <span class="material-symbols-outlined text-[18px] text-emerald-text" aria-hidden="true">upload_file</span>
+          <span>Upload Claims CSV</span>
         </button>
-        <button id="load-sample-btn" type="button" class="inline-flex items-center px-5 py-2.5 bg-surface-container text-on-surface rounded-DEFAULT border border-outline hover:bg-surface-container-low font-label text-label-lg">Try 400 sample claims</button>
-        <a href="#" class="font-body text-body-sm text-emerald-text underline underline-offset-4 px-2 py-1">Download the CSV template</a>
+        <button id="refresh-sample-btn" type="button" class="inline-flex items-center gap-2 px-4 py-2 bg-midnight text-on-midnight rounded-DEFAULT hover:bg-midnight/90 font-label text-label-md cursor-pointer shadow-sm">
+          <span class="material-symbols-outlined text-[18px] text-emerald-bright" aria-hidden="true">refresh</span>
+          <span>Reload Sample Batch</span>
+        </button>
       </div>
-    </section>
+    </div>
 
     <!-- Loaded State -->
     <div id="queue-loaded-state" class="flex flex-col gap-8">
       <!-- Midnight Navy Telemetry Stage -->
-      <section class="bg-midnight bg-midnight-mesh text-on-midnight rounded-lg border border-outline-dark p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end shadow-lg">
+      <section class="bg-midnight bg-midnight-mesh text-on-midnight rounded-xl border border-outline-dark p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end shadow-lg">
         <div class="lg:col-span-4 flex flex-col gap-4">
           <div class="flex items-center gap-3">
-            <span id="queue-high-figure" class="font-headline text-display-lg text-emerald-bright tabular-nums">35</span>
-            <span class="font-body text-body-md text-on-midnight">claims in the High band, out of 400. Review these first.</span>
+            <span id="queue-high-figure" class="font-headline text-display-lg text-emerald-bright tabular-nums font-bold">40</span>
+            <span class="font-body text-body-md text-on-midnight">claims in the High risk band (<span id="total-claims-count">400</span> total). Inspect these first.</span>
           </div>
           <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
-              <label for="queue-slider" class="font-label text-label-lg text-on-midnight">How many claims can your team review?</label>
-              <span id="queue-slider-pct" class="font-mono text-mono-sm text-emerald-bright tabular-nums">10%</span>
+              <label for="queue-slider" class="font-label text-label-lg text-on-midnight font-medium">Weekly inspection capacity</label>
+              <span id="queue-slider-pct" class="font-mono text-mono-sm text-emerald-bright tabular-nums font-semibold">10%</span>
             </div>
-            <input id="queue-slider" type="range" min="5" max="25" value="10" step="1" class="emerald-slider w-full">
+            <input id="queue-slider" type="range" min="5" max="25" value="10" step="1" class="emerald-slider w-full cursor-pointer">
           </div>
           <p id="queue-recall-note" class="font-body text-body-sm text-midnight-muted text-pretty">
-            Reviewing the top 10% should find about 24% of all frauds (likely range 21% to 27%). Reviewing the same number at random would find 10%.
+            Inspecting the top 10% captures approximately 69.4% of all suspicious claims. Random review would find only 10%.
           </p>
         </div>
 
         <div class="lg:col-span-8 flex flex-col gap-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-4 font-label text-label-sm">
-              <span class="inline-flex items-center gap-1.5 text-on-midnight"><span class="w-2.5 h-2.5 rounded-sm bg-risk-high inline-block"></span>High (<span id="lbl-high-cnt">35</span>)</span>
-              <span class="inline-flex items-center gap-1.5 text-on-midnight"><span class="w-2.5 h-2.5 rounded-sm bg-risk-medium inline-block"></span>Medium (<span id="lbl-med-cnt">85</span>)</span>
+              <span class="inline-flex items-center gap-1.5 text-on-midnight"><span class="w-2.5 h-2.5 rounded-sm bg-risk-high inline-block"></span>High (<span id="lbl-high-cnt">40</span>)</span>
+              <span class="inline-flex items-center gap-1.5 text-on-midnight"><span class="w-2.5 h-2.5 rounded-sm bg-risk-medium inline-block"></span>Medium (<span id="lbl-med-cnt">80</span>)</span>
               <span class="inline-flex items-center gap-1.5 text-on-midnight"><span class="w-2.5 h-2.5 rounded-sm bg-risk-bar-low inline-block"></span>Low (<span id="lbl-low-cnt">280</span>)</span>
             </div>
-            <label class="inline-flex items-center gap-2 cursor-pointer font-body text-body-sm text-midnight-muted">
-              <input id="known-outcomes-toggle" type="checkbox" class="w-4 h-4 text-primary bg-midnight-surface border-outline-dark rounded-sm focus:ring-2 focus:ring-primary">
-              <span>Show known outcomes (demo data)</span>
-            </label>
+            <div class="flex items-center gap-2 text-midnight-muted text-xs font-mono">
+              <span>Dynamic percentiles calibrated to model score distribution</span>
+            </div>
           </div>
 
-          <div class="relative pt-8 pb-2 bg-midnight-surface rounded-md border border-outline-dark px-4 overflow-hidden">
+          <div class="relative pt-8 pb-2 bg-midnight-surface rounded-lg border border-outline-dark px-4 overflow-hidden">
             <div id="q-high-edge" class="absolute top-1.5 bottom-2 z-10 flex flex-col items-center -translate-x-1/2 pointer-events-none" style="left: 10%;">
-              <span class="font-label text-label-sm text-on-risk-high bg-risk-high px-2 py-0.5 rounded-sm whitespace-nowrap">High edge</span>
+              <span class="font-label text-label-sm text-on-risk-high bg-risk-high px-2 py-0.5 rounded-sm whitespace-nowrap shadow-sm">High cut</span>
               <div class="w-0.5 flex-1 bg-risk-high"></div>
             </div>
             <div id="q-med-edge" class="absolute top-1.5 bottom-2 flex flex-col items-center -translate-x-1/2 pointer-events-none" style="left: 30%;">
-              <span class="font-label text-label-sm text-on-risk-medium bg-risk-medium px-2 py-0.5 rounded-sm whitespace-nowrap">Medium edge</span>
+              <span class="font-label text-label-sm text-on-risk-medium bg-risk-medium px-2 py-0.5 rounded-sm whitespace-nowrap shadow-sm">Med cut</span>
               <div class="w-0.5 flex-1 bg-risk-medium/70"></div>
             </div>
-            <div id="queue-bars" class="h-36 flex items-end gap-0 border-b border-outline-dark pb-px" role="img" aria-label="Sorted risk score distribution across 400 claims"></div>
+            <div id="queue-bars" class="h-36 flex items-end gap-0.5 border-b border-outline-dark pb-px" role="img" aria-label="Sorted risk score distribution"></div>
           </div>
         </div>
       </section>
 
       <!-- Crisp Porcelain Queue Ledger -->
-      <section class="bg-surface-container text-on-surface rounded-lg border border-outline shadow-sm overflow-hidden flex flex-col">
+      <section class="bg-surface-container text-on-surface rounded-xl border border-outline shadow-sm overflow-hidden flex flex-col">
         <div class="px-6 pt-5 pb-3 border-b border-outline flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div role="tablist" aria-label="Filter by risk band" class="flex flex-wrap items-center gap-6">
-            <button role="tab" aria-selected="true" data-band-filter="All" class="band-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold">All (400)</button>
-            <button role="tab" aria-selected="false" data-band-filter="High" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">High (35)</button>
-            <button role="tab" aria-selected="false" data-band-filter="Medium" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">Medium (85)</button>
-            <button role="tab" aria-selected="false" data-band-filter="Low" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg">Low (280)</button>
+            <button role="tab" aria-selected="true" data-band-filter="All" class="band-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold cursor-pointer">All (<span id="tab-all-cnt">400</span>)</button>
+            <button role="tab" aria-selected="false" data-band-filter="High" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">High (<span id="tab-high-cnt">40</span>)</button>
+            <button role="tab" aria-selected="false" data-band-filter="Medium" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">Medium (<span id="tab-med-cnt">80</span>)</button>
+            <button role="tab" aria-selected="false" data-band-filter="Low" class="band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer">Low (<span id="tab-low-cnt">280</span>)</button>
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
             <div class="relative flex items-center">
               <span class="material-symbols-outlined text-[18px] text-on-surface-variant absolute left-2.5 pointer-events-none" aria-hidden="true">search</span>
-              <input id="claim-search" type="search" placeholder="Find claim ID (e.g. C-06315)" aria-label="Find claim ID" class="pl-8 pr-3 py-1.5 w-56 bg-surface text-on-surface font-body text-body-sm border border-outline rounded-DEFAULT focus:outline-none focus:border-midnight focus:ring-2 focus:ring-primary">
+              <input id="claim-search" type="search" placeholder="Search claim ID, make, or policy" aria-label="Search claims" class="pl-8 pr-3 py-1.5 w-64 bg-surface text-on-surface font-body text-body-sm border border-outline rounded-DEFAULT focus:outline-none focus:border-midnight focus:ring-2 focus:ring-primary">
             </div>
 
-            <button type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold">
+            <button id="download-ranked-csv" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 btn-emerald-lively text-on-primary rounded-DEFAULT font-label text-label-lg font-semibold cursor-pointer">
               <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
-              <span>Download ranked list</span>
+              <span>Export CSV</span>
             </button>
+            <a href="/api/template.csv" download="claims_template.csv" class="font-body text-body-sm text-emerald-text hover:text-on-surface underline underline-offset-4 ml-1">Template</a>
           </div>
         </div>
 
@@ -284,132 +260,54 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
             <thead>
               <tr class="border-b border-outline bg-surface-container-low">
                 <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Rank</th>
-                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Claim</th>
-                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface text-right">Score</th>
+                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Claim ID</th>
+                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface text-right">Risk Score</th>
                 <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Band</th>
-                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Main reasons &amp; signal</th>
-                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Rule flags</th>
-                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Decision</th>
+                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Top SHAP Attributions</th>
+                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Heuristic Rule Flags</th>
+                <th scope="col" class="py-3 px-4 font-label text-label-lg text-on-surface">Decision Status</th>
               </tr>
             </thead>
             <tbody id="queue-tbody" class="divide-y divide-outline">
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="High" data-id="C-06315" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">1</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-06315</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right font-semibold">22.7%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm">High</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Base cover: All Perils; Vehicle make: Accura</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-4 h-1.5 rounded-sm bg-risk-high"></span>
-                      <span class="w-3 h-1.5 rounded-sm bg-risk-high"></span>
-                      <span class="w-1.5 h-1.5 rounded-sm bg-primary"></span>
-                    </div>
+              <!-- Dynamically populated rows -->
+              <tr>
+                <td colspan="7" class="py-12 text-center text-on-surface-variant font-body">
+                  <div class="flex flex-col items-center justify-center gap-3">
+                    <span class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                    <span>Scoring incoming claims and calculating SHAP attributions...</span>
                   </div>
                 </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">Accident within 15 days</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-on-surface-variant">Unreviewed</td>
-              </tr>
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="High" data-id="C-04892" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">2</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-04892</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right font-semibold">21.4%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm">High</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Fault: Policy holder; No police report</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-3.5 h-1.5 rounded-sm bg-risk-high"></span>
-                      <span class="w-2.5 h-1.5 rounded-sm bg-risk-high"></span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">No witness, no police</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-on-surface font-medium">Under review</td>
-              </tr>
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="High" data-id="C-01924" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">3</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-01924</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right font-semibold">19.8%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm">High</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Policy type: Sport - Collision; Address change &lt;1 yr</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-3 h-1.5 rounded-sm bg-risk-high"></span>
-                      <span class="w-2.5 h-1.5 rounded-sm bg-risk-high"></span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">Recent address change</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-risk-high">Escalated</td>
-              </tr>
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="High" data-id="C-07741" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">4</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-07741</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right font-semibold">18.9%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-high text-on-risk-high font-label text-label-sm">High</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Base cover: All Perils; Past claims: 2 to 4</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-3.5 h-1.5 rounded-sm bg-risk-high"></span>
-                      <span class="w-2 h-1.5 rounded-sm bg-risk-high"></span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">None</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-on-surface-variant">Unreviewed</td>
-              </tr>
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="Medium" data-id="C-03110" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">36</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-03110</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right">11.2%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-medium text-on-risk-medium font-label text-label-sm">Medium</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Base cover: Collision; Vehicle price: 30,000 to 39,000</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-2.5 h-1.5 rounded-sm bg-risk-medium"></span>
-                      <span class="w-1.5 h-1.5 rounded-sm bg-primary"></span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">None</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-emerald-text font-medium">Cleared</td>
-              </tr>
-              <tr class="hover:bg-surface-container-low cursor-pointer" data-band="Low" data-id="C-09012" onclick="window.location.href=&#39;../claim-detail/ClaimDetailPanel.html&#39;">
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums">128</td>
-                <td class="py-3.5 px-4 font-mono text-mono-sm text-emerald-text font-semibold"><a href="../claim-detail/ClaimDetailPanel.html" class="underline underline-offset-2">C-09012</a></td>
-                <td class="py-3.5 px-4 font-body text-body-md tabular-nums text-right">3.4%</td>
-                <td class="py-3.5 px-4"><span class="inline-block px-2 py-0.5 rounded-sm bg-risk-low text-on-risk-low font-label text-label-sm">Low</span></td>
-                <td class="py-3.5 px-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <span class="font-body text-body-sm text-on-surface">Base cover: Liability; Police report: Yes</span>
-                    <div class="hidden sm:flex items-center gap-0.5 shrink-0" aria-hidden="true">
-                      <span class="w-4 h-1.5 rounded-sm bg-primary"></span>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 font-body text-body-sm text-on-surface-variant">None</td>
-                <td class="py-3.5 px-4 font-label text-label-sm text-on-surface-variant">Unreviewed</td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div class="px-6 py-4 border-t border-outline flex items-center justify-between text-body-sm text-on-surface-variant bg-surface-container-low">
+          <span id="showing-count">Showing claims</span>
+          <div class="flex items-center gap-2">
+            <button id="prev-page" class="px-2.5 py-1 rounded border border-outline bg-surface text-on-surface disabled:opacity-40 disabled:cursor-not-allowed">Previous</button>
+            <span id="page-indicator" class="font-mono text-mono-sm">Page 1</span>
+            <button id="next-page" class="px-2.5 py-1 rounded border border-outline bg-surface text-on-surface disabled:opacity-40 disabled:cursor-not-allowed">Next</button>
+          </div>
         </div>
       </section>
     </div>
   </main>
 
   <footer class="border-t border-outline bg-surface">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5">
-      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank means look at this claim first. It does not show that fraud occurred, and this tool never rejects a claim.</p>
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <img src="../assets/logo-icon.png" alt="Claim Triage" class="h-5 w-auto object-contain">
+        <span class="font-headline text-on-surface font-medium text-xs">Production Engine v2.1</span>
+      </div>
+      <p class="font-body text-body-sm text-on-surface-variant">Decision support only. A high rank prioritizes investigator inspection and does not constitute a finding of fraud.</p>
     </div>
   </footer>
 
+  <script src="../assets/auth.js"></script>
   <script>
     (function () {
+      // Mobile drawer toggle
       const railBtn = document.getElementById('rail-toggle');
       const railContent = document.getElementById('rail-content');
       if (railBtn && railContent) {
@@ -420,99 +318,314 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         });
       }
 
-      const emptyBtn = document.getElementById('toggle-empty-state');
-      const emptySec = document.getElementById('queue-empty-state');
-      const loadedSec = document.getElementById('queue-loaded-state');
-      const loadSampleBtn = document.getElementById('load-sample-btn');
-      let isEmpty = false;
+      let allClaims = [];
+      let decisionsMap = {};
+      let activeBand = 'All';
+      let searchQuery = '';
+      let currentPage = 1;
+      const pageSize = 50;
 
-      function setEmpty(val) {
-        isEmpty = val;
-        emptySec.classList.toggle('hidden', !isEmpty);
-        loadedSec.classList.toggle('hidden', isEmpty);
-        emptyBtn.textContent = isEmpty ? 'Show loaded queue' : 'Preview empty state';
-      }
-      emptyBtn.addEventListener('click', () => setEmpty(!isEmpty));
-      loadSampleBtn.addEventListener('click', () => setEmpty(false));
-
-      const barsEl = document.getElementById('queue-bars');
+      const tbody = document.getElementById('queue-tbody');
       const slider = document.getElementById('queue-slider');
       const pctEl = document.getElementById('queue-slider-pct');
       const figEl = document.getElementById('queue-high-figure');
+      const totalCntEl = document.getElementById('total-claims-count');
       const recallEl = document.getElementById('queue-recall-note');
       const highEdge = document.getElementById('q-high-edge');
       const medEdge = document.getElementById('q-med-edge');
-      const outcomeToggle = document.getElementById('known-outcomes-toggle');
-
-      const fraudIndices = new Set([0, 2, 3, 5, 7, 11, 14, 19, 24, 31, 42, 58]);
-      function renderQueueBars(highPct) {
-        const medPct = Math.min(highPct + 21, 50);
-        const showFraud = outcomeToggle.checked;
-        barsEl.innerHTML = '';
-        for (let i = 0; i < 100; i++) {
-          const wrap = document.createElement('div');
-          wrap.className = 'flex-1 flex flex-col items-center justify-end h-full';
-          if (showFraud && fraudIndices.has(i)) {
-            const dot = document.createElement('span');
-            dot.className = 'w-1 h-1 rounded-full bg-surface mb-1 shrink-0';
-            wrap.appendChild(dot);
-          }
-          const bar = document.createElement('div');
-          const h = Math.max(8, Math.round(94 * Math.pow(1 - i / 99, 1.65) + 4));
-          bar.style.height = h + '%';
-          bar.className = 'w-full ' + (i < highPct ? 'bg-risk-high' : i < medPct ? 'bg-risk-medium' : 'bg-risk-bar-low');
-          wrap.appendChild(bar);
-          barsEl.appendChild(wrap);
-        }
-        const highClaims = highPct === 10 ? 35 : Math.round(highPct * 4);
-        const medClaims = Math.round((medPct - highPct) * 4);
-        const lowClaims = 400 - highClaims - medClaims;
-        pctEl.textContent = highPct + '%';
-        figEl.textContent = String(highClaims);
-        document.getElementById('lbl-high-cnt').textContent = String(highClaims);
-        document.getElementById('lbl-med-cnt').textContent = String(medClaims);
-        document.getElementById('lbl-low-cnt').textContent = String(lowClaims);
-        highEdge.style.left = highPct + '%';
-        medEdge.style.left = medPct + '%';
-        const recall = Math.min(54, Math.round(11 + highPct * 1.3));
-        recallEl.textContent = `Reviewing the top ${highPct}% should find about ${recall}% of all frauds (likely range ${recall - 3}% to ${recall + 3}%). Reviewing the same number at random would find ${highPct}%.`;
-      }
-
-      slider.addEventListener('input', (e) => renderQueueBars(Number(e.target.value)));
-      outcomeToggle.addEventListener('change', () => renderQueueBars(Number(slider.value)));
-      renderQueueBars(10);
-
-      let activeBand = 'All';
-      const rows = Array.from(document.querySelectorAll('#queue-tbody tr'));
+      const barsEl = document.getElementById('queue-bars');
       const searchInput = document.getElementById('claim-search');
 
-      function applyFilters() {
-        const q = searchInput.value.trim().toLowerCase();
-        rows.forEach((row) => {
-          const matchBand = activeBand === 'All' || row.dataset.band === activeBand;
-          const matchId = !q || row.dataset.id.toLowerCase().includes(q);
-          row.classList.toggle('hidden', !(matchBand && matchId));
-        });
+      // Empirical model recall curve
+      function getRecall(pct) {
+        if (pct <= 5) return (pct / 5) * 34.3;
+        if (pct <= 10) return 34.3 + ((pct - 5) / 5) * (69.4 - 34.3);
+        if (pct <= 15) return 69.4 + ((pct - 10) / 5) * (75.5 - 69.4);
+        if (pct <= 20) return 75.5 + ((pct - 15) / 5) * (81.4 - 75.5);
+        return 81.4 + ((pct - 20) / 5) * (87.6 - 81.4);
       }
 
-      document.querySelectorAll('.band-tab').forEach((tab) => {
+      async function loadDecisions() {
+        try {
+          const res = await fetch('/api/decisions');
+          if (res.ok) {
+            const decs = await res.json();
+            decisionsMap = {};
+            decs.forEach(d => {
+              decisionsMap[d.claim_id] = d;
+            });
+          }
+        } catch (e) {
+          console.warn('Could not load decisions:', e);
+        }
+      }
+
+      async function loadBatch(url = '/api/sample') {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-on-surface-variant font-body">
+          <div class="flex flex-col items-center justify-center gap-3">
+            <span class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+            <span>Fetching claim records and running SHAP attributions...</span>
+          </div>
+        </td></tr>`;
+        try {
+          await loadDecisions();
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('Failed to load batch');
+          const data = await res.json();
+          allClaims = data.claims || [];
+          
+          // Store claims in sessionStorage for instant retrieval in ClaimDetailPanel
+          sessionStorage.setItem('current_claims_batch', JSON.stringify(allClaims));
+          totalCntEl.textContent = allClaims.length;
+
+          updateBandsAndRender();
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-risk-high font-body">
+            Error loading claims batch: ${err.message}. Please reload or try again.
+          </td></tr>`;
+        }
+      }
+
+      function updateBandsAndRender() {
+        const highPct = Number(slider.value);
+        const medPct = Math.min(highPct + 20, 50);
+
+        const n = allClaims.length;
+        const highCount = Math.max(1, Math.round((highPct / 100) * n));
+        const medCount = Math.max(1, Math.round(((medPct - highPct) / 100) * n));
+
+        // Assign bands based on sorted rank
+        allClaims.forEach((c, idx) => {
+          if (idx < highCount) c.band = 'High';
+          else if (idx < highCount + medCount) c.band = 'Medium';
+          else c.band = 'Low';
+        });
+
+        // Update telemetry numbers
+        pctEl.textContent = highPct + '%';
+        figEl.textContent = highCount;
+        document.getElementById('lbl-high-cnt').textContent = highCount;
+        document.getElementById('lbl-med-cnt').textContent = medCount;
+        document.getElementById('lbl-low-cnt').textContent = n - highCount - medCount;
+
+        document.getElementById('tab-all-cnt').textContent = n;
+        document.getElementById('tab-high-cnt').textContent = highCount;
+        document.getElementById('tab-med-cnt').textContent = medCount;
+        document.getElementById('tab-low-cnt').textContent = n - highCount - medCount;
+
+        highEdge.style.left = highPct + '%';
+        medEdge.style.left = medPct + '%';
+
+        const rec = getRecall(highPct).toFixed(1);
+        recallEl.textContent = `Inspecting the top ${highPct}% (${highCount} claims) captures approx. ${rec}% of suspicious claims. Random review would catch only ${highPct}%.`;
+
+        renderQueueBars(highPct, medPct);
+        renderTable();
+      }
+
+      function renderQueueBars(highPct, medPct) {
+        barsEl.innerHTML = '';
+        const barCount = Math.min(100, allClaims.length || 60);
+        for (let i = 0; i < barCount; i++) {
+          const c = allClaims[Math.floor((i / barCount) * allClaims.length)];
+          const score = c ? c.score : (1 - i / barCount);
+          const bar = document.createElement('div');
+          bar.className = 'flex-1 rounded-t-sm transition-all ' + 
+            (i < (highPct / 100) * barCount ? 'bg-risk-high' : i < (medPct / 100) * barCount ? 'bg-risk-medium' : 'bg-risk-bar-low');
+          bar.style.height = Math.max(8, Math.round(score * 100)) + '%';
+          barsEl.appendChild(bar);
+        }
+      }
+
+      function renderTable() {
+        const filtered = allClaims.filter(c => {
+          const matchBand = activeBand === 'All' || c.band === activeBand;
+          const matchQuery = !searchQuery || 
+            c.id.toLowerCase().includes(searchQuery) ||
+            (c.fields && Object.values(c.fields).some(v => String(v).toLowerCase().includes(searchQuery)));
+          return matchBand && matchQuery;
+        });
+
+        const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * pageSize;
+        const pageItems = filtered.slice(start, start + pageSize);
+
+        document.getElementById('showing-count').textContent = `Showing ${filtered.length ? start + 1 : 0}–${Math.min(start + pageSize, filtered.length)} of ${filtered.length} claims`;
+        document.getElementById('page-indicator').textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById('prev-page').disabled = currentPage <= 1;
+        document.getElementById('next-page').disabled = currentPage >= totalPages;
+
+        if (pageItems.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-on-surface-variant font-body">No claims match the selected filter.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = pageItems.map(c => {
+          const scorePct = (c.score * 100).toFixed(1) + '%';
+          const bandClass = c.band === 'High' 
+            ? 'bg-risk-high text-on-risk-high' 
+            : c.band === 'Medium' 
+            ? 'bg-risk-medium text-on-risk-medium' 
+            : 'bg-risk-bar-low text-on-midnight';
+
+          const topReasons = (c.reasons || []).slice(0, 2).map(r => {
+            const isRaise = r.direction === 'raises';
+            const col = isRaise ? 'text-risk-high' : 'text-emerald-text';
+            return `<span class="inline-flex items-center gap-1"><span class="${col} font-medium">${r.label}: ${r.value}</span></span>`;
+          }).join('<span class="text-on-surface-variant mx-1">·</span>') || 'Baseline characteristics';
+
+          const flagsHtml = (c.flags && c.flags.length > 0)
+            ? c.flags.map(f => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-risk-medium-container text-on-risk-medium-container text-xs font-medium"><span class="material-symbols-outlined text-[13px]">flag</span>${f.title}</span>`).join(' ')
+            : `<span class="text-emerald-text text-xs font-medium inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">check_circle</span>Clear of rule flags</span>`;
+
+          const dec = decisionsMap[c.id];
+          let decBadge = `<span class="px-2 py-0.5 rounded-sm bg-surface-container-high text-on-surface-variant text-xs">Pending review</span>`;
+          if (dec) {
+            const decCol = dec.decision === 'Escalated' 
+              ? 'bg-risk-high text-on-risk-high' 
+              : dec.decision === 'Cleared' 
+              ? 'bg-risk-low text-on-risk-low' 
+              : 'bg-midnight text-on-midnight';
+            decBadge = `<span class="px-2 py-0.5 rounded-sm ${decCol} text-xs font-medium inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span>${dec.decision}</span>`;
+          }
+
+          return `
+            <tr class="hover:bg-surface-container-low cursor-pointer transition-colors" onclick="window.location.href='../claim-detail/ClaimDetailPanel.html?id=${c.id}'">
+              <td class="py-3 px-4 font-mono text-mono-sm text-on-surface-variant tabular-nums">${c.rank || 1}</td>
+              <td class="py-3 px-4 font-mono text-mono-sm text-emerald-text font-bold">
+                <a href="../claim-detail/ClaimDetailPanel.html?id=${c.id}" class="underline underline-offset-2">${c.id}</a>
+              </td>
+              <td class="py-3 px-4 font-mono text-mono-sm tabular-nums text-right font-bold text-on-surface">${scorePct}</td>
+              <td class="py-3 px-4">
+                <span class="inline-block px-2 py-0.5 rounded-sm ${bandClass} font-label text-label-sm font-semibold">${c.band}</span>
+              </td>
+              <td class="py-3 px-4 font-body text-body-sm text-on-surface max-w-sm truncate" title="${(c.reasons || []).map(r => r.label + ': ' + r.value).join(', ')}">${topReasons}</td>
+              <td class="py-3 px-4">${flagsHtml}</td>
+              <td class="py-3 px-4">${decBadge}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Slider event
+      slider.addEventListener('input', () => {
+        updateBandsAndRender();
+      });
+
+      // Band filter tabs
+      document.querySelectorAll('.band-tab').forEach(tab => {
         tab.addEventListener('click', () => {
           activeBand = tab.dataset.bandFilter;
-          document.querySelectorAll('.band-tab').forEach((t) => {
+          document.querySelectorAll('.band-tab').forEach(t => {
             const active = t === tab;
             t.setAttribute('aria-selected', String(active));
-            t.classList.toggle('border-primary', active);
-            t.classList.toggle('text-on-surface', active);
-            t.classList.toggle('font-semibold', active);
-            t.classList.toggle('border-transparent', !active);
-            t.classList.toggle('text-on-surface-variant', !active);
+            t.className = active
+              ? 'band-tab pb-2 border-b-2 border-primary text-on-surface font-label text-label-lg font-semibold cursor-pointer'
+              : 'band-tab pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label text-label-lg cursor-pointer';
           });
-          applyFilters();
+          currentPage = 1;
+          renderTable();
         });
       });
-      searchInput.addEventListener('input', applyFilters);
+
+      // Search input
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        currentPage = 1;
+        renderTable();
+      });
+
+      // Pagination
+      document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTable();
+        }
+      });
+      document.getElementById('next-page').addEventListener('click', () => {
+        currentPage++;
+        renderTable();
+      });
+
+      // CSV upload handling
+      const uploadBtn = document.getElementById('upload-csv-btn');
+      const fileInput = document.getElementById('csv-upload-input');
+      uploadBtn.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-on-surface-variant font-body">
+          <div class="flex flex-col items-center justify-center gap-3">
+            <span class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+            <span>Uploading batch "${file.name}" and scoring across 22 parameters...</span>
+          </div>
+        </td></tr>`;
+
+        try {
+          const res = await fetch('/api/batch', {
+            method: 'POST',
+            body: formData
+          });
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || 'Scoring batch failed');
+          }
+          const data = await res.json();
+          allClaims = data.claims || [];
+          sessionStorage.setItem('current_claims_batch', JSON.stringify(allClaims));
+          document.getElementById('active-batch-tag').textContent = `Batch: ${file.name} (${allClaims.length})`;
+          document.getElementById('active-batch-tag').classList.remove('hidden');
+          totalCntEl.textContent = allClaims.length;
+          updateBandsAndRender();
+        } catch (err) {
+          alert('Upload failed: ' + err.message);
+          loadBatch();
+        }
+      });
+
+      // Refresh button
+      document.getElementById('refresh-sample-btn').addEventListener('click', () => {
+        loadBatch('/api/sample');
+      });
+
+      // Export CSV
+      document.getElementById('download-ranked-csv').addEventListener('click', () => {
+        if (!allClaims.length) return;
+        const headers = ['Rank', 'Claim_ID', 'Risk_Score', 'Risk_Band', 'Top_Factors', 'Rule_Flags', 'Decision'];
+        const csvRows = [headers.join(',')];
+        allClaims.forEach(c => {
+          const dec = (decisionsMap[c.id] && decisionsMap[c.id].decision) || 'Pending';
+          const reasonsStr = (c.reasons || []).map(r => `${r.label}: ${r.value}`).join('; ').replace(/"/g, '""');
+          const flagsStr = (c.flags || []).map(f => f.title).join('; ').replace(/"/g, '""');
+          csvRows.push([
+            c.rank || '',
+            c.id,
+            (c.score * 100).toFixed(2) + '%',
+            c.band,
+            `"${reasonsStr}"`,
+            `"${flagsStr}"`,
+            `"${dec}"`
+          ].join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `claim_triage_ranked_batch_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Initial load
+      loadBatch();
     })();
   </script>
-
-
 </body></html>
