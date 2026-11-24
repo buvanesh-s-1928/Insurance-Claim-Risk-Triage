@@ -31,7 +31,15 @@ export async function scoreSingleClaim(claimData) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || 'Scoring failed');
+    let msg = err.message || err.error;
+    if (err.problems) {
+      if (err.problems.missing_columns?.length) {
+        msg = `Missing required columns: ${err.problems.missing_columns.join(', ')}`;
+      } else if (err.problems.skipped?.length) {
+        msg = err.problems.skipped.map((s) => s.reason).join('; ');
+      }
+    }
+    throw new Error(msg || 'Scoring failed');
   }
   return res.json();
 }

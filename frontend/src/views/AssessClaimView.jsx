@@ -49,7 +49,9 @@ export default function AssessClaimView() {
 
   // Real-time debounced scoring on form changes
   const handleFieldChange = (fieldName, value) => {
-    const updated = { ...formData, [fieldName]: value };
+    const isNum = ['Deductible', 'WeekOfMonth', 'WeekOfMonthClaimed'].includes(fieldName);
+    const parsedVal = isNum && value !== '' ? Number(value) : value;
+    const updated = { ...formData, [fieldName]: parsedVal };
     setFormData(updated);
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -69,16 +71,16 @@ export default function AssessClaimView() {
     }, 220);
   };
 
-  // High-scoring preset (known severe risk profile)
+  // High-scoring preset (known severe risk profile with early accident & address change)
   const handleFillHighRisk = () => {
+    const baseDefaults = schemaMeta?.defaults || {};
     const highRiskProfile = {
-      ...formData,
+      ...baseDefaults,
       "PolicyType": "Sedan - Liability",
       "VehicleCategory": "Sedan",
       "Make": "Honda",
       "VehiclePrice": "more than 69,000",
       "Deductible": 400,
-      "DriverRating": 1,
       "Days:Policy-Accident": "1 to 7",
       "Days:Policy-Claim": "8 to 15",
       "PastNumberOfClaims": "none",
@@ -86,18 +88,24 @@ export default function AssessClaimView() {
       "PoliceReportFiled": "No",
       "WitnessPresent": "No",
       "AgentType": "External",
-      "NumberOfSuppliments": "none",
       "AddressChange-Claim": "under 6 months",
       "NumberOfCars": "1 vehicle",
-      "Year": 1994,
       "BasePolicy": "Liability",
-      "Fault": "Policy Holder",
       "AccidentArea": "Urban",
+      "Month": "Jan",
+      "WeekOfMonth": 1,
+      "DayOfWeek": "Monday",
+      "MonthClaimed": "Jan",
+      "WeekOfMonthClaimed": 2,
+      "DayOfWeekClaimed": "Tuesday",
     };
     setFormData(highRiskProfile);
     setIsScoring(true);
     scoreSingleClaim(highRiskProfile)
-      .then(res => setScoreResult(res.claim))
+      .then(res => {
+        setScoreResult(res.claim);
+        setScoringError('');
+      })
       .catch(err => setScoringError(err.message))
       .finally(() => setIsScoring(false));
   };
@@ -107,7 +115,10 @@ export default function AssessClaimView() {
       setFormData(schemaMeta.defaults);
       setIsScoring(true);
       scoreSingleClaim(schemaMeta.defaults)
-        .then(res => setScoreResult(res.claim))
+        .then(res => {
+          setScoreResult(res.claim);
+          setScoringError('');
+        })
         .catch(err => setScoringError(err.message))
         .finally(() => setIsScoring(false));
     }
@@ -133,7 +144,7 @@ export default function AssessClaimView() {
   const getFieldOptions = (name) => {
     if (!schemaMeta?.schema) return [];
     const item = schemaMeta.schema.find(f => f.name === name);
-    return item?.categories || [];
+    return item?.options || item?.categories || [];
   };
 
   return (
@@ -212,8 +223,8 @@ export default function AssessClaimView() {
               />
               <ClaySelect
                 label="Deductible ($)"
-                value={formData['Deductible'] || 400}
-                options={[300, 400, 500, 700]}
+                value={formData['Deductible'] ?? 400}
+                options={getFieldOptions('Deductible').length ? getFieldOptions('Deductible') : [300, 400, 500, 700]}
                 onChange={(e) => handleFieldChange('Deductible', Number(e.target.value))}
               />
               <ClaySelect
@@ -221,6 +232,18 @@ export default function AssessClaimView() {
                 value={formData['PastNumberOfClaims'] || ''}
                 options={getFieldOptions('PastNumberOfClaims')}
                 onChange={(e) => handleFieldChange('PastNumberOfClaims', e.target.value)}
+              />
+              <ClaySelect
+                label="Cars on Policy"
+                value={formData['NumberOfCars'] || ''}
+                options={getFieldOptions('NumberOfCars')}
+                onChange={(e) => handleFieldChange('NumberOfCars', e.target.value)}
+              />
+              <ClaySelect
+                label="Agent Type"
+                value={formData['AgentType'] || ''}
+                options={getFieldOptions('AgentType')}
+                onChange={(e) => handleFieldChange('AgentType', e.target.value)}
               />
             </div>
           </GlassCard>
@@ -235,7 +258,13 @@ export default function AssessClaimView() {
               <span className="text-[11px] text-slate-400 font-mono">Insured Asset Profile</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <ClaySelect
+                label="Vehicle Make"
+                value={formData['Make'] || ''}
+                options={getFieldOptions('Make')}
+                onChange={(e) => handleFieldChange('Make', e.target.value)}
+              />
               <ClaySelect
                 label="Vehicle Category"
                 value={formData['VehicleCategory'] || ''}
@@ -273,6 +302,24 @@ export default function AssessClaimView() {
                 value={formData['AccidentArea'] || ''}
                 options={getFieldOptions('AccidentArea')}
                 onChange={(e) => handleFieldChange('AccidentArea', e.target.value)}
+              />
+              <ClaySelect
+                label="Accident Month"
+                value={formData['Month'] || ''}
+                options={getFieldOptions('Month')}
+                onChange={(e) => handleFieldChange('Month', e.target.value)}
+              />
+              <ClaySelect
+                label="Accident Week"
+                value={formData['WeekOfMonth'] ?? ''}
+                options={getFieldOptions('WeekOfMonth')}
+                onChange={(e) => handleFieldChange('WeekOfMonth', Number(e.target.value))}
+              />
+              <ClaySelect
+                label="Accident Day"
+                value={formData['DayOfWeek'] || ''}
+                options={getFieldOptions('DayOfWeek')}
+                onChange={(e) => handleFieldChange('DayOfWeek', e.target.value)}
               />
               <ClaySelect
                 label="Policy to Accident"
@@ -317,6 +364,24 @@ export default function AssessClaimView() {
                 value={formData['AddressChange-Claim'] || ''}
                 options={getFieldOptions('AddressChange-Claim')}
                 onChange={(e) => handleFieldChange('AddressChange-Claim', e.target.value)}
+              />
+              <ClaySelect
+                label="Reported Month"
+                value={formData['MonthClaimed'] || ''}
+                options={getFieldOptions('MonthClaimed')}
+                onChange={(e) => handleFieldChange('MonthClaimed', e.target.value)}
+              />
+              <ClaySelect
+                label="Reported Week"
+                value={formData['WeekOfMonthClaimed'] ?? ''}
+                options={getFieldOptions('WeekOfMonthClaimed')}
+                onChange={(e) => handleFieldChange('WeekOfMonthClaimed', Number(e.target.value))}
+              />
+              <ClaySelect
+                label="Reported Day"
+                value={formData['DayOfWeekClaimed'] || ''}
+                options={getFieldOptions('DayOfWeekClaimed')}
+                onChange={(e) => handleFieldChange('DayOfWeekClaimed', e.target.value)}
               />
             </div>
           </GlassCard>
