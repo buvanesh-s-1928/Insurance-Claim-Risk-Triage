@@ -1,6 +1,7 @@
 // Claim Triage - Enterprise Authentication & Session Guard
 (function () {
   const STORAGE_KEY = 'claim_triage_investigator';
+  const TOKEN_KEY = 'claim_triage_token';
   const RETURN_KEY = 'claim_triage_return_url';
 
   function getActiveUser() {
@@ -18,12 +19,22 @@
     return null;
   }
 
-  function setActiveUser(user) {
+  function getSessionToken() {
+    try {
+      return localStorage.getItem(TOKEN_KEY) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setActiveUser(user, token) {
     try {
       if (user) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+        if (token) localStorage.setItem(TOKEN_KEY, token);
       } else {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(TOKEN_KEY);
       }
       syncUI();
     } catch (e) {
@@ -33,6 +44,89 @@
 
   function isAuthenticated() {
     return !!getActiveUser();
+  }
+
+  async function register(name, email, password) {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const msg = data.message || data.detail || 'Failed to create account.';
+      throw new Error(msg);
+    }
+    setActiveUser(data.user, data.token);
+    return data.user;
+  }
+
+  async function login(email, password) {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const msg = data.message || data.detail || 'Invalid email or password.';
+      throw new Error(msg);
+    }
+    setActiveUser(data.user, data.token);
+    return data.user;
+  }
+
+  async function loginDemo() {
+    const res = await fetch('/api/auth/demo-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      // Fallback local mock if backend offline
+      const mock = {
+        name: 'Elena Rostova',
+        email: 'elena.rostova@claimtriage.internal',
+        role: 'Lead Fraud Strategist',
+        hasCompletedTour: true
+      };
+      setActiveUser(mock, 'demo-token');
+      return mock;
+    }
+    setActiveUser(data.user, data.token);
+    return data.user;
+  }
+
+  async function completeTour() {
+    const user = getActiveUser();
+    if (user) {
+      user.hasCompletedTour = true;
+      setActiveUser(user, getSessionToken());
+      try {
+        await fetch('/api/auth/complete-tour', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user.email })
+        });
+      } catch (e) {
+        console.warn('Tour completion not synced to server:', e);
+      }
+    }
+  }
+
+  async function logout() {
+    const token = getSessionToken();
+    try {
+      if (token) {
+        await fetch('/api/auth/logout?token=' + encodeURIComponent(token), { method: 'POST' });
+      }
+    } catch (e) {}
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(RETURN_KEY);
+    } catch (e) {}
+    window.location.href = '../auth-account/CreateAccountLogin.html';
   }
 
   function requireAuth(options = { requireTour: true }) {
@@ -59,22 +153,6 @@
     return true;
   }
 
-  function completeTour() {
-    const user = getActiveUser();
-    if (user) {
-      user.hasCompletedTour = true;
-      setActiveUser(user);
-    }
-  }
-
-  function logout() {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      sessionStorage.removeItem(RETURN_KEY);
-    } catch (e) {}
-    window.location.href = '../auth-account/CreateAccountLogin.html';
-  }
-
   function syncUI() {
     const user = getActiveUser();
     if (!user) return;
@@ -94,8 +172,12 @@
 
   window.ClaimTriageAuth = {
     getUser: getActiveUser,
+    getToken: getSessionToken,
     setUser: setActiveUser,
     isAuthenticated: isAuthenticated,
+    register: register,
+    login: login,
+    loginDemo: loginDemo,
     requireAuth: requireAuth,
     completeTour: completeTour,
     logout: logout,

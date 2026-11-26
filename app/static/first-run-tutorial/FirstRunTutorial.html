@@ -315,8 +315,9 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           updateStep(currentStep + 1);
         } else {
           // Mandatory tour is complete!
-          ClaimTriageAuth.completeTour();
-          window.location.href = '../claims-queue/ClaimsQueue.html';
+          Promise.resolve(ClaimTriageAuth.completeTour()).finally(() => {
+            window.location.href = '../claims-queue/ClaimsQueue.html';
+          });
         }
       });
 

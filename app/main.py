@@ -5,6 +5,10 @@ Run from the project root:  python run.py   (or: uvicorn app.main:app)
 import io
 import json
 import sqlite3
+import hashlib
+import hmac
+import secrets
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -57,10 +61,76 @@ def db():
     con = sqlite3.connect(DB_PATH)
     con.execute("""CREATE TABLE IF NOT EXISTS decisions (
         claim_id TEXT PRIMARY KEY, decision TEXT NOT NULL, note TEXT, score REAL, updated TEXT NOT NULL)""")
+    con.execute("""CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'Fraud Risk Specialist',
+        has_completed_tour INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        last_login TEXT)""")
+    con.execute("""CREATE TABLE IF NOT EXISTS user_sessions (
+        token TEXT PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE)""")
     return con
 
 
-app = FastAPI(title="Claim risk triage", docs_url="/api/docs", redoc_url=None, openapi_url="/api/openapi.json")
+def hash_password(password: str, salt: str = None) -> tuple[str, str]:
+    if not salt:
+        salt = secrets.token_hex(16)
+    pwd_hash = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt.encode("utf-8"),
+        100_000
+    ).hex()
+    return pwd_hash, salt
+
+
+def verify_password(password: str, stored_hash: str, salt: str) -> bool:
+    computed_hash, _ = hash_password(password, salt)
+    return hmac.compare_digest(computed_hash, stored_hash)
+
+
+def seed_demo_user():
+    try:
+        with db() as con:
+            cur = con.cursor()
+            cur.execute("SELECT id FROM users WHERE email = ?", ("elena.rostova@claimtriage.internal",))
+            if not cur.fetchone():
+                pwd_hash, salt = hash_password("LeadAdjuster2026!")
+                cur.execute("""
+                    INSERT INTO users (email, name, password_hash, salt, role, has_completed_tour, created_at)
+                    VALUES (?, ?, ?, ?, ?, 1, ?)
+                """, (
+                    "elena.rostova@claimtriage.internal",
+                    "Elena Rostova",
+                    pwd_hash,
+                    salt,
+                    "Lead Fraud Strategist",
+                    datetime.now(timezone.utc).isoformat()
+                ))
+    except Exception as e:
+        print("Warning: unable to seed demo user:", e)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    seed_demo_user()
+    yield
+
+
+app = FastAPI(
+    title="Claim risk triage",
+    docs_url="/api/docs",
+    redoc_url=None,
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan
+)
 
 
 def top_share(scores):
@@ -330,6 +400,22 @@ class Decision(BaseModel):
     score: float | None = None
 
 
+class RegisterRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str = "Fraud Risk Specialist"
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class CompleteTourRequest(BaseModel):
+    email: str | None = None
+
+
 DECISIONS = ("Under review", "Cleared", "Escalated")
 
 
@@ -365,6 +451,160 @@ def decisions_csv():
     df = pd.DataFrame(decisions(), columns=["claim_id", "decision", "note", "score", "updated"])
     return PlainTextResponse(df.to_csv(index=False), media_type="text/csv",
                              headers={"Content-Disposition": "attachment; filename=decisions.csv"})
+
+
+@app.post("/api/auth/register")
+def register_user(req: RegisterRequest):
+    name = req.name.strip()
+    email = req.email.strip().lower()
+    password = req.password
+
+    if len(name) < 2:
+        raise HTTPException(400, {"message": "Please enter your full name."})
+    if "@" not in email or "." not in email:
+        raise HTTPException(400, {"message": "Please enter a valid work email address."})
+    if len(password) < 6:
+        raise HTTPException(400, {"message": "Password must be at least 6 characters long."})
+
+    with db() as con:
+        cur = con.cursor()
+        cur.execute("SELECT id FROM users WHERE email = ?", (email,))
+        if cur.fetchone():
+            raise HTTPException(400, {"message": "An account with this email already exists. Please log in."})
+        pwd_hash, salt = hash_password(password)
+        now = datetime.now(timezone.utc).isoformat()
+        cur.execute("""
+            INSERT INTO users (email, name, password_hash, salt, role, has_completed_tour, created_at, last_login)
+            VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+        """, (email, name, pwd_hash, salt, req.role, now, now))
+        user_id = cur.lastrowid
+        token = secrets.token_hex(32)
+        cur.execute("INSERT INTO user_sessions (token, user_id, created_at) VALUES (?, ?, ?)", (token, user_id, now))
+
+    return {
+        "ok": True,
+        "token": token,
+        "user": {
+            "id": user_id,
+            "name": name,
+            "email": email,
+            "role": req.role,
+            "hasCompletedTour": False,
+        }
+    }
+
+
+@app.post("/api/auth/login")
+def login_user(req: LoginRequest):
+    email = req.email.strip().lower()
+    password = req.password
+
+    if not email or not password:
+        raise HTTPException(400, {"message": "Email and password are required."})
+
+    with db() as con:
+        cur = con.cursor()
+        cur.execute("SELECT id, name, email, password_hash, salt, role, has_completed_tour FROM users WHERE email = ?", (email,))
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(401, {"message": "Invalid email or password."})
+        user_id, name, user_email, stored_hash, salt, role, has_completed_tour = row
+        if not verify_password(password, stored_hash, salt):
+            raise HTTPException(401, {"message": "Invalid email or password."})
+
+        token = secrets.token_hex(32)
+        now = datetime.now(timezone.utc).isoformat()
+        cur.execute("UPDATE users SET last_login = ? WHERE id = ?", (now, user_id))
+        cur.execute("INSERT INTO user_sessions (token, user_id, created_at) VALUES (?, ?, ?)", (token, user_id, now))
+
+    return {
+        "ok": True,
+        "token": token,
+        "user": {
+            "id": user_id,
+            "name": name,
+            "email": user_email,
+            "role": role,
+            "hasCompletedTour": bool(has_completed_tour),
+        }
+    }
+
+
+@app.post("/api/auth/demo-login")
+def demo_login():
+    seed_demo_user()
+    with db() as con:
+        cur = con.cursor()
+        cur.execute("SELECT id, name, email, role, has_completed_tour FROM users WHERE email = ?", ("elena.rostova@claimtriage.internal",))
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(500, {"message": "Demo user unavailable."})
+        user_id, name, email, role, has_completed_tour = row
+        token = secrets.token_hex(32)
+        now = datetime.now(timezone.utc).isoformat()
+        cur.execute("UPDATE users SET last_login = ? WHERE id = ?", (now, user_id))
+        cur.execute("INSERT INTO user_sessions (token, user_id, created_at) VALUES (?, ?, ?)", (token, user_id, now))
+
+    return {
+        "ok": True,
+        "token": token,
+        "user": {
+            "id": user_id,
+            "name": name,
+            "email": email,
+            "role": role,
+            "hasCompletedTour": bool(has_completed_tour),
+        }
+    }
+
+
+@app.post("/api/auth/complete-tour")
+def complete_tour(req: CompleteTourRequest):
+    email = req.email.strip().lower() if req.email else None
+    if not email:
+        raise HTTPException(400, {"message": "Email is required to complete tour."})
+    with db() as con:
+        cur = con.cursor()
+        cur.execute("UPDATE users SET has_completed_tour = 1 WHERE email = ?", (email,))
+        if cur.rowcount == 0:
+            raise HTTPException(404, {"message": "User not found."})
+    return {"ok": True, "hasCompletedTour": True}
+
+
+@app.get("/api/auth/me")
+def get_current_user(token: str | None = None):
+    if not token:
+        raise HTTPException(401, {"message": "Not authenticated."})
+    with db() as con:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT u.id, u.name, u.email, u.role, u.has_completed_tour
+            FROM user_sessions s
+            JOIN users u ON s.user_id = u.id
+            WHERE s.token = ?
+        """, (token,))
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(401, {"message": "Session expired or invalid."})
+        user_id, name, email, role, has_completed_tour = row
+    return {
+        "ok": True,
+        "user": {
+            "id": user_id,
+            "name": name,
+            "email": email,
+            "role": role,
+            "hasCompletedTour": bool(has_completed_tour),
+        }
+    }
+
+
+@app.post("/api/auth/logout")
+def logout_user(token: str | None = None):
+    if token:
+        with db() as con:
+            con.execute("DELETE FROM user_sessions WHERE token = ?", (token,))
+    return {"ok": True}
 
 
 @app.exception_handler(HTTPException)

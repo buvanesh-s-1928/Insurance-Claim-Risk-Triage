@@ -176,6 +176,8 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           <button type="button" role="tab" aria-selected="false" id="tab-create" class="py-2 rounded-sm text-on-surface-variant hover:text-on-surface font-label text-label-lg font-medium transition-colors">Create account</button>
         </div>
 
+        <div id="auth-alert" class="hidden p-3.5 rounded-DEFAULT text-body-sm font-medium border" role="alert"></div>
+
         <form id="auth-form" class="flex flex-col gap-4">
           <label id="field-name-wrap" class="hidden flex-col gap-1.5">
             <span class="font-label text-label-lg text-on-surface font-medium">Full legal name</span>
@@ -234,8 +236,24 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       const heading = document.getElementById('auth-heading');
       const subtext = document.getElementById('auth-subtext');
       const form = document.getElementById('auth-form');
+      const alertBox = document.getElementById('auth-alert');
 
       let isCreateMode = false;
+
+      function showAlert(msg, isError = true) {
+        if (!alertBox) return;
+        alertBox.textContent = msg;
+        alertBox.className = isError
+          ? 'p-3.5 rounded-DEFAULT text-body-sm font-medium border bg-red-50 text-red-700 border-red-200'
+          : 'p-3.5 rounded-DEFAULT text-body-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200';
+        alertBox.classList.remove('hidden');
+      }
+
+      function hideAlert() {
+        if (!alertBox) return;
+        alertBox.classList.add('hidden');
+        alertBox.textContent = '';
+      }
 
       // Populate current user if one exists in session
       const existingUser = ClaimTriageAuth.getUser();
@@ -246,6 +264,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
 
       function setMode(create) {
         isCreateMode = create;
+        hideAlert();
         tabCreate.setAttribute('aria-selected', String(create));
         tabLogin.setAttribute('aria-selected', String(!create));
         
@@ -272,49 +291,10 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       tabCreate.addEventListener('click', () => setMode(true));
 
       // Quick demo button
-      document.getElementById('btn-quick-demo').addEventListener('click', () => {
-        ClaimTriageAuth.setUser({
-          name: 'Elena Rostova',
-          email: 'elena.rostova@claimtriage.internal',
-          role: 'Lead Fraud Strategist',
-          signedInAt: new Date().toISOString(),
-          hasCompletedTour: true
-        });
-        const ret = sessionStorage.getItem('claim_triage_return_url');
-        if (ret) {
-          sessionStorage.removeItem('claim_triage_return_url');
-          window.location.href = ret;
-        } else {
-          window.location.href = '../claims-queue/ClaimsQueue.html';
-        }
-      });
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = emailInput.value.trim();
-        const name = (nameInput.value.trim()) || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Investigator';
-
-        if (isCreateMode) {
-          // Brand new user: MANDATORY walkthrough before queue access
-          ClaimTriageAuth.setUser({
-            name: name,
-            email: email,
-            role: 'Fraud Risk Specialist',
-            signedInAt: new Date().toISOString(),
-            hasCompletedTour: false
-          });
-
-          window.location.href = '../first-run-tutorial/FirstRunTutorial.html?mandatory=1';
-        } else {
-          // Existing user login
-          ClaimTriageAuth.setUser({
-            name: name || 'Elena Rostova',
-            email: email,
-            role: 'Lead Fraud Strategist',
-            signedInAt: new Date().toISOString(),
-            hasCompletedTour: true
-          });
-
+      document.getElementById('btn-quick-demo').addEventListener('click', async () => {
+        hideAlert();
+        try {
+          await ClaimTriageAuth.loginDemo();
           const ret = sessionStorage.getItem('claim_triage_return_url');
           if (ret) {
             sessionStorage.removeItem('claim_triage_return_url');
@@ -322,6 +302,49 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
           } else {
             window.location.href = '../claims-queue/ClaimsQueue.html';
           }
+        } catch (err) {
+          showAlert('Demo sign-in failed: ' + err.message);
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+        const email = emailInput.value.trim();
+        const password = passInput.value;
+        const name = (nameInput.value.trim()) || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Investigator';
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = isCreateMode ? 'Creating account...' : 'Signing in...';
+
+        try {
+          if (isCreateMode) {
+            // Brand new user: register in backend DB & MANDATORY walkthrough
+            const user = await ClaimTriageAuth.register(name, email, password);
+            window.location.href = '../first-run-tutorial/FirstRunTutorial.html?mandatory=1';
+          } else {
+            // Existing user login: verify in backend DB
+            const user = await ClaimTriageAuth.login(email, password);
+            if (user.hasCompletedTour === false) {
+              window.location.href = '../first-run-tutorial/FirstRunTutorial.html?mandatory=1';
+            } else {
+              const ret = sessionStorage.getItem('claim_triage_return_url');
+              if (ret) {
+                sessionStorage.removeItem('claim_triage_return_url');
+                window.location.href = ret;
+              } else {
+                window.location.href = '../claims-queue/ClaimsQueue.html';
+              }
+            }
+          }
+        } catch (err) {
+          showAlert(err.message || 'Authentication failed. Please check your credentials.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-75');
+          submitBtn.textContent = originalText;
         }
       });
     })();
